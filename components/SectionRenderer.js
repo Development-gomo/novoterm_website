@@ -7,6 +7,7 @@ import CaseStudySection from "./sections/CaseStudySection";
 import DocumentTypeSection from "./sections/DocumentTypeSection";
 import WhyChooseUsSection from "./sections/WhyChooseUsSection";
 import InsightsSection from "./sections/InsightsSection";
+import ServicesSection from "./sections/ServicesSection";
 
 
 /**
@@ -144,6 +145,15 @@ case "insights_section":
     />
   );
 
+     case "service_section":
+  return (
+    <ServicesSection
+     key={index}
+      section_label={block.section_label}
+      heading={block.heading}
+      description={block.description}
+    />
+  );
 
 
       // -------------------------------------
