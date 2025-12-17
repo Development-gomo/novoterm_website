@@ -1,0 +1,7 @@
+<svg width="200" height="53" viewBox="0 0 200 53" xmlns="http://www.w3.org/2000/svg">
+  <!-- Visible area -->
+  <rect x="0" y="0" width="200" height="53" rx="2" fill="white"/>
+
+  <!-- Rounded cut -->
+  <circle cx="200" cy="53" r="14" fill="black"/>
+</svg>

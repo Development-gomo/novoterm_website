@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
@@ -19,9 +22,91 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Archivo", ui-sans-serif, system-ui, -apple-system, sans-serif;
-}
 .p-6{  padding: 0 !important;}
+
+/* GLOBAL TYPOGRAPHY SYSTEM */
+
+/* Headings → Montserrat */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-montserrat);
+
+
+}
+
+/* Body text → Cabin */
+body,
+p,
+span,
+li,
+a,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-cabin);
+}
+
+/* Optional: Make h1-h3 bold automatically */
+/* h1 { font-size: 2.5rem; font-weight: 700; }
+h2 { font-size: 2rem;   font-weight: 600; }
+h3 { font-size: 1.75rem; font-weight: 600; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; } */
+
+/* MERIWEATHER — loaded but NOT auto-used */
+.font-serif {
+  font-family: var(--font-merriweather);
+}
+.btn-primary {
+  @apply relative inline-flex items-center justify-center pt-4 pr-8 pb-[15px] pl-[22px]
+         bg-[#2555c4] text-white text-sm font-medium rounded-[2px] 
+         border border-transparent
+         overflow-hidden transition-all duration-300 z-[20];
+  font-family: "Montserrat", sans-serif !important;
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #d1dae8 !important;
+  border-radius: 50%;
+  right: -20px;
+  bottom: -20px;
+  transition: all 0.3s ease-out;
+
+  z-index: -1;   /* force behind text */
+}
+
+
+.btn-primary:hover::before {
+  width: 140%;
+  height: 300%;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 0;
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: #2555c4 !important;
+  border-color: #2555c4 !important;
+}
+
+
+/* bubble / magic circle */
+.magic {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 30;
+  mix-blend-mode: screen;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35), inset 0 -8px 24px rgba(255,255,255,0.03);
+}
+

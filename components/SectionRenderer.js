@@ -1,120 +1,160 @@
-// components/SectionRenderer.js
 "use client";
 
 import HeroSection from "./sections/HeroSection";
-import FeatureRows from "./sections/FeatureRows";
-import EarningsCalculator from "./sections/EarningsCalculator";
+import AboutSection from "./sections/AboutSection";
+import FullWidthExpertsSection from "./sections/FullWidthExpertsSection";
+import CaseStudySection from "./sections/CaseStudySection";
+import DocumentTypeSection from "./sections/DocumentTypeSection";
+import WhyChooseUsSection from "./sections/WhyChooseUsSection";
+import InsightsSection from "./sections/InsightsSection";
 
-/* ---------- helpers ---------- */
+
+/**
+ * Normalize ACF image field
+ */
 const mediaOrNull = (img) => {
   if (!img) return null;
-  if (typeof img === "string") return { url: img, alt: "" };
-  if (img.url) return img; // ACF array/object
-  if (img.sizes?.medium) return { url: img.sizes.medium, alt: img.alt || "" };
+
+  if (typeof img === "string") {
+    return { url: img, alt: "" };
+  }
+
+  if (img.url) return img;
+
+  if (img.sizes?.medium) {
+    return { url: img.sizes.medium, alt: img.alt || "" };
+  }
+
   return null;
 };
-const numOrUndef = (n) => (typeof n === "number" && !Number.isNaN(n) ? n : undefined);
 
-/* ---------- renderer ---------- */
 export default function SectionRenderer({ sections = [] }) {
+ 
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
-  return sections.map((block, i) => {
+  return sections.map((block, index) => {
     const layout = block?.acf_fc_layout;
 
-    if (process.env.NODE_ENV !== "production") {
-      console.debug("[SectionRenderer] block", i, layout, block);
-    }
-
     switch (layout) {
-      /* ===== HERO ===== */
+
+      // -------------------------------------
+      // HERO SECTION
+      // -------------------------------------
       case "hero_section":
         return (
           <HeroSection
-            key={`hero-${i}`}
-            headline={block.headline}
-            subheadline={block.subheadline}
-            cta_text={block.cta_text}
-            cta_link={block.cta_link}
-            main_mockup={mediaOrNull(block.main_mockup)}
-            stats_image={mediaOrNull(block.stats_image)}
-            testimonial_image={mediaOrNull(block.testimonial_image)}
-            bg_shape_left={mediaOrNull(block.bg_shape_left)}
-            bg_shape_right={mediaOrNull(block.bg_shape_right)}
-            bg_shape_extra={mediaOrNull(block.bg_shape_extra)}
+            key={`hero-${index}`}
+            headline={block.heading}
+            subheadline={block.subheading}
+            button_text={block.button_text}
+            button_link={block.button_link}
+            background_image={mediaOrNull(block.background_image)}
           />
         );
 
-      /* ===== FEATURE ROWS ===== */
-      case "feature_rows":
-        return <FeatureRows key={`fr-${i}`} acfLayout={block} />;
-
-      /* ===== SERVICES (via shortcode page) ===== */
-      case "services_section":
-      case "services_slider_section":
+      // -------------------------------------
+      // ABOUT SECTION
+      // -------------------------------------
+      case "about_section":
         return (
-          <ServicesSectionFromShortcode
-            key={`services-${i}`}
-            pill={block.label_pill}
-            heading={block.title}
-            wpBase={process.env.NEXT_PUBLIC_WP_URL}
-            shortcodePageSlug={block.shortcode_page_slug || "services-slider-embed"}
+          <AboutSection
+            key={`about-${index}`}
+            section_label={block.section_label}
+            heading={block.heading}
+            description={block.description}
+            button_text={block.button_text}
+            button_link={block.button_link}
+            image={mediaOrNull(block.image)}
           />
         );
 
-      /* ===== EARNINGS CALCULATOR (ACF) ===== */
-      case "earnings_calculator":
-      case "earnings_calculator_section":
-      case "calculator_section":
-      case "calc_section": {
-        if (block?.calc_enable === false) return null;
-
-        // CPM map from repeater (label → cpm)
-        const cpmMap =
-          Array.isArray(block?.calc_regions) && block.calc_regions.length
-            ? Object.fromEntries(
-                block.calc_regions
-                  .map((r) => [r?.label, Number(r?.cpm)])
-                  .filter(([label, cpm]) => label && !Number.isNaN(cpm))
-              )
-            : undefined; // falls back to component defaults
-
-        // Initial slider values
-        const initial = {
-          visitors: numOrUndef(block?.calc_visitors?.default),
-          pageviews: numOrUndef(block?.calc_pageviews?.default),
-          adsPerPage: numOrUndef(block?.calc_ads?.default),
-          // region default can be added if you add a field in ACF
-        };
-
+      // -------------------------------------
+      // FULL WIDTH EXPERTS
+      // -------------------------------------
+      case "fullwidth_experts_section":
         return (
-          <EarningsCalculator
-            key={`calc-${i}`}
-            initial={initial}
-            cpmMap={cpmMap}
-            pill={block?.calc_pill}
-            title={block?.calc_heading}
-            subtitle={block?.calc_sub_heading}
-            image={mediaOrNull(block?.calc_image)} // Image under CTA
-            ctaText={block?.calc_cta_text || "Get Started"}
-            ctaLink={block?.calc_cta_link || "#"}
+          <FullWidthExpertsSection
+            key={`experts-${index}`}
+            background_image={mediaOrNull(block.background_image)}
+            section_label={block.section_label}
+            intro_paragraph={block.intro_paragraph}
+            heading={block.heading}
+            cta_button_text={block.cta_button_text}
+            cta_button_link={block.cta_button_link}
           />
         );
-      }
 
-      /* ===== UNKNOWN ===== */
-      default:
-        if (process.env.NODE_ENV !== "production") {
-          return (
-            <div
-              key={`unknown-${i}`}
-              className="my-4 rounded-lg border border-dashed border-amber-400 bg-amber-50 p-4 text-amber-800"
-            >
-              Unknown layout: <code className="font-mono">{String(layout)}</code>
-            </div>
-          );
-        }
-        return null;
+
+      // -------------------------------------
+      // CASE STUDY SECTION
+      // -------------------------------------
+
+      case "case_study_section":
+        return (
+          <CaseStudySection
+            key={index}
+            section_title={block.section_title}
+            heading={block.heading}
+            paragraph={block.paragraph}
+            
+          />
+        );
+
+      // -------------------------------------
+      // DOCUMENT TYPE SECTION
+      // -------------------------------------
+
+      case "document_types":
+        return (
+          <DocumentTypeSection
+            key={index}
+            section_title={block.section_title}
+            heading={block.heading}
+            paragraph={block.paragraph}
+            button={block.button}
+            button_url={block.button_url}
+          />
+        );
+
+      // -------------------------------------
+      // WHY CHOOSE US SECTION
+      // -------------------------------------
+
+       case "why_choose_us":   // MUST MATCH ACF LAYOUT NAME ✔️
+        return (
+          <WhyChooseUsSection
+            key={index}
+            left_column={block.left_column}
+            right_column={block.right_column}
+          />
+        );
+
+      // -------------------------------------
+      // insights SECTION
+      // -------------------------------------
+
+case "insights_section":
+  return (
+    <InsightsSection
+      key={index}
+      section_title={block.section_title}
+      heading={block.heading}
+      paragraph={block.paragraph}
+      button={block.button}
+    />
+  );
+
+
+
+      // -------------------------------------
+      // FALLBACK
+      // -------------------------------------
+      // default:
+      //   return (
+      //     <div key={`unknown-${index}`} className="p-6 text-red-600">
+      //       Unknown layout: {layout}
+      //     </div>
+      //   );
     }
   });
 }
