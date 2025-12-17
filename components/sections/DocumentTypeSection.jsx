@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import DocumentTypeSlider from "../../components/DocumentTypeSlider";
+import DotIndicator from "../ui/DotIndicator";
 
 export default function DocumentTypeSection({
   section_title,
@@ -55,12 +56,8 @@ export default function DocumentTypeSection({
       <div className="mx-auto">
 
         {/* TOP LABEL */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="relative w-[22px] h-[22px]">
-            <div className="absolute inset-0 rounded-full border-[2px] border-[#BFC5D1]" />
-            <div className="absolute inset-1 rounded-full bg-white" />
-            <div className="absolute inset-2 rounded-full bg-[#2555C4]" />
-          </div>
+         <div className="flex items-center gap-2 mb-6">
+                      <DotIndicator variant="white"/>
 
           <span className="uppercase text-[14px] tracking-wider">
             {section_title}

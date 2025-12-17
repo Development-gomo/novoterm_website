@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import CaseStudySlider from "../../components/CaseStudySlider";
+import DotIndicator from "../ui/DotIndicator";
 
 export default function CaseStudySection({
   section_title,
@@ -47,14 +48,10 @@ export default function CaseStudySection({
       <div className="mx-auto">
 
         {/* DOT LABEL */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="relative w-[22px] h-[22px]">
-            <div className="absolute inset-0 rounded-full border-[2px] border-[#BFC5D1]" />
-            <div className="absolute inset-1 rounded-full bg-white" />
-            <div className="absolute inset-2 rounded-full bg-[#2555C4]" />
-          </div>
+        <div className="flex items-center gap-2 mb-6">
+          <DotIndicator/>
 
-          <span className="uppercase text-[14px] tracking-wider text-[#000]">
+          <span className="uppercase text-[14px] tracking-wider text-black">
             {section_title}
           </span>
         </div>

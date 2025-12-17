@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import DotIndicator from "../ui/DotIndicator";
 
 export default function WhyChooseUsSection({ left_column, right_column }) {
   const { why_items, left_image } = left_column || {};
@@ -65,13 +66,9 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
         <div className="flex flex-col">
 
           {/* SECTION LABEL */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="relative w-[18px] h-[18px]">
-              <div className="absolute inset-0 rounded-full border border-[#BFC5D1]" />
-              <div className="absolute inset-1 rounded-full bg-white" />
-              <div className="absolute inset-2 rounded-full bg-[#2555C4]" />
-            </div>
-            <span className="uppercase text-[12px] md:text-[13px] tracking-wider opacity-80">
+          <div className="flex items-center gap-2 mb-6">
+            <DotIndicator variant="white"/>
+            <span className="uppercase text-[14px] tracking-wider text-white">
               {section_label}
             </span>
           </div>

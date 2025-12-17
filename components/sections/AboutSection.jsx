@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DotIndicator from "../ui/DotIndicator";
 
 export default function AboutSection({
   section_label,
@@ -33,14 +34,10 @@ export default function AboutSection({
 
         {/* LEFT COLUMN */}
         <div className="md:w-[20%]">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="relative w-[25px] h-[25px]">
-              <div className="absolute inset-0 rounded-full border-[3px] border-[#BFC5D1]" />
-              <div className="absolute inset-1 rounded-full bg-transparent" />
-              <div className="absolute inset-2 rounded-full bg-[#2555C4]" />
-            </div>
+          <div className="flex items-center gap-2 mb-6">
+              <DotIndicator/>
 
-            <span className="uppercase text-[18px] tracking-wide font-semibold text-[#0A1A33]">
+            <span className="uppercase text-[14px] tracking-wider text-black">
               {section_label}
             </span>
           </div>

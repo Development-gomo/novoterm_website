@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DotIndicator from "../ui/DotIndicator";
 
 export default function FullWidthExpertsSection({
   background_image,
@@ -50,14 +51,10 @@ export default function FullWidthExpertsSection({
         <div className="experts-content flex flex-col justify-center text-white">
 
           {/* Dot + Label */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="relative w-[22px] h-[22px] shrink-0">
-              <div className="absolute inset-0 rounded-full border-[2px] border-[#BFC5D1]" />
-              <div className="absolute inset-1 rounded-full bg-white" />
-              <div className="absolute inset-2 rounded-full bg-[#2555C4]" />
-            </div>
+        <div className="flex items-center gap-2 mb-6">
+                             <DotIndicator variant="white"/>
 
-            <span className="uppercase text-[14px] tracking-wider opacity-90">
+            <span className="uppercase text-[14px] tracking-wider">
               {section_label}
             </span>
           </div>
