@@ -1,4 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
+
+
 
 // Extract src="..." from HTML string
 function extractImgSrc(html) {
@@ -36,13 +39,18 @@ export default function LanguageSwitcher({ languages = [] }) {
 
   return (
     <div className="flex items-center">
-      <Link href={getURL(langToShow)}>
-        <img
-          src={flagSrc}
-          className="h-5 w-auto border border-gray-600 rounded cursor-pointer"
-          alt={langToShow.native_name}
-        />
-      </Link>
-    </div>
+  <Link
+    href={getURL(langToShow)}
+    className="block w-[24px] h-[24px] rounded-full overflow-hidden cursor-pointer"
+    aria-label={langToShow.native_name}
+  >
+    <img
+      src={flagSrc}
+      alt={langToShow.native_name}
+      className="w-full h-full object-cover"
+    />
+  </Link>
+</div>
+
   );
 }

@@ -4,52 +4,65 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import DotIndicator from "../ui/DotIndicator";
 
+const SITE_HEADER_DESKTOP = 80;
+const SITE_HEADER_MOBILE = 64;
+
+const SERVICE_HEADER_DESKTOP = 88;
+const SERVICE_HEADER_MOBILE = 64;
+
+const MAX_VISIBLE_HEADERS = 2;
+
 export default function ServicesSection({
-  section_label,
-  heading,
-  description,
+  section_label = "",
+  heading = "",
+  description = "",
 }) {
   const [services, setServices] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
-  // 🔵 Fetch Services CPT (same pattern as CaseStudySection)
+  /* ---------------- detect screen ---------------- */
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const SITE_HEADER_HEIGHT = isMobile
+    ? SITE_HEADER_MOBILE
+    : SITE_HEADER_DESKTOP;
+
+  const SERVICE_HEADER_HEIGHT = isMobile
+    ? SERVICE_HEADER_MOBILE
+    : SERVICE_HEADER_DESKTOP;
+
+  /* ---------------- fetch services ---------------- */
   useEffect(() => {
     async function loadServices() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?_embed&acf_format=standard`
+          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?_embed&acf_format=standard`,
+          { cache: "no-store" }
         );
 
-        if (!res.ok) {
-          throw new Error("Failed to fetch services");
-        }
-
         const data = await res.json();
+        if (!Array.isArray(data)) return;
 
-        const formatted = Array.isArray(data)
-          ? data.map((post) => ({
-              id: post.id,
-              slug: post.slug, // ✅ REQUIRED for CTA
-
-                    // ACF fields
-      heading: post.acf?.heading || "",
-      description_text: post.acf?.description_text || "",
-      cta_text: post.acf?.cta_text || "",
-
-
-
-      highlights: post.acf?.service_highlights || [],
-
-      // Featured image
-
-      bg:
-  post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-  post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.full?.source_url ||
-  post._embedded?.["wp:featuredmedia"]?.[0]?.media_details?.sizes?.large?.source_url ||
-  "",
-            }))
-          : [];
-
-        setServices(formatted);
+        setServices(
+          data.map((post) => ({
+            id: post.id,
+            slug: post.slug || "",
+            heading: post.acf?.heading || "",
+            description_text: post.acf?.description_text || "",
+            cta_text: post.acf?.cta_text || "",
+            highlights: Array.isArray(post.acf?.service_highlights)
+              ? post.acf.service_highlights
+              : [],
+            bg:
+              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+              "",
+          }))
+        );
       } catch (e) {
         console.error("SERVICES FETCH ERROR:", e);
       }
@@ -59,111 +72,155 @@ export default function ServicesSection({
   }, []);
 
   return (
-    <section className="relative w-full bg-[#E9F0FF]">
-
-      {/* ============================= */}
-      {/* SECTION HEADER (TOP) */}
-      {/* ============================= */}
-      <div className="px-[80px] pt-[80px] pb-[40px]">
-        <div className="max-w-[561px]">
-
+    <section
+      style={{
+        background: "#E9F0FF",
+        position: "relative",
+        overflow: "visible",
+      }}
+    >
+      {/* ================= INTRO ================= */}
+      <div className="px-6 md:px-[80px] pt-[80px] pb-[40px]">
+        <div className="max-w-[560px]">
           {section_label && (
-          <div className="flex items-center gap-2 mb-6">
-            <DotIndicator />
-            
-            <span className="uppercase text-[14px] tracking-wider text-black">
+            <div className="flex items-center gap-2 mb-6">
+              <DotIndicator />
+              <span className="uppercase text-[14px] tracking-wider">
                 {section_label}
-            </span>
+              </span>
             </div>
           )}
 
-          <h2
-            className="text-[35px] md:text-[40px] font-heading font-semibold text-[#000] leading-[1.15] mb-4"
-            dangerouslySetInnerHTML={{ __html: heading }}
-          />
+          {heading && (
+            <h2
+              className="text-[28px] md:text-[40px] font-semibold leading-[1.15]"
+              dangerouslySetInnerHTML={{ __html: heading }}
+            />
+          )}
 
-          <div
-            className="text-[16px] text-[#000] leading-[1.7]"
-            dangerouslySetInnerHTML={{ __html: description }}
-          />
+          {description && (
+            <div
+              className="mt-4 text-[15px] md:text-[16px]"
+              dangerouslySetInnerHTML={{ __html: description }}
+            />
+          )}
         </div>
       </div>
 
-      {/* ===== SERVICES STACK ===== */}
-      {services.map((service) => (
-        <section key={service.id} className="relative min-h-screen">
+      {/* ================= SERVICES ================= */}
+      {services.map((service, index) => {
+        const isLast = index === services.length - 1;
 
-          {/* STICKY HEADER BAR */}
-          <div
-            className="
-              sticky
-              top-[88px]
-              z-30
-              bg-[#DDE6F6]
-              px-8 md:px-14
-              h-[88px]
-              flex items-center
-              border-b border-black/10
-            "
-          >
-            <div className="flex justify-between items-center w-full">
-              <h3 className="text-[28px] font-semibold">
-                {service.heading}
-              </h3>
+        // FIFO (desktop / tablet only)
+        const delayedIndex = Math.max(0, index - 1);
+        const slot = delayedIndex % MAX_VISIBLE_HEADERS;
 
-              {service.cta_text && (
-                <Link
-                  href={`/services/${service.slug}`}
-                  className="btn-primary"
-                >
-                  {service.cta_text}
-                </Link>
-              )}
-            </div>
-          </div>
+        const headerTop =
+          SITE_HEADER_HEIGHT + slot * SERVICE_HEADER_HEIGHT;
 
-          {/* BACKGROUND IMAGE */}
-          <div
-            className="absolute inset-0 -z-0 bg-cover bg-center"
+        const stickyEnabled = !isMobile && !isLast;
+
+        return (
+          <section
+            key={service.id}
             style={{
-              backgroundImage: `
-                linear-gradient(
-                  90deg,
-                  rgba(6,24,55,0.75) 0%,
-                  rgba(6,24,55,0.45) 55%,
-                  rgba(6,24,55,0.15) 100%
-                ),
-                url(${service.bg})
-              `,
+              position: "relative",
+              minHeight: isMobile ? "auto" : "100vh",
             }}
-          />
+          >
+            {/* ===== HEADER ===== */}
+            <div
+              style={{
+                position: stickyEnabled ? "sticky" : "relative",
+                top: stickyEnabled ? `${headerTop}px` : "auto",
+                height: `${SERVICE_HEADER_HEIGHT}px`,
+                background: "#E9F0FF",
+                zIndex: stickyEnabled ? 2000 + slot : 10,
+                display: "flex",
+                alignItems: "center",
+                padding: "0 16px 0 16px",
+                borderBottom: "1px solid rgba(0,0,0,0.1)",
+              }}
+              className="md:px-[56px]"
+            >
+              <div className="flex justify-between items-center w-full">
+                <h3 className="text-[18px] md:text-[28px] font-semibold">
+                  {service.heading}
+                </h3>
 
-          {/* CONTENT */}
-          <div className="relative z-20 h-full flex items-center px-8 md:px-14">
-            <div className="max-w-[560px] text-white">
+                {service.cta_text && (
+                  <Link
+                    href={`/services/${service.slug}`}
+                    className="btn-primary hidden md:inline-flex"
+                  >
+                    {service.cta_text}
+                  </Link>
+                )}
+              </div>
+            </div>
 
+            {/* ===== BACKGROUND ===== */}
+            {service.bg && (
               <div
-                className="text-[16px] leading-[1.7] mb-6"
-                dangerouslySetInnerHTML={{ __html: service.description_text }}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: `
+                    linear-gradient(
+                      90deg,
+                      rgba(6,24,55,0.8) 0%,
+                      rgba(6,24,55,0.45) 60%,
+                      rgba(6,24,55,0.15) 100%
+                    ),
+                    url(${service.bg})
+                  `,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  zIndex: 1,
+                }}
               />
+            )}
 
-              <div className="w-[180px] h-[1px] bg-white/40 mb-6"></div>
+            {/* ===== CONTENT ===== */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 10,
+                paddingTop: SERVICE_HEADER_HEIGHT + 32,
+                paddingLeft: "16px",
+                paddingRight: "16px",
+                paddingBottom: "96px",
+                maxWidth: "560px",
+                color: "#fff",
+              }}
+              className="md:px-[56px]"
+            >
+              {service.description_text && (
+                <div
+                  className="text-[15px] md:text-[16px] leading-[1.7]"
+                  dangerouslySetInnerHTML={{
+                    __html: service.description_text,
+                  }}
+                />
+              )}
 
               {service.highlights.length > 0 && (
-                <ul className="space-y-3">
-                  {service.highlights.map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#4A7BFF]" />
-                      <span>{item.highlight_text}</span>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <div className="w-[180px] h-[1px] bg-white/40 my-6" />
+                  <ul className="space-y-3">
+                    {service.highlights.map((item, i) => (
+                      <li key={i} className="flex gap-3">
+                        <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#4A7BFF]" />
+                        <span>{item?.highlight_text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
             </div>
-          </div>
-        </section>
-      ))}
-
+          </section>
+        );
+      })}
     </section>
   );
 }
