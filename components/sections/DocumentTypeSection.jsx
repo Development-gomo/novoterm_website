@@ -52,28 +52,55 @@ export default function DocumentTypeSection({
   }, []);
 
   return (
-    <section className="relative w-full p-[80px] bg-[#061837] text-white">
+    <section
+      className="
+        relative
+        w-full
+        bg-[#061837]
+        text-white
+        py-10
+        sm:py-12
+        md:py-16
+        lg:p-[80px]
+        px-4
+        sm:px-6
+        md:px-10
+      "
+    >
       <div className="mx-auto">
 
         {/* TOP LABEL */}
-         <div className="flex items-center gap-2 mb-6">
-                      <DotIndicator variant="white"/>
-
+        <div className="flex items-center gap-2 mb-4 md:mb-6">
+          <DotIndicator variant="white" />
           <span className="uppercase text-[14px] tracking-wider">
             {section_title}
           </span>
         </div>
 
-        {/* FIXED HEADING */}
+        {/* FIXED HEADING (font unchanged) */}
         <div
-          className="text-[35px] md:text-[40px] font-heading font-semibold leading-[1.15] mb-6 max-w-[577px]"
+          className="text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15]
+            
+            font-heading
+           
+            mb-4
+            md:mb-6
+            max-w-[577px]
+          "
           suppressHydrationWarning={true}
           dangerouslySetInnerHTML={{ __html: heading || "" }}
         />
 
-        {/* FIXED PARAGRAPH */}
+        {/* FIXED PARAGRAPH (font unchanged) */}
         <div
-          className="text-[16px] text-[#ffffff] max-w-[533px] leading-[1.7] mb-12"
+          className="
+            text-[16px]
+            text-[#ffffff]
+            max-w-[533px]
+            leading-[1.7]
+            mb-8
+            md:mb-12
+          "
           suppressHydrationWarning={true}
           dangerouslySetInnerHTML={{ __html: paragraph || "" }}
         />
@@ -83,7 +110,7 @@ export default function DocumentTypeSection({
 
         {/* CTA BUTTON BELOW SLIDER */}
         {button && (
-          <div className="flex justify-center mt-10">
+          <div className="flex justify-center mt-8 md:mt-10">
             <a href={button_url} className="btn-primary">
               {button}
             </a>

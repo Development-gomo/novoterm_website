@@ -34,6 +34,7 @@ export default function FullWidthExpertsSection({
         backgroundRepeat: "no-repeat",
       }}
     >
+      
       {/* Custom italic styling for <em> */}
       <style>{`
         .experts-content em {
@@ -68,7 +69,7 @@ export default function FullWidthExpertsSection({
 
           {/* Heading */}
           <div
-            className="text-[32px] md:text-[45px] lg:text-[70px] font-heading leading-[1.1] max-w-[900px]"
+            className="text-[32px] md:text-[45px] lg:text-[70px] font-heading font-semibold leading-[1.1] max-w-[900px]"
             dangerouslySetInnerHTML={{ __html: heading || "" }}
             suppressHydrationWarning
           />

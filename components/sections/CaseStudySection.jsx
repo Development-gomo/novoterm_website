@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import CaseStudySlider from "../../components/CaseStudySlider";
 import DotIndicator from "../ui/DotIndicator";
 
+
 export default function CaseStudySection({
   section_title,
   heading,

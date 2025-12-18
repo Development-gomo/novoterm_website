@@ -1,65 +1,97 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
-export default function MobileMenu({ menu }) {
+export default function MobileMenu({ menu = [], logo }) {
   const [open, setOpen] = useState(false);
+
+  // 🔒 LOCK BODY SCROLL
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
     <>
-      {/* Hamburger Icon */}
-      <button onClick={() => setOpen(true)} className="lg:hidden">
-        <img src="/menu.svg" alt="menu" className="h-7" />
+      {/* ☰ Hamburger */}
+      <button
+        onClick={() => setOpen(true)}
+        className="lg:hidden text-white text-3xl w-10 h-10 flex items-center justify-center z-[10001]"
+        aria-label="Open menu"
+      >
+        ☰
       </button>
 
-      {/* Background Overlay */}
+      {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-[60]"
+          className="fixed inset-0 bg-black/60 z-[10000]"
           onClick={() => setOpen(false)}
-        ></div>
+        />
       )}
 
-      {/* Slide-in Drawer */}
-      <div
-        className={`fixed top-0 right-0 w-64 h-full bg-white text-black p-6 z-[70] transform transition-transform ${
-          open ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <button className="text-3xl mb-6" onClick={() => setOpen(false)}>
-          ×
-        </button>
-
-        <nav className="flex flex-col gap-4">
-          {menu.map((item) =>
-            item.child_items ? (
-              <details key={item.ID} className="mb-2">
-                <summary className="cursor-pointer font-medium text-lg">
-                  {item.title}
-                </summary>
-                <div className="ml-4 mt-2">
-                  {item.child_items.map((sub) => (
-                    <Link
-                      key={sub.ID}
-                      href={sub.url}
-                      className="block py-1 text-gray-700"
-                    >
-                      {sub.title}
-                    </Link>
-                  ))}
-                </div>
-              </details>
+      {/* Drawer */}
+      {open && (
+        <aside
+          className="fixed top-0 right-0 h-full w-[320px] max-w-[85vw]
+                     bg-[#0B2347] text-white z-[10001]
+                     flex flex-col"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+            {logo ? (
+              <img src={logo} alt="Logo" className="h-7" />
             ) : (
-              <Link
-                key={item.ID}
-                href={item.url}
-                className="text-lg font-medium"
-              >
-                {item.title}
-              </Link>
-            )
-          )}
-        </nav>
-      </div>
+              <span className="text-xl font-semibold">Menu</span>
+            )}
+
+            <button
+              onClick={() => setOpen(false)}
+              className="text-3xl leading-none"
+              aria-label="Close menu"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Menu */}
+          <nav className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+            {menu.map((item) => (
+              <div key={item.ID} className="space-y-3">
+                <p className="text-sm uppercase tracking-wider text-white/60">
+                  {item.title}
+                </p>
+
+
+                {Array.isArray(item.child_items) && (
+                  <ul className="space-y-2">
+                    {item.child_items.map((sub) => (
+                      <li key={sub.ID}>
+                        <Link
+                          href={sub.url}
+                          onClick={() => setOpen(false)}
+                          className="flex items-center gap-2 text-white/90 hover:text-white transition"
+                        >
+                          <span className="opacity-50">–</span>
+                          <span>{sub.title}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <div className="border-b border-white/10 pt-4" />
+              </div>
+            ))}
+          </nav>
+        </aside>
+      )}
     </>
   );
 }

@@ -10,8 +10,19 @@ export default function DocumentTypeSlider({ slides }) {
   return (
     <div className="relative w-full">
 
-      {/* ---------------- NAVIGATION BUTTONS ---------------- */}
-      <div className="absolute -top-26 right-0 flex gap-3 z-[50] pointer-events-auto">
+      {/* ---------------- NAVIGATION BUTTONS --------------- */}
+      <div className="absolute
+top-4
+right-4
+sm:top-6
+sm:right-6
+md:-top-26
+md:right-0
+flex
+gap-3
+z-[50]
+pointer-events-auto
+">
         <button className="
           swiper-prev-doc 
           w-[40px] h-[40px] 
@@ -40,16 +51,29 @@ export default function DocumentTypeSlider({ slides }) {
       </div>
 
       {/* ---------------- SWIPER SLIDER ---------------- */}
-      <Swiper
-        modules={[Navigation]}
-        navigation={{
-          nextEl: ".swiper-next-doc",
-          prevEl: ".swiper-prev-doc",
-        }}
-        slidesPerView={4}
-        spaceBetween={0}
-        className="relative z-10"
-      >
+        <Swiper
+          modules={[Navigation]}
+          navigation={{
+            nextEl: ".swiper-next-doc",
+            prevEl: ".swiper-prev-doc",
+          }}
+          watchOverflow={false}   // ✅ keeps arrows visible
+          slidesPerView={1}       // default (mobile)
+          spaceBetween={0}
+          breakpoints={{
+            0: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 2,
+            },
+            1024: {
+              slidesPerView: 4,   // ✅ desktop = 4 slides
+            },
+          }}
+          className="relative z-10"
+        > 
+
         {slides.map((slide, index) => {
           const isLast = index === slides.length - 1;
 

@@ -17,8 +17,9 @@ export default function AboutSection({
         image?.sizes?.medium_large ||
         "";
 
+        
   return (
-    <section className="relative w-full bg-[#E7ECF5] py-20">
+    <section className="relative w-full bg-[#E3EDFF] py-[40px] px-4 sm:px-6 md:p-10 lg:p-[80px]">
       
       {/* LOCAL STYLE */}
       <style>{`
@@ -30,31 +31,45 @@ export default function AboutSection({
         }
       `}</style>
 
-      <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row gap-10">
+      <div className=" mx-auto flex flex-col md:flex-row gap-6 md:gap-8">
 
         {/* LEFT COLUMN */}
-        <div className="md:w-[20%]">
-          <div className="flex items-center gap-2 mb-6">
-              <DotIndicator/>
-
-            <span className="uppercase text-[14px] tracking-wider text-black">
+        <div className="md:w-[15%]">
+          <div className="flex items-center gap-2 mb-4 md:mb-6">
+            <DotIndicator />
+            <span className="uppercase text-[12px] sm:text-[13px] md:text-[14px] tracking-wider text-black">
               {section_label}
             </span>
           </div>
         </div>
 
         {/* RIGHT COLUMN */}
-        <div className="md:w-[80%] about-section-content">
+        <div className="md:w-[85%] about-section-content">
 
           {/* FIXED HEADING */}
           <div
-            className="font-heading text-[32px] md:text-[42px] leading-[1.3] text-[#000] mb-10 max-w-[1000px]"
+            className="
+              font-heading 
+              font-semibold
+              text-[28px]
+              sm:text-[34px]
+              md:text-[40px]
+              lg:text-[48px]
+              leading-[36px]
+              sm:leading-[44px]
+              md:leading-[52px]
+              lg:leading-[58px]
+              text-[#000]
+              mb-8
+              md:mb-10
+              max-w-[1050px]
+            "
             suppressHydrationWarning={true}
             dangerouslySetInnerHTML={{ __html: heading || "" }}
           />
 
           {/* ROW */}
-          <div className="flex flex-col md:flex-row gap-10">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-10">
 
             {/* LEFT SIDE */}
             <div className="md:w-[25%]">
@@ -62,26 +77,43 @@ export default function AboutSection({
               {/* FIXED DESCRIPTION */}
               <div
                 suppressHydrationWarning={true}
-                className="font-body text-[16px] md:text-[17px] leading-[1.7] text-[#1A1A1A] mb-6"
-                
+                className="
+                  font-body
+                  text-[15px]
+                  sm:text-[16px]
+                  md:text-[17px]
+                  leading-[1.6]
+                  md:leading-[1.7]
+                  text-[#1A1A1A]
+                  mb-6
+                "
                 dangerouslySetInnerHTML={{ __html: description || "" }}
-                
               />
 
               {button_text && (
-                <Link href={button_link} className="btn-primary inline-block">
+                <Link
+                  href={button_link}
+                  className="btn-primary inline-block text-sm sm:text-base"
+                >
                   {button_text}
                 </Link>
               )}
             </div>
 
             {/* RIGHT SIDE IMAGE */}
-            <div className="md:w-[75%]">
+            <div className="md:w-[80%]">
               {imgUrl && (
                 <img
                   src={imgUrl}
                   alt={image?.alt || "About image"}
-                  className="rounded-lg w-full h-auto object-cover shadow-md"
+                  className="
+                    rounded-lg
+                    w-full
+                    h-auto
+                    object-cover
+                    shadow-md
+                    lg:h-[424px]
+                  "
                   style={{ aspectRatio: "3 / 2" }}
                 />
               )}

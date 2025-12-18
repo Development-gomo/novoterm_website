@@ -72,20 +72,14 @@ export default function ServicesSection({
   }, []);
 
   return (
-    <section
-      style={{
-        background: "#E9F0FF",
-        position: "relative",
-        overflow: "visible",
-      }}
-    >
+    <section className="relative w-full overflow-visible bg-[#E3EDFF]">
       {/* ================= INTRO ================= */}
-      <div className="px-6 md:px-[80px] pt-[80px] pb-[40px]">
+      <div className="px-4 sm:px-6 md:px-[56px] lg:px-[80px] lg:pt-[20px] sm:pt-[64px] md:pt-[80px] pb-[32px] sm:pb-[48px]">
         <div className="max-w-[560px]">
           {section_label && (
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-4 md:mb-6">
               <DotIndicator />
-              <span className="uppercase text-[14px] tracking-wider">
+              <span className="uppercase text-[12px] sm:text-[13px] md:text-[14px] tracking-wider">
                 {section_label}
               </span>
             </div>
@@ -93,14 +87,14 @@ export default function ServicesSection({
 
           {heading && (
             <h2
-              className="text-[28px] md:text-[40px] font-semibold leading-[1.15]"
+              className="text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15]"
               dangerouslySetInnerHTML={{ __html: heading }}
             />
           )}
 
           {description && (
             <div
-              className="mt-4 text-[15px] md:text-[16px]"
+              className="mt-3 sm:mt-4 text-[14px] sm:text-[15px] md:text-[16px]"
               dangerouslySetInnerHTML={{ __html: description }}
             />
           )}
@@ -111,7 +105,6 @@ export default function ServicesSection({
       {services.map((service, index) => {
         const isLast = index === services.length - 1;
 
-        // FIFO (desktop / tablet only)
         const delayedIndex = Math.max(0, index - 1);
         const slot = delayedIndex % MAX_VISIBLE_HEADERS;
 
@@ -123,8 +116,8 @@ export default function ServicesSection({
         return (
           <section
             key={service.id}
+            className="relative"
             style={{
-              position: "relative",
               minHeight: isMobile ? "auto" : "100vh",
             }}
           >
@@ -134,24 +127,24 @@ export default function ServicesSection({
                 position: stickyEnabled ? "sticky" : "relative",
                 top: stickyEnabled ? `${headerTop}px` : "auto",
                 height: `${SERVICE_HEADER_HEIGHT}px`,
-                background: "#E9F0FF",
+                background: "#D3DEF3",
                 zIndex: stickyEnabled ? 2000 + slot : 10,
                 display: "flex",
                 alignItems: "center",
-                padding: "0 16px 0 16px",
+                padding: isMobile ? "0 17px" : "0 80px",
                 borderBottom: "1px solid rgba(0,0,0,0.1)",
               }}
-              className="md:px-[56px]"
+              className="px-4 sm:px-6 md:px-[56px]"
             >
-              <div className="flex justify-between items-center w-full">
-                <h3 className="text-[18px] md:text-[28px] font-semibold">
+              <div className="flex justify-between items-center w-full gap-4">
+                <h3 className="text-[16px] sm:text-[18px] md:text-[32px] font-semibold">
                   {service.heading}
                 </h3>
 
                 {service.cta_text && (
                   <Link
                     href={`/services/${service.slug}`}
-                    className="btn-primary hidden md:inline-flex"
+                    className="btn-primary hidden md:inline-flex text-sm"
                   >
                     {service.cta_text}
                   </Link>
@@ -159,7 +152,7 @@ export default function ServicesSection({
               </div>
             </div>
 
-            {/* ===== BACKGROUND ===== */}
+            {/* ===== BACKGROUND === */}
             {service.bg && (
               <div
                 style={{
@@ -186,18 +179,15 @@ export default function ServicesSection({
               style={{
                 position: "relative",
                 zIndex: 10,
-                paddingTop: SERVICE_HEADER_HEIGHT + 32,
-                paddingLeft: "16px",
-                paddingRight: "16px",
-                paddingBottom: "96px",
-                maxWidth: "560px",
+                padding: isMobile ? "80px 17px" : "32px 80px",
+                maxWidth: "600px",
                 color: "#fff",
               }}
-              className="md:px-[56px]"
+              className="px-4 sm:px-6 md:px-[56px]"
             >
               {service.description_text && (
                 <div
-                  className="text-[15px] md:text-[16px] leading-[1.7]"
+                  className="text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7]"
                   dangerouslySetInnerHTML={{
                     __html: service.description_text,
                   }}
@@ -206,12 +196,14 @@ export default function ServicesSection({
 
               {service.highlights.length > 0 && (
                 <>
-                  <div className="w-[180px] h-[1px] bg-white/40 my-6" />
-                  <ul className="space-y-3">
+                  <div className="w-full h-[1px] bg-white/40 my-5 md:my-6" />
+                  <ul className="space-y-2 md:space-y-3">
                     {service.highlights.map((item, i) => (
                       <li key={i} className="flex gap-3">
                         <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#4A7BFF]" />
-                        <span>{item?.highlight_text}</span>
+                        <span className="italic text-[14px] md:text-[15px]">
+                          {item?.highlight_text}
+                        </span>
                       </li>
                     ))}
                   </ul>

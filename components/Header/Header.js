@@ -55,25 +55,26 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
             )
           )}
         </nav>
+        
 
         {/* Right Side */}
         <div className="flex items-center gap-4">
 
-          {/* ✅ Language switcher — VISIBLE ON ALL DEVICES */}
+          {/* Language switcher – visible everywhere */}
           <LanguageSwitcher languages={languages} />
 
-          {/* ❌ CTA button — HIDDEN ON MOBILE */}
+          {/* ❌ CTA – FORCE HIDDEN ON MOBILE */}
           {cta?.url && (
             <Link
               href={cta.url}
-              className="btn-primary hidden lg:inline-flex"
+              className="btn-primary !hidden lg:!inline-flex"
             >
               Get in touch
             </Link>
           )}
 
-          {/* ✅ Mobile menu icon — MOBILE ONLY */}
-          <div className="lg:hidden">
+          {/* ✅ Mobile menu – FORCE VISIBLE ON MOBILE */}
+          <div className="lg:!hidden relative z-[10000] flex">
             <MobileMenu menu={cleanMenu} />
           </div>
         </div>
