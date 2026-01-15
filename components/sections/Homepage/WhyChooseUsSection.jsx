@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import DotIndicator from "../ui/DotIndicator";
+import DotIndicator from "../../ui/DotIndicator";
+
 
 export default function WhyChooseUsSection({ left_column, right_column }) {
   const { why_items, left_image } = left_column || {};
@@ -23,8 +24,8 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
     typeof right_image === "string" ? right_image : right_image?.url || "";
 
   return (
-    <section className="w-full bg-[#061837] text-white px-6 py-[60px] md:py-[80px]">
-      <div className="max-w-[1350px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[140px]">
+    <section className="w-full bg-[#061837] text-white px-6 py-[60px] md:py-[100px] md:px-[80px]">
+      <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[0px]">
 
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-[80px] md:gap-[120px] lg:gap-[172px]">
@@ -39,7 +40,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
                   <div className="w-[24px] h-[24px] rounded-full bg-[#2655C4] flex items-center justify-center text-white text-sm font-semibold">
                     {index + 1}
                   </div>
-                  <span className="text-[15px] md:text-[16px] font-light">
+                  <span className="text-[15px] md:text-[16px] font-light font-montserrat font-normal">
                     {item.item_label}
                   </span>
                 </div>
@@ -68,7 +69,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
           {/* SECTION LABEL */}
           <div className="flex items-center gap-2 mb-6">
             <DotIndicator variant="white"/>
-            <span className="uppercase text-[14px] tracking-wider text-white">
+            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-white">
               {section_label}
             </span>
           </div>
@@ -80,7 +81,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
 
           {/* DESCRIPTION */}
           <div
-            className="text-[15px] md:text-[16px] leading-[1.7] font-light mb-8 max-w-[450px]"
+            className="text-[15px] md:text-[16px] leading-[1.5] font-light mb-8 max-w-[450px]"
             dangerouslySetInnerHTML={{ __html: description }}
           />
 

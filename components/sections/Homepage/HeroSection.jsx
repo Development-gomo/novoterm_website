@@ -50,7 +50,7 @@ export default function HeroSection({
         <div className="text-left max-w-[800px] mt-6 sm:mt-8 lg:mt-0 lg:ml-[235px]">
 
           {/* BOTTOM HEADLINE */}
-          <h1 className="text-[36px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] mb-[6px]">
+          <h1 className="text-[36px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] mb-[4px]">
             <span className="font-serif italic font-normal text-white">
               {bottom_word}
             </span>{" "}

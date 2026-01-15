@@ -37,16 +37,15 @@ h1, h2, h3, h4, h5, h6 {
 
 
 }
-.font-heading{
+.font-heading,
+.font-montserrat{
   font-family: var(--font-montserrat) !important;
 }
 /* Body text → Cabin */
 body,
 p,
-span,
 li,
 a,
-button,
 input,
 select,
 textarea {
@@ -65,19 +64,21 @@ h6 { font-size: 1rem; } */
 .font-serif {
   font-family: var(--font-merriweather);
 }
+
 .btn-primary {
-  @apply relative inline-flex items-center justify-center pt-4 pr-8 pb-[15px] pl-[22px]
-         bg-[#2555c4] text-white text-sm font-medium rounded-[2px] 
+  @apply relative inline-flex items-center justify-center h-[48px] pt-[15px] pr-[32px] pb-[15px] pl-[22px]
+         bg-[#2555c4] text-white text-sm font-medium rounded-[2px]
          border border-transparent
          overflow-hidden transition-all duration-300 z-[20];
   font-family: "Montserrat", sans-serif !important;
+  
 }
 
 .btn-primary::before {
   content: "";
   position: absolute;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   background: #d1dae8 !important;
   border-radius: 50%;
   right: -20px;
@@ -85,6 +86,12 @@ h6 { font-size: 1rem; } */
   transition: all 0.3s ease-out;
 
   z-index: -1;   /* force behind text */
+}
+.menu-font span{
+  font-family: "montserrat", sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  cursor: pointer;
 }
 
 
@@ -117,3 +124,6 @@ h6 { font-size: 1rem; } */
   box-shadow: 0 10px 40px rgba(0,0,0,0.35), inset 0 -8px 24px rgba(255,255,255,0.03);
 }
 
+.input {
+  @apply w-full bg-transparent border border-white/30 px-4 py-3 rounded text-white placeholder-gray-400;
+}

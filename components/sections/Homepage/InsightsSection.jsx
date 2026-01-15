@@ -1,8 +1,8 @@
     "use client";
 
     import { useEffect, useState } from "react";
-    import InsightsSlider from "../../components/InsightsSlider";
-    import DotIndicator from "../ui/DotIndicator";
+    import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
+    import DotIndicator from "../../ui/DotIndicator";
 
     export default function InsightsSection({
     section_title,
@@ -79,7 +79,7 @@
             <div className="flex items-center gap-2 mb-6">
             <DotIndicator/>
 
-            <span className="uppercase text-[14px] tracking-wider text-black">
+            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
                 {section_title}
             </span>
             </div>

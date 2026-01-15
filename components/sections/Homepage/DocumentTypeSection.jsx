@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import DocumentTypeSlider from "../../components/DocumentTypeSlider";
-import DotIndicator from "../ui/DotIndicator";
+import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
+import DotIndicator from "../../ui/DotIndicator";
 
 export default function DocumentTypeSection({
   section_title,
@@ -72,7 +72,7 @@ export default function DocumentTypeSection({
         {/* TOP LABEL */}
         <div className="flex items-center gap-2 mb-4 md:mb-6">
           <DotIndicator variant="white" />
-          <span className="uppercase text-[14px] tracking-wider">
+          <span className="uppercase font-montserrat text-[12px] tracking-wider">
             {section_title}
           </span>
         </div>
@@ -93,8 +93,7 @@ export default function DocumentTypeSection({
 
         {/* FIXED PARAGRAPH (font unchanged) */}
         <div
-          className="
-            text-[16px]
+          className="text-[14px]   sm:text-[15px]   md:text-[16px] 
             text-[#ffffff]
             max-w-[533px]
             leading-[1.7]

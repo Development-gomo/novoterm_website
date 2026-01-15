@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import DotIndicator from "../ui/DotIndicator";
+import DotIndicator from "../../ui/DotIndicator";
 
 const SITE_HEADER_DESKTOP = 80;
 const SITE_HEADER_MOBILE = 64;
 
-const SERVICE_HEADER_DESKTOP = 88;
+const SERVICE_HEADER_DESKTOP = 100;
 const SERVICE_HEADER_MOBILE = 64;
 
 const MAX_VISIBLE_HEADERS = 2;
@@ -79,7 +79,7 @@ export default function ServicesSection({
           {section_label && (
             <div className="flex items-center gap-2 mb-4 md:mb-6">
               <DotIndicator />
-              <span className="uppercase text-[12px] sm:text-[13px] md:text-[14px] tracking-wider">
+              <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
                 {section_label}
               </span>
             </div>
@@ -118,7 +118,7 @@ export default function ServicesSection({
             key={service.id}
             className="relative"
             style={{
-              minHeight: isMobile ? "auto" : "100vh",
+              minHeight: isMobile ? "auto" : "80vh",
             }}
           >
             {/* ===== HEADER ===== */}
@@ -180,14 +180,14 @@ export default function ServicesSection({
                 position: "relative",
                 zIndex: 10,
                 padding: isMobile ? "80px 17px" : "32px 80px",
-                maxWidth: "600px",
+                maxWidth: "620px",
                 color: "#fff",
               }}
               className="px-4 sm:px-6 md:px-[56px]"
             >
               {service.description_text && (
                 <div
-                  className="text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7]"
+                  className="text-[14px] font-normal sm:text-[16px] md:text-[18px] leading-[1.6] md:leading-[1.7]"
                   dangerouslySetInnerHTML={{
                     __html: service.description_text,
                   }}
@@ -200,7 +200,7 @@ export default function ServicesSection({
                   <ul className="space-y-2 md:space-y-3">
                     {service.highlights.map((item, i) => (
                       <li key={i} className="flex gap-3">
-                        <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#4A7BFF]" />
+                        <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#2655C4]" />
                         <span className="italic text-[14px] md:text-[15px]">
                           {item?.highlight_text}
                         </span>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import DotIndicator from "../ui/DotIndicator";
+import DotIndicator from "../../ui/DotIndicator";
 
 export default function AboutSection({
   section_label,
@@ -17,9 +17,9 @@ export default function AboutSection({
         image?.sizes?.medium_large ||
         "";
 
-        
+
   return (
-    <section className="relative w-full bg-[#E3EDFF] py-[40px] px-4 sm:px-6 md:p-10 lg:p-[80px]">
+    <section className="relative w-full bg-[#E3EDFF] py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
       
       {/* LOCAL STYLE */}
       <style>{`
@@ -37,7 +37,7 @@ export default function AboutSection({
         <div className="md:w-[15%]">
           <div className="flex items-center gap-2 mb-4 md:mb-6">
             <DotIndicator />
-            <span className="uppercase text-[12px] sm:text-[13px] md:text-[14px] tracking-wider text-black">
+            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
               {section_label}
             </span>
           </div>
@@ -72,18 +72,16 @@ export default function AboutSection({
           <div className="flex flex-col md:flex-row gap-8 md:gap-10">
 
             {/* LEFT SIDE */}
-            <div className="md:w-[25%]">
+            <div className="md:w-[23%]">
 
               {/* FIXED DESCRIPTION */}
               <div
                 suppressHydrationWarning={true}
                 className="
                   font-body
-                  text-[15px]
-                  sm:text-[16px]
-                  md:text-[17px]
-                  leading-[1.6]
-                  md:leading-[1.7]
+                  text-[14px]   sm:text-[15px]   md:text-[16px] 
+                  leading-[1.4]
+                  md:leading-[1.5]
                   text-[#1A1A1A]
                   mb-6
                 "
@@ -107,13 +105,7 @@ export default function AboutSection({
                   src={imgUrl}
                   alt={image?.alt || "About image"}
                   className="
-                    rounded-lg
-                    w-full
-                    h-auto
-                    object-cover
-                    shadow-md
-                    lg:h-[424px]
-                  "
+                    rounded-[3px] w-full h-auto object-cover lg:h-[424px]"
                   style={{ aspectRatio: "3 / 2" }}
                 />
               )}

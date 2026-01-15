@@ -4,6 +4,9 @@ import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
 import { useEffect, useState } from "react";
 
+
+
+
 export default function Header({ logo, menu = [], languages = [], cta = {} }) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -33,14 +36,13 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
         {/* Logo */}
         <Link href="/" className="shrink-0">
           <img
-            src={logo}
-            className="h-[28px] md:h-[30px] lg:h-[32px]"
+            src={logo}  className="h-[28px] md:h-[30px] lg:h-[32px]"
             alt="Logo"
           />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-10">
+        <nav className="hidden menu-font lg:flex items-center  gap-10">
           {cleanMenu.map((item) =>
             Array.isArray(item.children) && item.children.length > 0 ? (
               <Dropdown key={item.ID} item={item} />
@@ -48,8 +50,7 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
               <Link
                 key={item.ID}
                 href={item.url || "#"}
-                className="text-white font-medium hover:opacity-75"
-              >
+                className="text-white hover:opacity-75">
                 {item.title}
               </Link>
             )
