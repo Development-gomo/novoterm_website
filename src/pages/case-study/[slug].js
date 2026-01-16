@@ -1,3 +1,5 @@
+import SectionRenderer from "../../../components/SectionRenderer";
+
 export async function getServerSideProps({ params }) {
   const { slug } = params;
 
@@ -14,25 +16,20 @@ export async function getServerSideProps({ params }) {
   return {
     props: {
       caseStudy: data[0],
+      currentSlug: slug,
     },
   };
 }
 
-export default function SingleCaseStudy({ caseStudy }) {
+export default function CaseStudyPage({ caseStudy, currentSlug }) {
   return (
-    <div className="max-w-5xl mx-auto p-10">
-      <h1 className="text-4xl font-bold mb-4">
-        {caseStudy.acf.review_heading}
-      </h1>
-
-      <img
-        src={caseStudy.acf.cs_image}
-        className="w-full mb-6 rounded-lg"
-      />
-
-      <div
-        dangerouslySetInnerHTML={{ __html: caseStudy.content.rendered }}
-      />
-    </div>
+    <>
+      {caseStudy?.acf?.sections && (
+        <SectionRenderer
+          sections={caseStudy.acf.sections}
+          currentSlug={currentSlug}
+        />
+      )}
+    </>
   );
 }

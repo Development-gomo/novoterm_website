@@ -1,6 +1,6 @@
 "use client";
 
-// Homepage Sections
+/* ===================== HOMEPAGE ===================== */
 import HeroSection from "./sections/Homepage/HeroSection";
 import AboutSection from "./sections/Homepage/AboutSection";
 import FullWidthExpertsSection from "./sections/Homepage/FullWidthExpertsSection";
@@ -10,7 +10,7 @@ import WhyChooseUsSection from "./sections/Homepage/WhyChooseUsSection";
 import InsightsSection from "./sections/Homepage/InsightsSection";
 import ServicesSection from "./sections/Homepage/ServicesSection";
 
-// Service Sections
+/* ===================== SERVICE PAGE ===================== */
 import ServicesHeroSection from "./sections/Service/ServicesHeroSection";
 import ServiceIntroFrontend from "./sections/Service/ServiceIntroSection";
 import TranslationMethodsSection from "./sections/Service/TranslationMethodsSection";
@@ -19,20 +19,27 @@ import OurApproachSection from "./sections/Service/OurApproachSection";
 import ContactSection from "./sections/Service/ContactSection";
 import FaqSection from "./sections/Service/FaqSection";
 import IndustriesSection from "./sections/Service/IndustriesSection";
-import ServiceCaseStudySection from "./sections/Service/ServiceCaseStudySection";
 
-/**
- * Normalize ACF image field
- */
+/* ===================== CASE STUDY PAGE ===================== */
+import CaseStudyHeroSection from "./sections/CaseStudy/CaseStudyHeroSection";
+import CaseStudyIntroductionSection from "./sections/CaseStudy/CaseStudyIntroductionSection";
+import CaseStudyChallengeSection from "./sections/CaseStudy/CaseStudyChallengeSection";
+import CaseStudySolutionSection from "./sections/CaseStudy/CaseStudySolutionSection";
+import CaseStudyResultsSection from "./sections/CaseStudy/CaseStudyResultsSection";
+import CaseStudyTestimonialSection from "./sections/CaseStudy/CaseStudyTestimonialSection";
+import CaseStudyRelatedSection from "./sections/CaseStudy/CaseStudyRelatedSection";
+
+/* ===================== HELPERS ===================== */
 const mediaOrNull = (img) => {
   if (!img) return null;
   if (typeof img === "string") return { url: img, alt: "" };
   if (img.url) return img;
-  if (img.sizes?.medium) return { url: img.sizes.medium, alt: img.alt || "" };
+  if (img.sizes?.medium)
+    return { url: img.sizes.medium, alt: img.alt || "" };
   return null;
 };
 
-export default function SectionRenderer({ sections = [] }) {
+export default function SectionRenderer({ sections = [], currentSlug  }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -41,11 +48,10 @@ export default function SectionRenderer({ sections = [] }) {
     switch (layout) {
 
       /* ===================== HOMEPAGE ===================== */
-
       case "hero_section":
         return (
           <HeroSection
-            key={`hero-${index}`} // ✅ key added
+            key={`hero-${index}`}
             headline={block.heading}
             subheadline={block.subheading}
             button_text={block.button_text}
@@ -57,7 +63,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "about_section":
         return (
           <AboutSection
-            key={`about-${index}`} // ✅ key added
+            key={`about-${index}`}
             section_label={block.section_label}
             heading={block.heading}
             description={block.description}
@@ -70,7 +76,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "fullwidth_experts_section":
         return (
           <FullWidthExpertsSection
-            key={`experts-${index}`} // ✅ key added
+            key={`experts-${index}`}
             background_image={mediaOrNull(block.background_image)}
             section_label={block.section_label}
             intro_paragraph={block.intro_paragraph}
@@ -83,7 +89,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "case_study_section":
         return (
           <CaseStudySection
-            key={`case-${index}`} // ✅ key added
+            key={`case-${index}`}
             section_title={block.section_title}
             heading={block.heading}
             paragraph={block.paragraph}
@@ -93,7 +99,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "document_types":
         return (
           <DocumentTypeSection
-            key={`docs-${index}`} // ✅ key added
+            key={`docs-${index}`}
             section_title={block.section_title}
             heading={block.heading}
             paragraph={block.paragraph}
@@ -105,7 +111,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "why_choose_us":
         return (
           <WhyChooseUsSection
-            key={`why-${index}`} // ✅ key added
+            key={`why-${index}`}
             left_column={block.left_column}
             right_column={block.right_column}
           />
@@ -114,7 +120,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "insights_section":
         return (
           <InsightsSection
-            key={`insights-${index}`} // ✅ key added
+            key={`insights-${index}`}
             section_title={block.section_title}
             heading={block.heading}
             paragraph={block.paragraph}
@@ -125,7 +131,7 @@ export default function SectionRenderer({ sections = [] }) {
       case "service_section":
         return (
           <ServicesSection
-            key={`services-${index}`} // ✅ key added
+            key={`services-${index}`}
             section_label={block.section_label}
             heading={block.heading}
             description={block.description}
@@ -133,64 +139,77 @@ export default function SectionRenderer({ sections = [] }) {
         );
 
       /* ===================== SERVICE PAGE ===================== */
-
       case "services_hero":
-        return (
-          <ServicesHeroSection
-            key={`service-hero-${index}`} // ✅ key added
-            {...block}
-          />
-        );
+        return <ServicesHeroSection key={index} {...block} />;
 
       case "service_intro":
-        return (
-          <ServiceIntroFrontend
-            key={`service-intro-${index}`} // ✅ FIXED (THIS CAUSED WARNING)
-            section={block}
-          />
-        );
+        return <ServiceIntroFrontend key={index} section={block} />;
 
       case "translation_methods":
-        return (
-          <TranslationMethodsSection
-            key={`methods-${index}`} // ✅ key added
-            section={block}
-          />
-        );
+        return <TranslationMethodsSection key={index} section={block} />;
 
       case "benefits_section":
-        return (
-          <BenefitsSection
-            key={`benefits-${index}`} // ✅ key already correct
-            section={block}
-          />
-          
-        );
-        case "our_approach":
+        return <BenefitsSection key={index} section={block} />;
+
+      case "our_approach":
         return <OurApproachSection key={index} section={block} />;
 
-        case "contact_section":
-  return <ContactSection key={index} section={block} />;
+      case "contact_section":
+        return <ContactSection key={index} section={block} />;
 
-  case "faq_section":
-  return <FaqSection key={`faq-${index}`} section={block} />;
- case "industries":
-            return (
-              <IndustriesSection
-                key={index}
-                data={block}    
-              />
-            );
-            
-case "service_case_study":
-  return (
-    <ServiceCaseStudySection
-      key={index}
-      section_title={block.section_title}
-      heading={block.heading}
-      paragraph={block.paragraph}
-    />
-  );
+      case "faq_section":
+        return <FaqSection key={index} section={block} />;
+
+      case "industries":
+        return <IndustriesSection key={index} data={block} />;
+
+      /* ===================== CASE STUDY PAGE ===================== */
+      case "casestudy_hero":
+        return (
+          <CaseStudyHeroSection
+            key={`cs-hero-${index}`}
+            section={block}
+          />
+        );
+
+        case "casestudy_introduction":
+          return (
+            <CaseStudyIntroductionSection
+              key={`cs-intro-${index}`}
+              section={block}
+            />
+          ); 
+
+          case "casestudy_challenge":
+          return (
+            <CaseStudyChallengeSection
+              key={`cs-challenge-${index}`}
+              section={block}
+            />
+          );
+          
+          case "casestudy_solution":
+          return (
+            <CaseStudySolutionSection
+              key={`cs-solution-${index}`}
+              section={block}
+            />
+          );
+
+            case "casestudy_results":
+          return <CaseStudyResultsSection key={`cs-results-${index}`} section={block} />;
+
+          case "casestudy_testimonial":
+          return <CaseStudyTestimonialSection key={`cs-testimonial-${index}`} section={block} />;
+
+          case "casestudy_related":
+        return (
+          <CaseStudyRelatedSection
+            key={`cs-related-${index}`}
+            section={block}
+            currentSlug={currentSlug}
+          />
+        );
 
       default:
         return null;

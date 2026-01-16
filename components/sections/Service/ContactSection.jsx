@@ -1,6 +1,7 @@
 "use client";
 
 import CF7ContactForm from "../../ui/CF7ContactForm";
+import DotIndicator from "../../ui/DotIndicator";
 
 /**
  * Normalize ACF image field
@@ -35,8 +36,8 @@ export default function ContactSection({ section }) {
           <div className="w-[15%]">
             {section_label && (
               <div className="flex items-center gap-2 mt-2">
-                <span className="w-2 h-2 rounded-full bg-[#2E6CF6]" />
-                <span className="uppercase text-[12px] tracking-widest text-[#B7C6FF]">
+                <DotIndicator variant="white" />
+                <span className="uppercase text-[12px] tracking-widest">
                   {section_label}
                 </span>
               </div>
