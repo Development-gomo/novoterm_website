@@ -41,7 +41,7 @@ export default function ServiceCaseStudySection({
   }, []);
 
   return (
-    <section className="relative w-full py-10 sm:py-12 md:py-16 lg:p-[80px] px-4 sm:px-6 md:px-10 bg-[#E9F0FF]">
+    <section className="relative w-full py-6 sm:py-12 md:py-16 lg:p-[80px] px-4 sm:px-6 md:px-10 bg-[#E9F0FF]">
       <div className="mx-auto">
 
         {/* LABEL */}

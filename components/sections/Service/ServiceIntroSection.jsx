@@ -1,4 +1,10 @@
-export default function ServiceIntroFrontend({ section }) {
+import DotIndicator from "../../ui/DotIndicator";
+
+export default function ServiceIntroFrontend({
+  section,
+  sectionId,
+  index = 0, // 👈 NEW
+}) {
   if (!section) return null;
 
   const {
@@ -16,18 +22,35 @@ export default function ServiceIntroFrontend({ section }) {
         image?.sizes?.medium_large ||
         "";
 
+  const STICKY_START = 120; // header height
+  const LABEL_HEIGHT = 32;  // approx label height
+  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
+
   return (
-    <section className="w-full bg-[#EAF1FF] p-[80px]">
+    <section
+      id={sectionId}
+      className="w-full bg-[#EAF1FF] py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]"
+    >
       <div className="mx-auto">
 
-        <div className="flex gap-0">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
 
-          {/* LEFT – 15% */}
-          <div className="w-[15%]">
-            <div className="flex items-center gap-3 mt-2">
-              <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+          {/* LEFT – 15% (STACKED STICKY LABEL) */}
+          <div className="md:w-[15%] relative">
+            <div
+              className="flex items-center gap-2 mb-4 md:mb-6"
+              style={{
+                position: "sticky",
+                top: `${stickyTop}px`,
+                zIndex: 10 + index,
+              }}
+            >
+              <DotIndicator />
               {section_label && (
-                <span className="uppercase text-[12px] tracking-widest text-[#0A1A3A]">
+                <span
+                  className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider
+                  "
+                >
                   {section_label}
                 </span>
               )}
@@ -35,54 +58,63 @@ export default function ServiceIntroFrontend({ section }) {
           </div>
 
           {/* RIGHT – 85% */}
-          <div className="w-[85%]">
+          <div className="md:w-[85%]">
 
-            {/* HEADING */}
             {heading && (
               <h2
                 className="
-                  max-w-[960px]
                   font-heading font-semibold text-[#0A1A3A]
-                  text-[44px] leading-[1.25]
-                  mb-[64px]
+                  text-[28px]
+                  sm:text-[34px]
+                  md:text-[40px]
+                  lg:text-[48px]
+                  leading-[36px]
+                  sm:leading-[44px]
+                  md:leading-[52px]
+                  lg:leading-[58px]
+                  [&_em]:text-[#2655C4]
+                  [&_em]:font-bold
+                  mb-8 md:mb-[64px]
+                  max-w-[1090px]
                 "
                 dangerouslySetInnerHTML={{ __html: heading }}
               />
             )}
 
-            {/* CONTENT GRID */}
-            <div className="grid grid-cols-[420px_1fr] gap-0 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-[420px_1fr] gap-8 md:gap-0 items-start">
 
-              {/* IMAGE */}
               {imageUrl && (
                 <div
                   className="
-                    w-[360px] h-[450px]
+                    w-full md:w-[360px]
+                    h-[280px] sm:h-[360px] md:h-[450px]
                     rounded-[3px]
                     bg-no-repeat
-                    bg-[length:102.765%_123.348%]
-                    bg-[position:0px_-60px]
+                    bg-cover
                   "
                   style={{
                     backgroundImage: `url("${imageUrl}")`,
-                    backgroundColor: "lightgray",
                   }}
                 />
               )}
 
-              {/* TEXT BLOCKS */}
               {content_blocks.length > 0 && (
-                <div className="space-y-[32px]">
-                  {content_blocks.map((block, index) => (
-                    <div key={index}>
+                <div className="space-y-[24px] md:space-y-[32px]">
+                  {content_blocks.map((block, i) => (
+                    <div key={i}>
                       {block?.title && (
-                        <h3 className="text-[18px] font-semibold text-[#0A1A3A] mb-2">
+                        <h3 className="text-[20px] sm:text-[22px] md:text-[24px] font-semibold text-[#0A1A3A] mb-2">
                           {block.title}
                         </h3>
                       )}
                       {block?.content && (
                         <div
-                          className="text-[15px] leading-[1.7] text-[#1A1A1A]"
+                          className="
+                            font-body
+                            text-[14px] sm:text-[15px] md:text-[16px]
+                            leading-[1.6] md:leading-[1.7]
+                            text-[#1A1A1A]
+                          "
                           dangerouslySetInnerHTML={{ __html: block.content }}
                         />
                       )}
