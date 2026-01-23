@@ -63,8 +63,9 @@ h6 { font-size: 1rem; } */
 
 /* MERIWEATHER — loaded but NOT auto-used */
 .font-serif,
-.font-merriweather {
-  font-family: var(--font-merriweather);
+.font-merriweather,
+.historyem em {
+  font-family: var(--font-merriweather) !important;
 }
 .case-study-hero em {
  color: #FFF;

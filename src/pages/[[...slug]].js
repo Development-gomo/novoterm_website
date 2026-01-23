@@ -64,7 +64,13 @@ export default function Page({ page, lang }) {
   const title = page?.title?.rendered || "";
 
   // 🔥 FIXED FIELD NAME HERE
-  const sections = page?.acf?.page_sections || [];
+      const sections =
+  page?.acf?.sections ||
+  page?.acf?.page_sections ||
+  page?.acf?.about_page_sections ||
+  [];
+
+
 
   return (
     <main className="w-full">

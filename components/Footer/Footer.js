@@ -9,7 +9,7 @@ export default function Footer({ data }) {
   const { cta, services, quick, resources, contact, branding } = data;
 
   return (
-    <footer className="w-full bg-[#061837] text-white p-[80px] pb-0">
+    <footer className="w-full bg-[#061837] text-white  py-10 sm:py-12  md:py-16  lg:p-[80px]  px-4  sm:px-6  md:px-10">
       <div className="mx-auto">
 
         {/* ROW 1 — Custom Width Columns */}

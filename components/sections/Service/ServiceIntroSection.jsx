@@ -27,8 +27,7 @@ export default function ServiceIntroFrontend({
   const stickyTop = STICKY_START + index * LABEL_HEIGHT;
 
   return (
-    <section
-      id={sectionId}
+    <section id="next-section"
       className="w-full bg-[#EAF1FF] py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]"
     >
       <div className="mx-auto">

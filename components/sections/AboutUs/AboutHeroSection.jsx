@@ -1,12 +1,16 @@
 import Link from "next/link";
 
-export default function ServicesHeroSection({
-  heading,
-  sub_heading,
-  background_image,
-  cta_text,
-  cta_url,
-}) {
+export default function AboutHeroSection({ section }) {
+  if (!section) return null;
+
+  const {
+    heading,
+    sub_heading,
+    cta_text,
+    cta_url,
+    background_image,
+  } = section;
+
   const bgUrl =
     typeof background_image === "string"
       ? background_image

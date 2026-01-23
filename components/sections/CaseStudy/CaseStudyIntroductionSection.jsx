@@ -1,7 +1,10 @@
 import DotIndicator from "../../ui/DotIndicator";
 
-
-export default function CaseStudyIntroductionSection({ section }) {
+export default function CaseStudyIntroductionSection({
+  section,
+  sectionId,
+  index = 0,
+}) {
   if (!section) return null;
 
   const {
@@ -14,87 +17,114 @@ export default function CaseStudyIntroductionSection({ section }) {
     services,
   } = section;
 
+  const STICKY_START = 120;
+  const LABEL_HEIGHT = 32;
+  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
+
   return (
-    <section className="w-full bg-[#EAF1FF] p-[80px]">
+    <section
+      id="next-section"
+      className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-8 lg:py-[100px] lg:px-[80px]"
+    >
       <div className="mx-auto">
 
-        <div className="flex gap-0">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
 
-          {/* LEFT – 15% */}
-         <div className="w-[15%]">
-                {section_label && (
-                    <div className="flex items-center gap-2 mt-2">
-                    <DotIndicator/>
+          {/* LEFT LABEL */}
+          <div className="lg:w-[15%] relative">
+            {section_label && (
+              <div
+                className="flex items-center gap-2 text-[#0A1A3A]"
+                style={{
+                  position: "sticky",
+                  top: `${stickyTop}px`,
+                  zIndex: 10 + index,
+                }}
+              >
+                <DotIndicator />
+                <span className="uppercase font-montserrat font-medium text-[12px] tracking-wider">
+                  {section_label}
+                </span>
+              </div>
+            )}
+          </div>
 
-                    <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
-                        {section_label}
-                    </span>
-                    </div>
-                )}
-                </div>
+          {/* MAIN CONTENT */}
+          <div className="lg:w-[85%]">
 
-          {/* RIGHT – 85% */}
-          <div className="w-[85%]">
-
-            {/* HEADING – FULL WIDTH */}
+            {/* HEADING */}
             {heading && (
               <h2
-                className="case-study-intro-heading 
-                  max-w-[1090px]
+                className="
                   font-heading font-semibold text-[#0A1A3A]
-                  text-[48px] leading-[1.25]
-                  mb-[64px]  [&_em]:text-[#2655C4] [&_em]:font-bold"
+                  text-[28px]
+                  sm:text-[34px]
+                  md:text-[40px]
+                  lg:text-[48px]
+                  leading-[36px]
+                  sm:leading-[44px]
+                  md:leading-[52px]
+                  lg:leading-[58px]
+                  max-w-[1090px]
+                  mb-10 lg:mb-[64px]
+                  [&_em]:text-[#2655C4]
+                  [&_em]:italic
+                  [&_em]:font-semibold
+                "
                 dangerouslySetInnerHTML={{ __html: heading }}
               />
             )}
- 
 
-            {/* INNER GRID – 70% / 30% */}
-            <div className="grid grid-cols-[682px_418px] gap-[48px]">
+            {/* CONTENT + INFO CARD */}
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-[48px] items-start">
 
-              {/* LEFT CONTENT */}
-              <div>
+              {/* LEFT TEXT */}
+              <div className="w-full lg:flex-[682px] max-w-full">
+
                 {left_title && (
-                  <h3 className="text-[18px] font-semibold text-[#0A1A3A] mb-[16px]">
+                  <h3 className="text-[24px] leading-[48px] font-semibold text-[#061837]">
                     {left_title}
                   </h3>
                 )}
 
                 {left_content && (
                   <div
-                    className="text-[16px] leading-[1.7] text-[#1A1A1A]"
+                    className="text-[15px] md:text-[16px] leading-[1.7] text-[#000000] space-y-4"
                     dangerouslySetInnerHTML={{ __html: left_content }}
                   />
                 )}
               </div>
 
               {/* RIGHT INFO CARD */}
-              <div className="bg-[#061837] text-white rounded-[6px] p-[32px] space-y-[24px]">
+              <div className="w-full lg:flex-[360px] bg-[#061837] text-white rounded-[3px] pt-[40px] pr-[24px] pb-[32px] pl-[24px]
+sm:pt-[48px] sm:pr-[32px] sm:pb-[36px] sm:pl-[32px]
+lg:pt-[56px] lg:pr-[48px] lg:pb-[40px] lg:pl-[48px]
+">
 
                 {client && (
-                  <div>
-                    <p className="text-[12px] uppercase tracking-widest text-white/60 mb-1">
+                  <div className="mb-8">
+                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
                       Client
                     </p>
-                    <p className="text-[15px] font-medium">{client}</p>
+                    <p className="text-[16px] leading-[24px] font-medium">{client}</p>
                   </div>
                 )}
 
                 {industry && (
-                  <div>
-                    <p className="text-[12px] uppercase tracking-widest text-white/60 mb-1">
+                 <div className="mb-8">
+                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
                       Industry
                     </p>
-                    <p className="text-[15px] font-medium">{industry}</p>
+                    <p className="text-[16px] leading-[24px] font-medium">{industry}</p>
                   </div>
                 )}
 
                 {services && (
                   <div>
-                    <p className="text-[12px] uppercase tracking-widest text-white/60 mb-1">
+                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
                       Services
                     </p>
-                    <p className="text-[15px] font-medium">{services}</p>
+                    <p className="text-[16px] leading-[24px] font-medium">{services}</p>
                   </div>
                 )}
 

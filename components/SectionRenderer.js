@@ -29,6 +29,19 @@ import CaseStudyResultsSection from "./sections/CaseStudy/CaseStudyResultsSectio
 import CaseStudyTestimonialSection from "./sections/CaseStudy/CaseStudyTestimonialSection";
 import CaseStudyRelatedSection from "./sections/CaseStudy/CaseStudyRelatedSection";
 
+/* ===================== ABOUT US PAGE ===================== */
+import AboutHeroSection from "./sections/AboutUs/AboutHeroSection";
+import TeamSection from "./sections/AboutUs/TeamSection";
+import PhilosophySection from "./sections/AboutUs/PhilosophySection";
+import LeadershipMessageSection from "./sections/AboutUs/LeadershipMessageSection";
+import HistorySection from "./sections/AboutUs/HistorySection";
+import ExpertsCTASection from "./sections/AboutUs/ExpertsCTASection";
+
+
+
+
+
+
 /* ===================== HELPERS ===================== */
 const mediaOrNull = (img) => {
   if (!img) return null;
@@ -210,6 +223,57 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
             currentSlug={currentSlug}
           />
         );
+
+        // About us page sections can be added here similarly
+        case "about_hero":
+        return (
+          <AboutHeroSection
+            key={`about-hero-${index}`}
+            section={block}
+          />
+        );
+
+        case "philosophy_section":
+  return (
+    <PhilosophySection
+      key={`philosophy-${index}`}
+      section={block}
+    />
+  );     
+          case "team_section":
+  return (
+    <TeamSection
+      key={`team-${index}`}
+      section={block}
+    />
+  );
+
+      case "leadership_message":
+  return (
+    <LeadershipMessageSection
+      key={`leader-${index}`}
+      section={block}
+    />
+  );
+
+      case "history_section":
+  return (
+    <HistorySection
+      key={`history-${index}`}
+      section={block}
+    />
+  );
+  
+  case "experts_cta_section":
+  return (
+    <ExpertsCTASection
+      key={`experts-cta-${index}`}
+      section={block}
+    />
+  );
+
+
+
 
       default:
         return null;
