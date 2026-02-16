@@ -31,7 +31,7 @@ export default function TranslationMethodsSection({ section, index = 0 }) {
           {/* RIGHT – 85% */}
           <div className="w-full lg:w-[85%]">
             {heading && (
-              <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] text-white mb-[32px] lg:mb-[48px] max-w-[720px]">
+              <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] text-white mb-[32px] lg:mb-[48px] max-w-[580px]">
                 {heading}
               </h2>
             )}
@@ -67,17 +67,17 @@ export default function TranslationMethodsSection({ section, index = 0 }) {
                     {/* HOVER CONTENT */}
                     <div className="w-full h-0 group-hover:h-[181px] transition-all duration-500 ease-out bg-[#FEE4CA] px-[24px] py-[20px] flex flex-col">
                       {item.card_tag && (
-                        <span className="text-[11px] uppercase tracking-widest text-[#1A1A1A] mb-1">
+                        <span className="text-[11px] uppercase tracking-widest text-[#5c83dd] mb-1">
                           {item.card_tag}
                         </span>
                       )}
                       {item.card_title && (
-                        <h3 className="text-[20px] font-semibold text-[#1A1A1A] mb-4">
+                        <h3 className="text-[24px] font-semibold text-[#061837] ">
                           {item.card_title}
                         </h3>
                       )}
                       {item.cta_text && item.cta_link && (
-                        <Link href={item.cta_link} className="btn-primary inline-block text-sm sm:text-base w-full text-center mt-auto">
+                        <Link href={item.cta_link} className="btn-primary inline-block text-sm sm:text-base w-full text-center mt-[24px]">
                           {item.cta_text}
                         </Link>
                       )}

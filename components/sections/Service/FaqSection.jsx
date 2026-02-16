@@ -45,8 +45,8 @@ export default function FaqSection({ index = 0 }) {
       className="
         w-full bg-[#EEF3FF]
         py-[40px]
-        md:py-[60px]
-        lg:py-[80px]
+        md:py-[80px]
+        lg:py-[100px]
       "
     >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,7 +65,7 @@ export default function FaqSection({ index = 0 }) {
               }}
             >
               <DotIndicator />
-              <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[11px] md:text-[12px] tracking-wider">
+              <span className="uppercase font-montserrat font-medium text-[10px] text-[#061837] sm:text-[11px] md:text-[12px] tracking-wider">
                 FAQ &amp; Support
               </span>
             </div>
@@ -75,7 +75,7 @@ export default function FaqSection({ index = 0 }) {
           <div className="w-full lg:w-[85%]">
 
             {/* HEADER */}
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 mb-8 md:mb-10">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8 md:mb-14">
               <div>
                 <h2
                   className="
@@ -87,7 +87,7 @@ export default function FaqSection({ index = 0 }) {
                     leading-tight
                     md:leading-[1.15]
                     max-w-[561px]
-                    mb-4
+                    mb-4  text-[#061837]
                   "
                 >
                   Answers to your queries
@@ -118,22 +118,22 @@ export default function FaqSection({ index = 0 }) {
                 return (
                   <div
                     key={faq.id}
-                    className="bg-[#C4D0E6] rounded-[3px] px-4 sm:px-6 py-3"
+                    className="rounded-[3px] overflow-hidden"
                   >
                     <button
                       type="button"
                       onClick={() => setOpenIndex(isOpen ? null : i)}
-                      className="w-full flex items-start justify-between text-left"
+                      className="w-full flex items-start justify-between text-left bg-[#C4D0E6] px-4 sm:px-6 py-3"
                     >
                       <span
                         className="
                           text-[15px]
                           sm:text-[16px]
                           md:text-[18px]
-                          font-medium
+                          font-semibold
                           text-[#061837]
                           leading-snug
-                          pr-4
+                          pr-4 font-montserrat
                         "
                       >
                         {title}
@@ -142,7 +142,7 @@ export default function FaqSection({ index = 0 }) {
                       <span
                         className="
                           flex-shrink-0
-                          w-[28px] h-[28px]
+                          w-[32px] h-[32px]
                           sm:w-[32px] sm:h-[32px]
                           rounded-full
                           bg-[#2655C4]
@@ -158,13 +158,14 @@ export default function FaqSection({ index = 0 }) {
                     {isOpen && (
                       <div
                         className="
-                          mt-4
+                          px-6 sm:px-6 py-6
                           text-[14px]
                           sm:text-[15px]
                           md:text-[16px]
                           text-[#061837]
                           leading-relaxed
                         "
+                        style={{ backgroundColor: 'rgba(196, 208, 230, 0.50)' }}
                         dangerouslySetInnerHTML={{ __html: description }}
                       />
                     )}

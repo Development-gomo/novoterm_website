@@ -32,7 +32,7 @@ export default function ServiceIntroFrontend({
     >
       <div className="mx-auto">
 
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+        <div className="flex flex-col md:flex-row">
 
           {/* LEFT – 15% (STACKED STICKY LABEL) */}
           <div className="md:w-[15%] relative">
@@ -62,7 +62,7 @@ export default function ServiceIntroFrontend({
             {heading && (
               <h2
                 className="
-                  font-heading font-semibold text-[#0A1A3A]
+                  font-heading font-semibold text-[#061837]
                   text-[28px]
                   sm:text-[34px]
                   md:text-[40px]
@@ -73,7 +73,7 @@ export default function ServiceIntroFrontend({
                   lg:leading-[58px]
                   [&_em]:text-[#2655C4]
                   [&_em]:font-bold
-                  mb-8 md:mb-[64px]
+                  mb-8 md:mb-[40px]
                   max-w-[1090px]
                 "
                 dangerouslySetInnerHTML={{ __html: heading }}
@@ -98,11 +98,11 @@ export default function ServiceIntroFrontend({
               )}
 
               {content_blocks.length > 0 && (
-                <div className="space-y-[24px] md:space-y-[32px]">
+                <div className="space-y-[18px] md:space-y-[24px]">
                   {content_blocks.map((block, i) => (
                     <div key={i}>
                       {block?.title && (
-                        <h3 className="text-[20px] sm:text-[22px] md:text-[24px] font-semibold text-[#0A1A3A] mb-2">
+                        <h3 className="text-[20px] sm:text-[22px] md:text-[24px] font-semibold text-[#061837] mb-2">
                           {block.title}
                         </h3>
                       )}
@@ -112,7 +112,7 @@ export default function ServiceIntroFrontend({
                             font-body
                             text-[14px] sm:text-[15px] md:text-[16px]
                             leading-[1.6] md:leading-[1.7]
-                            text-[#1A1A1A]
+                            text-[#000000]
                           "
                           dangerouslySetInnerHTML={{ __html: block.content }}
                         />

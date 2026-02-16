@@ -31,7 +31,7 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
         }
       `}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center py-4 px-6">
+      <div className=" mx-auto flex justify-between items-center py-4 px-20">
 
         {/* Logo */}
         <Link href="/" className="shrink-0">
@@ -50,7 +50,7 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
               <Link
                 key={item.ID}
                 href={item.url || "#"}
-                className="text-white hover:opacity-75">
+                className="text-white hover:opacity-75 text-[14px] font-normal font-montserrat">
                 {item.title}
               </Link>
             )

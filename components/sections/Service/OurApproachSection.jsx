@@ -6,7 +6,20 @@ import { useEffect, useRef, useState } from "react";
 export default function OurApproachSection({ section, index = 0}) {
   if (!section) return null;
 
-  const { section_label, heading, cta_text, cta_link, steps = [] } = section;
+  const { 
+    section_label, 
+    heading, 
+    cta_text, 
+    cta_link, 
+    cta_url,
+    button_text,
+    button_link,
+    steps = [] 
+  } = section;
+  
+  // Support multiple field name variants
+  const ctaText = cta_text || button_text;
+  const ctaUrl = cta_link || cta_url || button_link;
   
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
@@ -14,31 +27,19 @@ export default function OurApproachSection({ section, index = 0}) {
 
   const [activeStep, setActiveStep] = useState(1);
   const stepRefs = useRef([]);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => {
-      const currentY = window.scrollY;
-      const direction = currentY > lastScrollY.current ? "down" : "up";
-      lastScrollY.current = currentY;
-
-      stepRefs.current.forEach((el) => {
-        if (!el) return;
-        const step = Number(el.dataset.step);
-        const rect = el.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.6) {
-          setActiveStep((prev) => {
-            if (direction === "down" && step === prev + 1) return prev + 1;
-            if (direction === "up" && step === prev && prev > 1) return prev - 1;
-            return prev;
-          });
-        }
+    // Automatically cycle through steps with timed delay
+    const totalSteps = steps.length || 4;
+    const interval = setInterval(() => {
+      setActiveStep((prev) => {
+        if (prev >= totalSteps) return prev; // Stop at last step
+        return prev + 1;
       });
-    };
+    }, 1000); // 1 second delay between steps
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    return () => clearInterval(interval);
+  }, [steps.length]);
 
   return (
     <section className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[96px] text-white">
@@ -61,13 +62,13 @@ export default function OurApproachSection({ section, index = 0}) {
           <div className="w-full lg:w-[85%]">
 
             {/* HEADER */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-[48px] lg:mb-[72px] gap-6">
-              <h2 className="max-w-[720px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15]">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[36px] lg:mb-[48px] gap-6">
+              <h2 className="max-w-[577px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15]">
                 {heading}
               </h2>
-              {cta_text && cta_link && (
-                <Link href={cta_link} className="btn-primary whitespace-nowrap w-fit">
-                  {cta_text}
+              {ctaText && ctaUrl && (
+                <Link href={ctaUrl} className="btn-primary whitespace-nowrap w-fit">
+                  {ctaText}
                 </Link>
               )}
             </div>
@@ -97,32 +98,32 @@ export default function OurApproachSection({ section, index = 0}) {
             {/* ================= DESKTOP / TABLET TIMELINE ================= */}
             <div className="hidden lg:block">
 
-              {/* TIMELINE */}
-              <div className="relative mb-[48px] lg:mb-[64px]">
+              {/* LABELS */}
+              <div className="grid grid-cols-4 gap-[48px] mb-[16px]">
+                {steps.map((step, i) => (
+                  <div key={i} className="text-[12px] tracking-widest text-[#5c83dd] font-montserrat">
+                    {step.step_tag}
+                  </div>
+                ))}
+              </div>
 
-                {/* LABELS */}
-                <div className="grid grid-cols-4 mb-[16px] gap-y-2">
-                  {steps.map((step, i) => (
-                    <div key={i} className="text-[12px] tracking-widest text-[#6E8BFF]">
-                      {step.step_tag}
-                    </div>
-                  ))}
-                </div>
-
-                {/* LINE + CIRCLES */}
-                <div className="flex items-center">
+              {/* CIRCLES + CONNECTING LINES */}
+              <div className="relative mb-[24px]">
+                <div className="grid grid-cols-4 gap-[48px]">
                   {steps.map((step, index) => {
                     const stepNumber = step.step_number;
                     const isActive = stepNumber <= activeStep;
                     const isLast = index === steps.length - 1;
 
                     return (
-                      <div key={index} className="flex items-center flex-1">
-                        <div className={`w-[56px] h-[56px] rounded-full flex items-center justify-center text-[16px] font-medium shrink-0 transition-all duration-500 ${isActive ? "bg-[#2F5BDE] text-white" : "border border-white/40 text-white/60"}`}>
+                      <div key={index} className="relative flex items-center">
+                        {/* Circle */}
+                        <div className={`w-[56px] h-[56px] rounded-full flex items-center justify-center text-[14px] font-montserrat font-medium shrink-0 transition-all duration-500 z-10 ${isActive ? "bg-[#2655c4] text-white" : "border border-white/40 text-white/60"}`}>
                           {stepNumber}
                         </div>
+                        {/* Line extending to next column */}
                         {!isLast && (
-                          <div className={`h-px flex-1 transition-all duration-500 ${stepNumber < activeStep ? "bg-[#2F5BDE]" : "bg-white/30"}`} />
+                          <div className={`absolute left-[56px] right-[-48px] top-1/2 h-px transition-all duration-500 ${stepNumber < activeStep ? "bg-[#2F5BDE]" : "bg-white/30"}`} />
                         )}
                       </div>
                     );
@@ -130,14 +131,22 @@ export default function OurApproachSection({ section, index = 0}) {
                 </div>
               </div>
 
-              {/* CONTENT */}
-              <div className="grid grid-cols-4 gap-[48px]">
+              {/* TITLES */}
+              <div className="grid grid-cols-4 gap-[48px] mb-[24px]">
                 {steps.map((step, index) => (
                   <div key={index} ref={(el) => (stepRefs.current[index] = el)} data-step={step.step_number}>
-                    <h3 className="text-[26px] font-semibold mb-[14px]">
+                    <h3 className="text-[24px] leading-[32px] font-semibold w-[200px]">
                       {step.step_title}
                     </h3>
-                    <p className="text-[16px] leading-[1.7] text-white/85">
+                  </div>
+                ))}
+              </div>
+
+              {/* DESCRIPTIONS */}
+              <div className="grid grid-cols-4 gap-[48px]">
+                {steps.map((step, index) => (
+                  <div key={`desc-${index}`}>
+                    <p className="text-[16px] leading-[24px] text-white/85 w-[200px]">
                       {step.step_description}
                     </p>
                   </div>

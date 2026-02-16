@@ -84,7 +84,7 @@ font-family: Merriweather;
 }
 .btn-primary {
   @apply relative inline-flex items-center justify-center h-[48px] pt-[15px] pr-[32px] pb-[15px] pl-[22px]
-         bg-[#2555c4] text-white text-sm font-medium rounded-[2px]
+         bg-[#2655c4] text-white text-sm font-medium rounded-[2px]
          border border-transparent
          overflow-hidden transition-all duration-300 z-[20];
   font-family: "Montserrat", sans-serif !important;
@@ -122,8 +122,8 @@ font-family: Merriweather;
 
 .btn-primary:hover {
   background: transparent;
-  color: #2555c4 !important;
-  border-color: #2555c4 !important;
+  color: #2655c4 !important;
+  border-color: #2655c4 !important;
 }
 
 

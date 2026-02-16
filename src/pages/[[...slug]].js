@@ -68,6 +68,7 @@ export default function Page({ page, lang }) {
   page?.acf?.sections ||
   page?.acf?.page_sections ||
   page?.acf?.about_page_sections ||
+  page?.acf?.contact_page_sections ||
   [];
 
 

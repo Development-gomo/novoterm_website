@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function AboutHeroSection({ section }) {
+export default function ContactHeroSection({ section }) {
   if (!section) return null;
 
   const {

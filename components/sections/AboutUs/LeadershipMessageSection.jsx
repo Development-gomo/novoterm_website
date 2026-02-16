@@ -39,7 +39,7 @@ export default function LeadershipMessageSection({
       className="w-full bg-[#061837]
         pt-[56px] px-[24px] pb-[56px]
         sm:pt-[72px] sm:px-[40px] sm:pb-[72px]
-        lg:pt-[120px] lg:px-[80px] lg:pb-[120px]"
+        lg:pt-[90px] lg:px-[80px] lg:pb-[100px]"
     >
       <div className="mx-auto">
 
@@ -90,13 +90,13 @@ export default function LeadershipMessageSection({
                 {name && (
                   <p className="text-white font-heading
                     text-[24px] leading-[32px]
-                    font-semibold mb-1">
+                    font-semibold mb-2">
                     {name}
                   </p>
                 )}
 
                 {role && (
-                  <p className="uppercase text-[14px]
+                  <p className="uppercase text-[14px] font-montserrat font-medium
                     tracking-widest text-white mb-8">
                     {role}
                   </p>
@@ -104,7 +104,7 @@ export default function LeadershipMessageSection({
 
                 {message && (
                   <div
-                    className="text-white/80
+                    className="text-white
                       text-[15px] sm:text-[16px]
                       leading-[24px] space-y-4
                       mb-10

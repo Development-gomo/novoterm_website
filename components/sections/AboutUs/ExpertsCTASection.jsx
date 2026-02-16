@@ -42,7 +42,7 @@ export default function ExpertsCTASection({ section }) {
           {/* HEADING */}
           {heading && (
             <div
-              className="text-white font-heading font-semibold
+              className="text-white font-heading font-normal
                          text-[28px] sm:text-[40px] md:text-[60px] lg:text-[80px]
                          leading-tight max-w-[760px]
                          [&_em]:italic
@@ -55,7 +55,7 @@ export default function ExpertsCTASection({ section }) {
           {cta_text && cta_url && (
             <Link
               href={cta_url}
-              className="btn-primary inline-flex items-center"
+              className="btn-primary inline-flex items-center mb-5"
             >
               {cta_text}
             </Link>

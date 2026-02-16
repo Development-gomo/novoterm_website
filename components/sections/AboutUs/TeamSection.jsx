@@ -52,7 +52,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   return (
     <section
       id={sectionId}
-      className="w-full bg-[#E3EDFF] pt-[56px] pr-[24px] pb-[56px] pl-[24px] sm:pt-[72px] sm:pr-[40px] sm:pb-[72px] sm:pl-[40px] lg:pt-[80px] lg:pr-[80px] lg:pb-[80px] lg:pl-[80px]"
+      className="w-full bg-[#E3EDFF] pt-[56px] pr-[24px] pb-[56px] pl-[24px] sm:pt-[72px] sm:pr-[40px] sm:pb-[72px] sm:pl-[40px] lg:pt-[100px] lg:pr-[80px] lg:pb-[80px] lg:pl-[80px]"
     >
       <div className="mx-auto max-w-[1440px]">
 
@@ -79,7 +79,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
             {/* HEADING */}
             {heading && (
               <div
-                className="font-heading font-semibold text-[#0A1A3A]
+                className="font-heading font-semibold text-[#061837]
                   text-[28px]
                   sm:text-[34px]
                   md:text-[40px]
@@ -94,13 +94,13 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
             )}
 
             {/* TEAM GRID */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
 
               {team.map((m) => {
                 const isOpen = activeId === m.id;
 
                 return (
-                  <div key={m.id} className="rounded-[4px] overflow-hidden">
+                  <div key={m.id} className="rounded-[3px] overflow-hidden">
 
                     {/* IMAGE AREA – FULL IMAGE HEIGHT */}
                     <div className="relative w-full  overflow-hidden">
@@ -151,14 +151,14 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
                                 <img
                                     src={m.quote_image}
                                     alt=""
-                                    className="w-full h-full object-cover rounded-md mb-5"
+                                    className="w-full h-[159px] mb-[22px]"
                                 />
                                 )}
-                                <div className="p-[24px]">
+                                <div className="px-[24px]">
                                 {m.quote && (
                                             <div
                                                 className="
-                                                text-[18px] font-semibold mb-6
+                                                text-[18px] font-semibold mb-4 !leading-[24px]
                                                 font-heading text-white
                                                 [&_em]:italic [&_em]:font-bold
                                                 [&_em]:text-[#5C83DD] tracking-wide
@@ -170,7 +170,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
                                 <div className="w-full h-px bg-white/20 mb-4" />
 
                                 {m.bio && (
-                                <p className="text-[16px] font-normal text-white/80 leading-relaxed">
+                                <p className="text-[16px] font-normal text-white/70 leading-relaxed">
                                     {m.bio}
                                 </p>
                                 )}
@@ -182,12 +182,12 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
 
                     {/* TEXT AREA */}
                     <div className="relative">
-                      <h3 className="font-semibold leading-[48px] text-[18px]">
+                      <h3 className="font-semibold leading-[48px] text-[18px] text-[#061837]">
                         {m.name}
                       </h3>
 
                       {m.position && (
-                        <p className=" text-[14px] uppercase tracking-[0.84px] text-[#5C83DD]">
+                        <p className=" text-[14px] uppercase tracking-[0.84px] text-[#5C83DD] font-montserrat font-medium">
                           {m.position}
                         </p>
                       )}

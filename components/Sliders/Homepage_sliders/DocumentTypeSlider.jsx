@@ -30,7 +30,7 @@ export default function DocumentTypeSlider({ slides }) {
           text-[#1B3A6F] 
           rounded-full 
           flex items-center justify-center 
-          hover:bg-[#2555C4] hover:text-white
+          hover:bg-[#2655c4] hover:text-white
           transition cursor-pointer
         ">
          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="15" viewBox="0 0 23 15" fill="none">
@@ -41,7 +41,7 @@ export default function DocumentTypeSlider({ slides }) {
         <button className="
           swiper-next-doc 
           w-[40px] h-[40px] 
-          bg-[#2555C4] 
+          bg-[#2655c4] 
           text-white 
           rounded-full 
           flex items-center justify-center 

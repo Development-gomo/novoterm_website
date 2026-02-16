@@ -35,27 +35,24 @@ export default function ServicesHeroSection({
         {/* HEADING */}
         {heading && (
           <h1
-            className="font-heading uppercase font-semibold text-white [&_em]:italic [&_em]:font-merriweather [&_em]:lowercase 
+            className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-merriweather
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
-              w-full sm:w-[600px] mx-auto sm:mx-0 mb-9"
+              w-full sm:w-[600px] mx-auto sm:mx-0 mb-10"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
         )}
 
         {/* DESCRIPTION + CTA */}
         <div
-          className="max-w-full sm:max-w-[411px]
-                     mt-6 sm:mt-8 lg:mt-0
-                     mx-auto sm:mx-0
-                      sm:text-left
+          className="max-w-full sm:max-w-[411px] mt-6 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left
                      sm:!justify-self-end"
         >
           {sub_heading && (
             <div
               className="font-body text-white/90
                 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
-                leading-[1.6] mb-[20px] sm:mb-[24px]"
+                leading-[24px] mb-[20px] sm:mb-[24px]"
               dangerouslySetInnerHTML={{ __html: sub_heading }}
             />
           )}
@@ -79,7 +76,7 @@ export default function ServicesHeroSection({
       .getElementById("next-section")
       ?.scrollIntoView({ behavior: "smooth" })
   }
-  className="absolute bottom-6 sm:bottom-9 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
+  className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
 >
   <svg
     viewBox="0 0 83 83"

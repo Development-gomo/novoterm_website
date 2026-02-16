@@ -71,8 +71,8 @@ export default function ContactSection({ section, index = 0 }) {
               <p
                 className="
                   text-[14px]
-                  sm:text-[15px]
-                  text-[#D6E2FF]
+                  sm:text-[16px]
+                  text-[#fff]
                   max-w-[520px]
                   mb-8
                   md:mb-10
@@ -83,18 +83,18 @@ export default function ContactSection({ section, index = 0 }) {
             )}
 
             {/* IMAGE + FORM */}
-            <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+            <div className="flex flex-col lg:flex-row gap-[20px] lg:gap-[50px] items-start">
 
               {/* IMAGE */}
               {imageUrl && (
-                <div className="w-full lg:w-[40%]">
+                <div className="w-full lg:w-[46%]">
                   <img
                     src={imageUrl}
                     alt="Contact"
                     className="
-                      rounded-[12px]
-                      w-full
-                      h-auto
+                      rounded-[3px]
+                      w-[520px]
+                      h-[610px]
                       object-cover
                     "
                   />

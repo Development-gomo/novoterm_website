@@ -44,11 +44,11 @@ export default function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-[620px] text-white"
+      className="w-full max-w-[520px] text-white"
     >
 
       {/* ================= RADIO QUESTION ================= */}
-      <p className="text-[16px] mb-4">
+      <p className="text-[18px] font-montserrat font-medium mb-4">
         Are you a company or a private individual?
       </p>
 
@@ -87,7 +87,7 @@ export default function ContactForm() {
       </div>
 
       {/* ================= SECTION TITLE ================= */}
-      <p className="text-[16px] mb-4">Tell us about you</p>
+      <p className="text-[18px] font-montserrat font-medium mb-4">Tell us about you</p>
 
       {/* ================= INPUTS ================= */}
       <div className="space-y-4">
@@ -157,7 +157,7 @@ export default function ContactForm() {
       </div>
 
       {/* ================= UPLOAD ================= */}
-    <label className="inline-flex items-center gap-3 h-[56px] px-[24px] mt-6 border border-dashed border-white rounded-[3px] text-[13px] cursor-pointer text-white bg-white/[0.05]">
+    <label className="inline-flex items-center gap-3 h-[56px] px-[24px] mt-4 border border-dashed border-white rounded-[3px] text-[13px] cursor-pointer text-white bg-white/[0.05]">
   <input
     type="file"
     name="file"

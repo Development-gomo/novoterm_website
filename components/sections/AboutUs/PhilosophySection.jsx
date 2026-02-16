@@ -72,7 +72,7 @@ export default function PhilosophySection({
               <div
                 className="grid grid-cols-1 md:grid-cols-2
                   gap-[32px] md:gap-[40px]
-                  text-[16px] leading-[1.7] text-[#000]
+                  text-[16px] !leading-[24px] text-[#000]
                   mb-[48px] md:mb-[64px]
                   max-w-[1150px]" /* ← was fixed width */
               >

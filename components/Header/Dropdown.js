@@ -59,7 +59,7 @@ export default function Dropdown({ item }) {
       {/* Parent label */}
       <button
         onClick={toggleClick}
-        className="text-white font-medium flex items-center gap-2 hover:opacity-90 focus:outline-none"
+        className="text-white font-normal flex items-center gap-2 hover:opacity-90 focus:outline-none text-[14px] font-montserrat"
         aria-expanded={open}
         aria-haspopup="true"
       >

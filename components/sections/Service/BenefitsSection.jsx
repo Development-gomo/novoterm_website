@@ -12,14 +12,14 @@ const getImageUrl = (img) => {
 export default function BenefitsSection({ section, index = 0 }) {
   if (!section) return null;
 
-  const { section_label, heading, description, cta_text, cta_link, benefits = [] } = section;
+  const { section_label, heading, section_description, cta_text, cta_link, benefits = [] } = section;
 
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
   const stickyTop = STICKY_START + index * LABEL_HEIGHT;
 
   return (
-    <section className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:py-[96px] lg:px-[80px]">
+    <section className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
       <div className="mx-auto">
         <div className="flex flex-col lg:flex-row">
 
@@ -39,18 +39,21 @@ export default function BenefitsSection({ section, index = 0 }) {
           <div className="w-full lg:w-[85%]">
 
             {/* HEADER */}
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-[40px] lg:mb-[64px] gap-6">
-              <div className="max-w-[720px]">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[40px] lg:mb-[64px] gap-6">
+              <div className="max-w-[550px]">
                 {heading && (
-                  <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] mb-4">
+                  <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold text-[#061837] leading-tight md:leading-[1.15] mb-4">
                     {heading}
                   </h2>
                 )}
-                {description && (
-                  <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] text-[#000]">
-                    {description}
-                  </p>
-                )}
+                 {section_description && (
+  <div 
+    className="text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
+               leading-[24px] text-[#061837]"
+    dangerouslySetInnerHTML={{ __html: section_description }}
+  />
+)}
+
               </div>
 
               {cta_text && cta_link && (
@@ -83,22 +86,22 @@ export default function BenefitsSection({ section, index = 0 }) {
                     )}
 
                     {/* CONTENT */}
-                    <div className={`relative z-10 h-full flex flex-col ${isImageCard ? "justify-end p-[24px] pb-[32px] text-white" : "p-[24px] pb-[32px] text-[#061837]"}`}>
+                    <div className={`relative z-10 h-full flex flex-col ${isImageCard ? "justify-end p-[24px] pb-[26px] text-white" : "p-[24px] pb-[32px] text-[#061837]"}`}>
 
                       {iconUrl && (
-                        <div className="w-[36px] h-[36px] mb-[102px]">
+                        <div className="w-[48px] h-[48px] mb-[102px]">
                           <img src={iconUrl} alt={item.title || "Benefit icon"} className="w-full h-full object-contain" />
                         </div>
                       )}
 
                       {item.title && (
-                        <h3 className="text-[16px] sm:text-[17px] md:text-[18px] leading-[48px] font-semibold mb-2">
+                        <h3 className="text-[16px] sm:text-[17px] md:text-[18px] leading-[48px] font-semibold">
                           {item.title}
                         </h3>
                       )}
 
                       {item.benefit_description && (
-                        <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] ">
+                        <p className={`text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] ${isImageCard ? 'text-white' : 'text-black'}`}>
                           {item.benefit_description}
                         </p>
                       )}

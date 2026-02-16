@@ -8,32 +8,38 @@ export default function ServiceCaseStudySection({
   section_title,
   heading,
   paragraph,
+  index = 0,
 }) {
   const [slides, setSlides] = useState([]);
+
+  /* SAME sticky logic as Industries */
+  const STICKY_START = 120;
+  const LABEL_HEIGHT = 32;
+  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
 
   useEffect(() => {
     async function getData() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?acf_format=standard`
+          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?acf_format=standard&per_page=10`
         );
-
         const data = await res.json();
 
         const formatted = data.map((post) => ({
           slug: post.slug,
-          review_heading: post.acf.review_heading,
-          button_text: post.acf.button_text,
-          button_link: post.acf.button_link,
-          time_text: post.acf.time_text,
-          subtext: post.acf.subtext,
-          service_used: post.acf.service_used,
-          cs_image: post.acf.cs_image,
+          review_heading: post.acf?.review_heading,
+          button_text: post.acf?.button_text,
+          button_link: post.acf?.button_link,
+          time_text: post.acf?.time_text,
+          subtext: post.acf?.subtext,
+          service_used: post.acf?.service_used,
+          cs_image: post.acf?.cs_image,
         }));
 
         setSlides(formatted);
       } catch (error) {
-        console.error("CASE STUDY FETCH ERROR:", error);
+        console.error("SERVICE CASE STUDY FETCH ERROR:", error);
+        setSlides([]);
       }
     }
 
@@ -41,34 +47,48 @@ export default function ServiceCaseStudySection({
   }, []);
 
   return (
-    <section className="relative w-full py-6 sm:py-12 md:py-16 lg:p-[80px] px-4 sm:px-6 md:px-10 bg-[#E9F0FF]">
+    <section className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:pb-[100px] lg:pt-[0px] lg:px-[80px]">
       <div className="mx-auto">
+        <div className="flex flex-col lg:flex-row">
 
-        {/* LABEL */}
-        <div className="flex items-center gap-2 mb-6">
-          <DotIndicator />
-          <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
-            {section_title}
-          </span>
+          {/* LEFT – 15% STICKY */}
+          <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
+            {section_title && (
+              <div className="flex items-center gap-3 mt-2" style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}>
+                <DotIndicator />
+                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
+                  {section_title}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT – 85% */}
+          <div className="w-full lg:w-[85%]">
+
+            {/* HEADER */}
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[40px] lg:mb-0 gap-6">
+              <div className="max-w-[550px]">
+                {heading && (
+                  <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold text-[#061837] leading-tight md:leading-[1.15] mb-4">
+                    <div dangerouslySetInnerHTML={{ __html: heading }} />
+                  </h2>
+                )}
+                {paragraph && (
+                  <div 
+                    className="text-[14px] sm:text-[14px] md:text-[14px] lg:text-[16px]
+                               leading-[24px] text-[#000]"
+                    dangerouslySetInnerHTML={{ __html: paragraph }}
+                  />
+                )}
+              </div>
+            </div>
+
+            {/* SLIDER */}
+            {slides.length > 0 && <ServiceCaseStudySlider slides={slides} />}
+
+          </div>
         </div>
-
-        {/* HEADING */}
-        <h2
-          className="text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] max-w-[561px] mb-4"
-          dangerouslySetInnerHTML={{ __html: heading }}
-        />
-
-        {/* PARAGRAPH */}
-        <div
-          className="text-[14px] sm:text-[15px] md:text-[16px] text-[#000] leading-[1.7] max-w-[533px]"
-          dangerouslySetInnerHTML={{ __html: paragraph }}
-        />
-
-        {/* SLIDER */}
-        {slides.length > 0 && (
-          <ServiceCaseStudySlider slides={slides} />
-        )}
-
       </div>
     </section>
   );

@@ -19,6 +19,7 @@ import OurApproachSection from "./sections/Service/OurApproachSection";
 import ContactSection from "./sections/Service/ContactSection";
 import FaqSection from "./sections/Service/FaqSection";
 import IndustriesSection from "./sections/Service/IndustriesSection";
+import ServiceCaseStudySection from "./sections/Service/ServiceCaseStudySection";
 
 /* ===================== CASE STUDY PAGE ===================== */
 import CaseStudyHeroSection from "./sections/CaseStudy/CaseStudyHeroSection";
@@ -37,7 +38,12 @@ import LeadershipMessageSection from "./sections/AboutUs/LeadershipMessageSectio
 import HistorySection from "./sections/AboutUs/HistorySection";
 import ExpertsCTASection from "./sections/AboutUs/ExpertsCTASection";
 
+/* ===================== BLOG PAGE ===================== */
+import BlogHeroSection from "./sections/Blog/BlogHeroSection";
+import BlogContentSection from "./sections/Blog/BlogContentSection";
 
+/* ===================== CONTACT PAGE ===================== */
+import ContactHeroSection from "./sections/Contact/ContactHeroSection";
 
 
 
@@ -176,6 +182,17 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
       case "industries":
         return <IndustriesSection key={index} data={block} />;
 
+      case "service_case_study_section":
+        return (
+          <ServiceCaseStudySection 
+            key={index} 
+            section_title={block.section_title}
+            heading={block.heading}
+            paragraph={block.paragraph}
+            index={index}
+          />
+        );
+
       /* ===================== CASE STUDY PAGE ===================== */
       case "casestudy_hero":
         return (
@@ -272,6 +289,31 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
     />
   );
 
+      /* ===================== BLOG PAGE ===================== */
+      case "blog_hero":
+        return (
+          <BlogHeroSection
+            key={`blog-hero-${index}`}
+            section={block}
+          />
+        );
+
+      case "blog_content":
+        return (
+          <BlogContentSection
+            key={`blog-content-${index}`}
+            section={block}
+          />
+        );
+
+      /* ===================== CONTACT PAGE ===================== */
+      case "contact_hero":
+        return (
+          <ContactHeroSection
+            key={`contact-hero-${index}`}
+            section={block}
+          />
+        );
 
 
 
