@@ -1,0 +1,202 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import DotIndicator from "../../ui/DotIndicator";
+
+export default function IndustryIntro({
+  section,
+  sectionId,
+  index = 0,
+}) {
+  if (!section) return null;
+
+  const {
+    section_label,
+    heading,
+    main_content,
+    layout_type = "image",
+    media_position = "right",
+    image,
+    video_url,
+    content,
+    enable_button,
+    button_text,
+    button_link,
+    button_position = "left",
+    section_theme = "light",
+  } = section;
+
+  // Normalize enable_button — ACF can return true, 1, or "1"
+  const showButton = !!enable_button && button_text && button_link;
+
+  // Theme-based classes
+  const isDark = section_theme === "dark";
+  const sectionBg = isDark ? "bg-[#061837]" : "bg-[#E3EDFF]";
+  const headingColor = isDark ? "text-white" : "text-[#061837]";
+  const textColor = isDark ? "text-white/90" : "text-[#000000]";
+  const labelColor = isDark ? "text-white/70" : "text-[#061837]";
+
+  /* Normalize image */
+  const imageUrl =
+    typeof image === "string"
+      ? image
+      : image?.url ||
+        image?.sizes?.large ||
+        image?.sizes?.medium_large ||
+        "";
+
+  const isMediaRight = media_position === "right";
+  const [videoAccepted, setVideoAccepted] = useState(false);
+const getEmbedUrl = (url) => {
+  if (!url) return null;
+
+  try {
+    // Normal YouTube URL
+    if (url.includes("youtube.com/watch")) {
+      const videoId = new URL(url).searchParams.get("v");
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    // Short youtu.be URL
+    if (url.includes("youtu.be")) {
+      const videoId = url.split("youtu.be/")[1];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+
+    // Already embed format
+    return url;
+  } catch (err) {
+    return url;
+  }
+};
+
+  return (
+    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]`}>
+      <div className="mx-auto">
+
+        <div className="flex flex-col md:flex-row">
+
+          {/* ================= LEFT 15% ================= */}
+          <div className="md:w-[15%] relative mb-6 md:mb-0">
+            {section_label && (
+              <div className="flex items-center gap-3">
+                <DotIndicator />
+                <span className={`uppercase text-[12px] tracking-wider font-medium ${labelColor}`}>
+                  {section_label}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* ================= RIGHT 85% ================= */}
+          <div className="md:w-[85%]">
+
+            {/* HEADING – FULL WIDTH */}
+            {heading && (
+              <h2
+                className={`
+                  font-heading font-semibold
+                  text-[28px]
+                  sm:text-[34px]
+                  md:text-[40px]
+                  lg:text-[48px]
+                  leading-[36px]
+                  sm:leading-[44px]
+                  md:leading-[52px]
+                  lg:leading-[58px]
+                  [&_em]:text-[#2655C4]
+                  [&_em]:font-bold
+                  mb-8 md:mb-[40px]
+                  max-w-[780px]
+                  ${headingColor}
+                `}
+                dangerouslySetInnerHTML={{ __html: heading }}
+              />
+            )}
+
+            {/* MAIN 50 / 50 BLOCK */}
+            <div
+              className={`flex flex-col md:flex-row gap-8 md:gap-[32px] items-start ${
+                isMediaRight ? "md:flex-row-reverse" : ""
+              }`}
+            >
+
+              {/* STATIC MAIN CONTENT – 50% */}
+              <div className="w-full md:w-1/2">
+
+                {main_content && (
+                  <div
+                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline ${textColor}`}
+                    dangerouslySetInnerHTML={{ __html: main_content }}
+                  />
+                )}
+
+                {/* BUTTON – LEFT / BELOW STATIC */}
+                {showButton && button_position !== "right" && (
+                  <Link href={button_link} className="btn-primary">
+                    {button_text}
+                  </Link>
+                )}
+              </div>
+
+              {/* MEDIA / DYNAMIC CONTENT – 50% */}
+              <div className="w-full md:w-1/2">
+
+                {/* IMAGE */}
+                {layout_type === "image" && imageUrl && (
+                  <div
+                    className="w-full h-[280px] md:h-[420px] rounded-[3px] bg-cover bg-center mb-6"
+                    style={{ backgroundImage: `url("${imageUrl}")` }}
+                  />
+                )}
+
+                {/* VIDEO */}
+                {layout_type === "video" && video_url && (
+                  <div className="aspect-video w-full mb-6 relative rounded-[3px] overflow-hidden">
+                    {!videoAccepted ? (
+                      /* CONSENT OVERLAY */
+                      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center gap-6 z-10">
+                        <p className="text-white text-[15px] md:text-[16px] text-center px-4">
+                          This video requires marketing consent.
+                        </p>
+                        <button
+                          onClick={() => setVideoAccepted(true)}
+                          className="btn-primary cursor-pointer"
+                        >
+                          Accept &amp; Play
+                        </button>
+                      </div>
+                    ) : (
+                      <iframe
+                        src={getEmbedUrl(video_url)}
+                        title="Video"
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    )}
+                  </div>
+                )}
+                {content && (
+                  <div
+                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline ${textColor}`}
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                )}
+
+                {/* BUTTON – RIGHT / BELOW MEDIA */}
+                {showButton && button_position === "right" && (
+                  <Link href={button_link} className="btn-primary">
+                    {button_text}
+                  </Link>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

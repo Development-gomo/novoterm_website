@@ -1,6 +1,4 @@
 "use client";
-import DotIndicator from "../../ui/DotIndicator";
-
 import Link from "next/link";
 
 const getImageUrl = (img) => {
@@ -9,30 +7,18 @@ const getImageUrl = (img) => {
   return img.url || null;
 };
 
-export default function BenefitsSection({ section, index = 0 }) {
+export default function BenefitsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
-  const { section_label, heading, section_description, cta_text, cta_link, benefits = [] } = section;
-
-  const STICKY_START = 120;
-  const LABEL_HEIGHT = 32;
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
+  const { heading, section_description, cta_text, cta_link, benefits = [] } = section;
 
   return (
-    <section className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
+    <section id={sectionId} className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
       <div className="mx-auto">
         <div className="flex flex-col lg:flex-row">
 
-          {/* LEFT – 15% STICKY */}
+          {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
-            {section_label && (
-              <div className="flex items-center gap-3 mt-2" style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}>
-                <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
-                  {section_label}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* RIGHT – 85% */}

@@ -74,7 +74,7 @@ export default function ServicesSection({
   return (
     <section className="relative w-full overflow-visible bg-[#E3EDFF]">
       {/* ================= INTRO ================= */}
-      <div className="px-4 sm:px-6 md:px-[56px] lg:px-[80px] lg:pt-[20px] sm:pt-[64px] md:pt-[80px] pb-[32px] sm:pb-[48px]">
+      <div className="web-width mx-auto px-6 md:px-0 py-15 md:py-[80px]">
         <div className="max-w-[560px]">
           {section_label && (
             <div className="flex items-center gap-2 mb-4 md:mb-6">
@@ -131,12 +131,10 @@ export default function ServicesSection({
                 zIndex: stickyEnabled ? 2000 + slot : 10,
                 display: "flex",
                 alignItems: "center",
-                padding: isMobile ? "0 17px" : "0 80px",
                 borderBottom: "1px solid rgba(0,0,0,0.1)",
               }}
-              className="px-4 sm:px-6 md:px-[56px]"
             >
-              <div className="flex justify-between items-center w-full gap-4">
+              <div className="web-width mx-auto px-6 md:px-0 flex justify-between items-center w-full gap-4">
                 <h3 className="text-[16px] sm:text-[18px] md:text-[32px] font-semibold">
                   {service.heading}
                 </h3>
@@ -176,14 +174,8 @@ export default function ServicesSection({
 
             {/* ===== CONTENT ===== */}
             <div
-              style={{
-                position: "relative",
-                zIndex: 10,
-                padding: isMobile ? "80px 17px" : "32px 80px",
-                maxWidth: "620px",
-                color: "#fff",
-              }}
-              className="px-4 sm:px-6 md:px-[56px]"
+              style={{ position: "relative", zIndex: 10, maxWidth: "620px", color: "#fff" }}
+              className="web-width mx-auto px-6 md:px-0 py-15 md:py-8"
             >
               {service.description_text && (
                 <div

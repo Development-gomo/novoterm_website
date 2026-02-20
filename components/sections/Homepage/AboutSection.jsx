@@ -19,7 +19,7 @@ export default function AboutSection({
 
 
   return (
-    <section className="relative w-full bg-[#E3EDFF] py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
+    <section className="relative bg-[#E3EDFF] py-15 md:py-[80px]">
       
       {/* LOCAL STYLE */}
       <style>{`
@@ -31,7 +31,7 @@ export default function AboutSection({
         }
       `}</style>
 
-      <div className=" mx-auto flex flex-col md:flex-row gap-6 md:gap-8">
+      <div className="web-width mx-auto px-6 md:px-0 flex flex-col md:flex-row">
 
         {/* LEFT COLUMN */}
         <div className="md:w-[15%]">

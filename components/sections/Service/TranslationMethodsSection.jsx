@@ -1,31 +1,17 @@
-import DotIndicator from "../../ui/DotIndicator";
-
 import Link from "next/link";
 
-export default function TranslationMethodsSection({ section, index = 0 }) {
+export default function TranslationMethodsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
-  const { section_label, heading, translation_methods = [] } = section;
-
-  const STICKY_START = 120;
-  const LABEL_HEIGHT = 32;
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
+  const { heading, translation_methods = [] } = section;
 
   return (
-    <section className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
+    <section id={sectionId} className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
       <div className="mx-auto">
         <div className="flex flex-col lg:flex-row gap-0">
 
           {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] relative mb-6 lg:mb-0">
-            <div className="flex items-center gap-3 mt-2" style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}>
-              <DotIndicator variant="white" />
-              {section_label && (
-                <span className="uppercase font-montserrat font-medium text-white text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
-                  {section_label}
-                </span>
-              )}
-            </div>
           </div>
 
           {/* RIGHT – 85% */}

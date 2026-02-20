@@ -86,9 +86,13 @@ font-family: Merriweather;
   @apply relative inline-flex items-center justify-center h-[48px] pt-[15px] pr-[32px] pb-[15px] pl-[22px]
          bg-[#2655c4] text-white text-sm font-medium rounded-[2px]
          border border-transparent
-         overflow-hidden transition-all duration-300 z-[20];
+         transition-all duration-300 z-[20];
   font-family: "Montserrat", sans-serif !important;
-  
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(circle 21px at calc(100% + -3px) calc(100% + -3px), transparent 21px, black 22px);
+  mask-image: radial-gradient(circle 21px at calc(100% + -3px) calc(100% + -3px), transparent 21px, black 22px);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
 
 .btn-primary::before {
@@ -96,13 +100,12 @@ font-family: Merriweather;
   position: absolute;
   width: 42px;
   height: 42px;
-  background: #d1dae8 !important;
+  background: white;
   border-radius: 50%;
-  right: -20px;
-  bottom: -20px;
+  right: -19px;
+  bottom: -19px;
   transition: all 0.3s ease-out;
-
-  z-index: -1;   /* force behind text */
+  z-index: -1;
 }
 .menu-font span{
   font-family: "montserrat", sans-serif !important;
@@ -124,6 +127,8 @@ font-family: Merriweather;
   background: transparent;
   color: #2655c4 !important;
   border-color: #2655c4 !important;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 
@@ -143,4 +148,19 @@ font-family: Merriweather;
 
 .input {
   @apply w-full bg-transparent border border-white/30 px-4 py-3 rounded text-white placeholder-gray-400;
+}
+
+.web-width {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .web-width {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }

@@ -19,9 +19,7 @@ export default function FullWidthExpertsSection({
 
   return (
     <section
-      className="relative w-full px-4 sm:px-6 md:px-10 lg:py-[100px] py-14 sm:py-16 lg:px-[80px] h-auto bg-cover bg-center bg-no-repeat lg:bg-[length:123.035%_129.455%]
-        lg:bg-[position:-131px_-149.444px]
-      "
+      className="relative w-full py-15 md:py-[100px] h-auto bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: `
           linear-gradient(
@@ -49,8 +47,10 @@ export default function FullWidthExpertsSection({
         className="
           relative
           z-10
-          w-full
+          web-width
           mx-auto
+          px-6
+          md:px-0
           grid
           grid-cols-1
           md:grid-cols-2
@@ -90,7 +90,7 @@ export default function FullWidthExpertsSection({
           {/* Heading */}
           <div
             className="block font-serif font-semibold text-[36px] sm:text-[48px] 
-            md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] text-white max-w-[900px]"
+            md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] text-white lg:w-[900px]"
             dangerouslySetInnerHTML={{ __html: heading || "" }}
             suppressHydrationWarning
           />
@@ -105,11 +105,7 @@ export default function FullWidthExpertsSection({
             justify-start
             md:justify-end
             w-full
-            pt-0    md:pt-0
-            pr-0
-            md:pr-10
-            pb-0
-            md:pb-[20px]
+           
           "
         >
           {cta_button_text?.trim() && (

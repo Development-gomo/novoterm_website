@@ -44,8 +44,8 @@ export default function CaseStudySection({
   }, []);
 
   return (
-    <section className="relative w-full   py-10 sm:py-12  md:py-16  lg:p-[80px]  px-4  sm:px-6  md:px-10 bg-[#E9F0FF]">
-      <div className="mx-auto">
+    <section className="relative w-full py-15 md:py-[80px] bg-[#E9F0FF]">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         {/* DOT LABEL */}
         <div className="flex items-center gap-2 mb-6">

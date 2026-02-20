@@ -2,20 +2,14 @@
 
 import { useEffect, useState } from "react";
 import ServiceCaseStudySlider from "../../Sliders/Servicepage_sliders/ServiceCaseStudySlider";
-import DotIndicator from "../../ui/DotIndicator";
 
 export default function ServiceCaseStudySection({
-  section_title,
   heading,
   paragraph,
+  sectionId,
   index = 0,
 }) {
   const [slides, setSlides] = useState([]);
-
-  /* SAME sticky logic as Industries */
-  const STICKY_START = 120;
-  const LABEL_HEIGHT = 32;
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
 
   useEffect(() => {
     async function getData() {
@@ -47,20 +41,12 @@ export default function ServiceCaseStudySection({
   }, []);
 
   return (
-    <section className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:pb-[100px] lg:pt-[0px] lg:px-[80px]">
+    <section id={sectionId} className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:pb-[100px] lg:pt-[0px] lg:px-[80px]">
       <div className="mx-auto">
         <div className="flex flex-col lg:flex-row">
 
-          {/* LEFT – 15% STICKY */}
+          {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
-            {section_title && (
-              <div className="flex items-center gap-3 mt-2" style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}>
-                <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
-                  {section_title}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* RIGHT – 85% */}

@@ -10,6 +10,7 @@ import WhyChooseUsSection from "./sections/Homepage/WhyChooseUsSection";
 import InsightsSection from "./sections/Homepage/InsightsSection";
 import ServicesSection from "./sections/Homepage/ServicesSection";
 
+
 /* ===================== SERVICE PAGE ===================== */
 import ServicesHeroSection from "./sections/Service/ServicesHeroSection";
 import ServiceIntroFrontend from "./sections/Service/ServiceIntroSection";
@@ -31,7 +32,7 @@ import CaseStudyTestimonialSection from "./sections/CaseStudy/CaseStudyTestimoni
 import CaseStudyRelatedSection from "./sections/CaseStudy/CaseStudyRelatedSection";
 
 /* ===================== ABOUT US PAGE ===================== */
-import AboutHeroSection from "./sections/AboutUs/AboutHeroSection";
+import InnerHeroSection from "./sections/AboutUs/InnerHeroSection";
 import TeamSection from "./sections/AboutUs/TeamSection";
 import PhilosophySection from "./sections/AboutUs/PhilosophySection";
 import LeadershipMessageSection from "./sections/AboutUs/LeadershipMessageSection";
@@ -44,6 +45,10 @@ import BlogContentSection from "./sections/Blog/BlogContentSection";
 
 /* ===================== CONTACT PAGE ===================== */
 import ContactHeroSection from "./sections/Contact/ContactHeroSection";
+
+/* ===================== INDUSTRY PAGE ===================== */
+import IndustryHeroSection from "./sections/Industry/IndustryHeroSection";
+import IndustryIntroSection from "./sections/Industry/ServiceIntroFrontend";
 
 
 
@@ -157,38 +162,40 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
           />
         );
 
+      
+
       /* ===================== SERVICE PAGE ===================== */
       case "services_hero":
-        return <ServicesHeroSection key={index} {...block} />;
+        return <ServicesHeroSection key={index} {...block} sectionId={`section-${index}`} index={index} />;
 
       case "service_intro":
-        return <ServiceIntroFrontend key={index} section={block} />;
+        return <ServiceIntroFrontend key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "translation_methods":
-        return <TranslationMethodsSection key={index} section={block} />;
+        return <TranslationMethodsSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "benefits_section":
-        return <BenefitsSection key={index} section={block} />;
+        return <BenefitsSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "our_approach":
-        return <OurApproachSection key={index} section={block} />;
+        return <OurApproachSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "contact_section":
-        return <ContactSection key={index} section={block} />;
+        return <ContactSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "faq_section":
-        return <FaqSection key={index} section={block} />;
+        return <FaqSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "industries":
-        return <IndustriesSection key={index} data={block} />;
+        return <IndustriesSection key={index} data={block} sectionId={`section-${index}`} index={index} />;
 
       case "service_case_study_section":
         return (
           <ServiceCaseStudySection 
             key={index} 
-            section_title={block.section_title}
             heading={block.heading}
             paragraph={block.paragraph}
+            sectionId={`section-${index}`}
             index={index}
           />
         );
@@ -241,53 +248,65 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
           />
         );
 
-        // About us page sections can be added here similarly
-        case "about_hero":
+      /* ===================== ABOUT US PAGE ===================== */
+case "inner_hero_section":
+  return (
+    <InnerHeroSection
+      key={`inner-hero-${index}`}
+      section={block}
+    />
+  );
+
+
+      case "philosophy_section":
         return (
-          <AboutHeroSection
-            key={`about-hero-${index}`}
+          <PhilosophySection
+            key={`philosophy-${index}`}
             section={block}
+            sectionId={`section-${index}`}
+            index={index}
           />
         );
 
-        case "philosophy_section":
-  return (
-    <PhilosophySection
-      key={`philosophy-${index}`}
-      section={block}
-    />
-  );     
-          case "team_section":
-  return (
-    <TeamSection
-      key={`team-${index}`}
-      section={block}
-    />
-  );
+      case "team_section":
+        return (
+          <TeamSection
+            key={`team-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
+          />
+        );
 
       case "leadership_message":
-  return (
-    <LeadershipMessageSection
-      key={`leader-${index}`}
-      section={block}
-    />
-  );
+        return (
+          <LeadershipMessageSection
+            key={`leader-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
+          />
+        );
 
       case "history_section":
-  return (
-    <HistorySection
-      key={`history-${index}`}
-      section={block}
-    />
-  );
+        return (
+          <HistorySection
+            key={`history-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
+          />
+        );
   
-  case "experts_cta_section":
-  return (
-    <ExpertsCTASection
-      key={`experts-cta-${index}`}
-      section={block}
-    />
-  );
+      case "experts_cta_section":
+        return (
+          <ExpertsCTASection
+            key={`experts-cta-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
+          />
+        );
 
       /* ===================== BLOG PAGE ===================== */
       case "blog_hero":
@@ -315,7 +334,23 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
           />
         );
 
+      /* ===================== INDUSTRY PAGE ===================== */
+      case "industry_hero":
+        return (
+          <IndustryHeroSection
+            key={`industry-hero-${index}`}
+            heading={block.heading}
+            sub_heading={block.sub_heading}
+            background_image={block.background_image}
+            cta_text={block.cta_text}
+            cta_url={block.cta_url}
+            sectionId={`section-${index}`}
+            index={index}
+          />
+        );
 
+      case "industry_intro":
+        return <IndustryIntroSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       default:
         return null;

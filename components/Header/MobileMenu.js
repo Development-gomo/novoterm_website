@@ -3,26 +3,23 @@ import Link from "next/link";
 
 export default function MobileMenu({ menu = [], logo }) {
   const [open, setOpen] = useState(false);
+  const [openItems, setOpenItems] = useState({});
 
-  // 🔒 LOCK BODY SCROLL
+  const toggleItem = (id) =>
+    setOpenItems((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  // Lock body scroll
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
-    return () => {
-      document.body.style.overflow = "";
-    };
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
   }, [open]);
 
   return (
     <>
-      {/* ☰ Hamburger */}
+      {/* Hamburger */}
       <button
         onClick={() => setOpen(true)}
-        className="lg:hidden text-white text-3xl w-10 h-10 flex items-center justify-center z-[10001]"
+        className="text-white text-3xl w-10 h-10 flex items-center justify-center z-[10001]"
         aria-label="Open menu"
       >
         ☰
@@ -31,7 +28,7 @@ export default function MobileMenu({ menu = [], logo }) {
       {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/60 z-[10000]"
+          className="fixed inset-0 bg-black/60 z-[10001]"
           onClick={() => setOpen(false)}
         />
       )}
@@ -39,18 +36,17 @@ export default function MobileMenu({ menu = [], logo }) {
       {/* Drawer */}
       {open && (
         <aside
-          className="fixed top-0 right-0 h-full w-[320px] max-w-[85vw]
-                     bg-[#0B2347] text-white z-[10001]
-                     flex flex-col"
+          className="fixed top-0 right-0 h-screen w-[320px] max-w-[85vw]
+                     bg-[#0B2347] text-white z-[10002]
+                     flex flex-col overflow-hidden"
         >
-          {/* Header */}
+          {/* Drawer Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
             {logo ? (
               <img src={logo} alt="Logo" className="h-7" />
             ) : (
               <span className="text-xl font-semibold">Menu</span>
             )}
-
             <button
               onClick={() => setOpen(false)}
               className="text-3xl leading-none"
@@ -60,35 +56,58 @@ export default function MobileMenu({ menu = [], logo }) {
             </button>
           </div>
 
-          {/* Menu */}
-          <nav className="flex-1 overflow-y-auto px-6 py-6 space-y-6">
-            {menu.map((item) => (
-              <div key={item.ID} className="space-y-3">
-                <p className="text-sm uppercase tracking-wider text-white/60">
-                  {item.title}
-                </p>
+          {/* Menu Items */}
+          <nav className="flex-1 overflow-y-auto px-6 py-4">
+            {menu.map((item) => {
+              const subItems =
+                Array.isArray(item.child_items) && item.child_items.length > 0
+                  ? item.child_items
+                  : Array.isArray(item.children) && item.children.length > 0
+                  ? item.children
+                  : [];
+              const hasChildren = subItems.length > 0;
+              const isOpen = openItems[item.ID];
 
+              return (
+                <div key={item.ID} className="border-b border-white/10">
+                  <div className="flex items-center justify-between py-3">
+                    <Link
+                      href={item.url || "#"}
+                      onClick={() => setOpen(false)}
+                      className="text-white font-medium hover:opacity-80 transition"
+                    >
+                      {item.title}
+                    </Link>
+                    {hasChildren && (
+                      <button
+                        onClick={() => toggleItem(item.ID)}
+                        className="text-white/60 hover:text-white px-2 py-1 text-lg leading-none"
+                        aria-label="Toggle submenu"
+                      >
+                        {isOpen ? "−" : "+"}
+                      </button>
+                    )}
+                  </div>
 
-                {Array.isArray(item.child_items) && (
-                  <ul className="space-y-2">
-                    {item.child_items.map((sub) => (
-                      <li key={sub.ID}>
-                        <Link
-                          href={sub.url}
-                          onClick={() => setOpen(false)}
-                          className="flex items-center gap-2 text-white/90 hover:text-white transition"
-                        >
-                          <span className="opacity-50">–</span>
-                          <span>{sub.title}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <div className="border-b border-white/10 pt-4" />
-              </div>
-            ))}
+                  {hasChildren && isOpen && (
+                    <ul className="pb-3 pl-3 space-y-2">
+                      {subItems.map((sub) => (
+                        <li key={sub.ID}>
+                          <Link
+                            href={sub.url || "#"}
+                            onClick={() => setOpen(false)}
+                            className="flex items-center gap-2 text-white/75 hover:text-white transition text-sm"
+                          >
+                            <span className="opacity-50">–</span>
+                            <span>{sub.title}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
           </nav>
         </aside>
       )}

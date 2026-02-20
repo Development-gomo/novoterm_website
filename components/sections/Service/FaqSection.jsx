@@ -1,16 +1,11 @@
 "use client";
 
-import DotIndicator from "../../ui/DotIndicator";
 import { useEffect, useState } from "react";
 
-export default function FaqSection({ index = 0 }) {
+export default function FaqSection({ sectionId, index = 0 }) {
   const [faqs, setFaqs] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const STICKY_START = 120;
-  const LABEL_HEIGHT = 32;
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -42,6 +37,7 @@ export default function FaqSection({ index = 0 }) {
 
   return (
     <section
+      id={sectionId}
       className="
         w-full bg-[#EEF3FF]
         py-[40px]
@@ -56,19 +52,6 @@ export default function FaqSection({ index = 0 }) {
 
           {/* ================= LEFT – 15% ================= */}
           <div className="w-full lg:w-[15%] relative">
-            <div
-              className="flex items-center gap-2 lg:mt-2"
-              style={{
-                position: "sticky",
-                top: `${stickyTop}px`,
-                zIndex: 10 + index,
-              }}
-            >
-              <DotIndicator />
-              <span className="uppercase font-montserrat font-medium text-[10px] text-[#061837] sm:text-[11px] md:text-[12px] tracking-wider">
-                FAQ &amp; Support
-              </span>
-            </div>
           </div>
 
           {/* ================= RIGHT – 85% ================= */}

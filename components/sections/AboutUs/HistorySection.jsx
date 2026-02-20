@@ -5,7 +5,10 @@ import DotIndicator from "../../ui/DotIndicator";
 export default function HistorySection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
-  const { section_label, heading, description, stats = [] } = section;
+  const { section_label, heading, description, stats } = section;
+  
+  // Ensure stats is always an array
+  const statsArray = Array.isArray(stats) ? stats : [];
 
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
@@ -73,7 +76,7 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
               {/* STATS */}
 <div className="grid grid-cols-1">
 
-  {stats.map((item, i) => (
+  {statsArray.map((item, i) => (
     <div key={i} className="pt-2 first:pt-0">
 
       {/* NUMBER */}

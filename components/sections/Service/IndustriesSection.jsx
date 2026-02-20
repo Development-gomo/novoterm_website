@@ -1,6 +1,5 @@
 "use client";
 
-import DotIndicator from "../../ui/DotIndicator";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -10,12 +9,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export default function IndustriesSection({ data, index = 0 }) {
-  const { section_label, section_title, section_description } = data || {};
-
-  const STICKY_START = 120;
-  const LABEL_HEIGHT = 32;
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
+export default function IndustriesSection({ data, sectionId, index = 0 }) {
+  const { section_title, section_description } = data || {};
 
   const [industries, setIndustries] = useState([]);
 
@@ -46,20 +41,12 @@ export default function IndustriesSection({ data, index = 0 }) {
   if (!industries.length) return null;
 
   return (
-    <section className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[100px]">
+    <section id={sectionId} className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[100px]">
       <div className="mx-auto">
         <div className="flex flex-col lg:flex-row gap-0">
 
-          {/* LEFT – 15% (STICKY FIXED) */}
+          {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] relative">
-            {section_label && (
-              <div className="flex items-center gap-2 mb-4 lg:mb-0" style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}>
-                <DotIndicator />
-                <span className="uppercase text-[#061837] font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
-                  {section_label}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* RIGHT – 85% */}
@@ -107,7 +94,7 @@ export default function IndustriesSection({ data, index = 0 }) {
             >
               {industries.map((item) => (
                 <SwiperSlide key={item.id}>
-                  <Link href={`/industries/${item.slug}`} className="relative h-[420px] rounded-[3px] overflow-hidden group block">
+                  <Link href={`/industry/${item.slug}`} className="relative h-[420px] rounded-[3px] overflow-hidden group block">
                     <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(6, 24, 55, 0.25) 0%, rgba(6, 24, 55, 0.90) 100%), url(${item.image}) center / cover no-repeat` }} />
                     <div className="absolute top-6 left-6 right-6 z-10">
                       <h3 

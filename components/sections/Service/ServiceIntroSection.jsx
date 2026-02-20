@@ -3,12 +3,11 @@ import DotIndicator from "../../ui/DotIndicator";
 export default function ServiceIntroFrontend({
   section,
   sectionId,
-  index = 0, // 👈 NEW
+  index = 0,
 }) {
   if (!section) return null;
 
   const {
-    section_label,
     heading,
     image,
     content_blocks = [],
@@ -22,38 +21,15 @@ export default function ServiceIntroFrontend({
         image?.sizes?.medium_large ||
         "";
 
-  const STICKY_START = 120; // header height
-  const LABEL_HEIGHT = 32;  // approx label height
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
-
   return (
-    <section id="next-section"
+    <section id={sectionId}
       className="w-full bg-[#EAF1FF] py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]"
     >
       <div className="mx-auto">
-
         <div className="flex flex-col md:flex-row">
 
-          {/* LEFT – 15% (STACKED STICKY LABEL) */}
+          {/* LEFT – 15% */}
           <div className="md:w-[15%] relative">
-            <div
-              className="flex items-center gap-2 mb-4 md:mb-6"
-              style={{
-                position: "sticky",
-                top: `${stickyTop}px`,
-                zIndex: 10 + index,
-              }}
-            >
-              <DotIndicator />
-              {section_label && (
-                <span
-                  className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider
-                  "
-                >
-                  {section_label}
-                </span>
-              )}
-            </div>
           </div>
 
           {/* RIGHT – 85% */}
@@ -123,6 +99,7 @@ export default function ServiceIntroFrontend({
               )}
 
             </div>
+
           </div>
         </div>
 

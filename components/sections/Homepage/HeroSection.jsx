@@ -29,10 +29,10 @@ export default function HeroSection({
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="relative z-10 w-full max-w-[900px] sm:pt-[80px] md:pt-[90px] mx-auto flex flex-col justify-center h-auto min-h-[700px] lg:h-[800px] px-4 sm:px-6 lg:px-0">
+      <div className="relative z-10 web-width px-6 lg:px-48 py-24 lg:py-36 h-full flex flex-col items-start justify-center lg:justify-start">
 
         {/* BLOCK 1 */}
-        <div className="text-left max-w-[900px]">
+        <div className="text-left">
           <span className="block font-serif italic font-normal text-[36px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] text-white">
             {top_word}
           </span>
@@ -47,7 +47,7 @@ export default function HeroSection({
         </div>
 
         {/* BLOCK 2 */}
-        <div className="text-left max-w-[800px] mt-6 sm:mt-8 lg:mt-0 lg:ml-[235px]">
+        <div className="text-left mt-6 sm:mt-8 lg:mt-0 lg:ml-[235px]">
 
           {/* BOTTOM HEADLINE */}
           <h1 className="text-[36px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] mb-[4px]">

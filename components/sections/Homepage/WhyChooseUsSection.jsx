@@ -24,8 +24,8 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
     typeof right_image === "string" ? right_image : right_image?.url || "";
 
   return (
-    <section className="w-full bg-[#061837] text-white px-6 py-[60px] md:py-[100px] md:px-[80px]">
-      <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[0px]">
+    <section className="w-full bg-[#061837] text-white py-15 md:py-[80px]">
+      <div className="web-width mx-auto px-6 md:px-0 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[0px]">
 
         {/* LEFT COLUMN */}
         <div className="flex flex-col gap-[80px] md:gap-[120px] lg:gap-[172px]">

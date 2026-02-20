@@ -31,7 +31,7 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
         }
       `}
     >
-      <div className=" mx-auto flex justify-between items-center py-4 px-20">
+      <div className=" mx-auto flex justify-between items-center py-4 px-6 lg:py-4 lg:px-0 web-width">
 
         {/* Logo */}
         <Link href="/" className="shrink-0">
@@ -74,8 +74,8 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
             </Link>
           )}
 
-          {/* ✅ Mobile menu – FORCE VISIBLE ON MOBILE */}
-          <div className="lg:!hidden relative z-[10000] flex">
+          {/* ✅ Mobile menu – visible below lg */}
+          <div className="lg:hidden flex">
             <MobileMenu menu={cleanMenu} />
           </div>
         </div>

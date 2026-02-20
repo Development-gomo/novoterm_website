@@ -63,13 +63,8 @@ export async function getStaticProps({ params }) {
 export default function Page({ page, lang }) {
   const title = page?.title?.rendered || "";
 
-  // 🔥 FIXED FIELD NAME HERE
-      const sections =
-  page?.acf?.sections ||
-  page?.acf?.page_sections ||
-  page?.acf?.about_page_sections ||
-  page?.acf?.contact_page_sections ||
-  [];
+  // Unified page builder field - all pages use page_sections
+  const sections = page?.acf?.page_sections || [];
 
 
 

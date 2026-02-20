@@ -120,7 +120,7 @@ export default function PhilosophySection({
                     <div className="w-full h-px bg-[#0618374D] mb-[16px]" />
 
                     <p className="text-[16px] leading-[24px] text-[#000]">
-                      {item.text}
+                      {item.description}
                     </p>
 
                   </div>

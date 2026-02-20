@@ -52,22 +52,8 @@ export default function DocumentTypeSection({
   }, []);
 
   return (
-    <section
-      className="
-        relative
-        w-full
-        bg-[#061837]
-        text-white
-        py-10
-        sm:py-12
-        md:py-16
-        lg:p-[80px]
-        px-4
-        sm:px-6
-        md:px-10
-      "
-    >
-      <div className="mx-auto">
+    <section className="relative w-full py-15 md:py-[80px] bg-[#061837] text-white">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         {/* TOP LABEL */}
         <div className="flex items-center gap-2 mb-4 md:mb-6">

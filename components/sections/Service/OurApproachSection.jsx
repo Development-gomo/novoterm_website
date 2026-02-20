@@ -1,13 +1,11 @@
 "use client";
-import DotIndicator from "../../ui/DotIndicator";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export default function OurApproachSection({ section, index = 0}) {
+export default function OurApproachSection({ section, sectionId, index = 0}) {
   if (!section) return null;
 
   const { 
-    section_label, 
     heading, 
     cta_text, 
     cta_link, 
@@ -20,15 +18,39 @@ export default function OurApproachSection({ section, index = 0}) {
   // Support multiple field name variants
   const ctaText = cta_text || button_text;
   const ctaUrl = cta_link || cta_url || button_link;
-  
-  const STICKY_START = 120;
-  const LABEL_HEIGHT = 32;
-  const stickyTop = STICKY_START + index * LABEL_HEIGHT;
 
   const [activeStep, setActiveStep] = useState(1);
+  const [hasAnimated, setHasAnimated] = useState(false);
   const stepRefs = useRef([]);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
+    // Intersection Observer to detect when section is visible
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+          }
+        });
+      },
+      { threshold: 0.2 } // Trigger when 20% of section is visible
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [hasAnimated]);
+
+  useEffect(() => {
+    if (!hasAnimated) return;
+
     // Automatically cycle through steps with timed delay
     const totalSteps = steps.length || 4;
     const interval = setInterval(() => {
@@ -36,27 +58,19 @@ export default function OurApproachSection({ section, index = 0}) {
         if (prev >= totalSteps) return prev; // Stop at last step
         return prev + 1;
       });
-    }, 1000); // 1 second delay between steps
+    }, 700); // 0.7 second delay between steps
 
     return () => clearInterval(interval);
-  }, [steps.length]);
+  }, [hasAnimated, steps.length]);
 
   return (
-    <section className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[96px] text-white">
+    <section id={sectionId} ref={sectionRef} className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[96px] text-white">
       <div className="mx-auto">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
-                      {section_label && (
-                        <div className="flex items-center gap-3 mt-2" style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}>
-                          <DotIndicator variant="white"/>
-                          <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
-                            {section_label}
-                          </span>
-                        </div>
-                      )}
-                    </div>
+          </div>
 
           {/* RIGHT – 85% */}
           <div className="w-full lg:w-[85%]">
@@ -118,12 +132,12 @@ export default function OurApproachSection({ section, index = 0}) {
                     return (
                       <div key={index} className="relative flex items-center">
                         {/* Circle */}
-                        <div className={`w-[56px] h-[56px] rounded-full flex items-center justify-center text-[14px] font-montserrat font-medium shrink-0 transition-all duration-500 z-10 ${isActive ? "bg-[#2655c4] text-white" : "border border-white/40 text-white/60"}`}>
+                        <div className={`w-[56px] h-[56px] rounded-full flex items-center justify-center text-[14px] font-montserrat font-medium shrink-0 transition-all duration-700 ease-in-out z-10 ${isActive ? "bg-[#2655c4] text-white border-0 scale-110" : "border border-white/40 text-white/60 bg-transparent scale-100"}`}>
                           {stepNumber}
                         </div>
                         {/* Line extending to next column */}
                         {!isLast && (
-                          <div className={`absolute left-[56px] right-[-48px] top-1/2 h-px transition-all duration-500 ${stepNumber < activeStep ? "bg-[#2F5BDE]" : "bg-white/30"}`} />
+                          <div className={`absolute left-[56px] right-[-48px] top-1/2 h-px transition-all duration-700 ease-in-out ${stepNumber < activeStep ? "bg-[#2F5BDE]" : "bg-white/30"}`} />
                         )}
                       </div>
                     );

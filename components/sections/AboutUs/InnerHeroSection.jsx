@@ -1,13 +1,16 @@
 import Link from "next/link";
 
-export default function ServicesHeroSection({
-  heading,
-  sub_heading,
-  background_image,
-  cta_text,
-  cta_url,
-  sectionId,
-}) {
+export default function InnerHeroSection({ section }) {
+  if (!section) return null;
+
+  const {
+    heading,
+    sub_heading,
+    cta_text,
+    cta_url,
+    background_image,
+  } = section;
+
   const bgUrl =
     typeof background_image === "string"
       ? background_image
@@ -18,7 +21,6 @@ export default function ServicesHeroSection({
 
   return (
     <section
-      id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
       style={{

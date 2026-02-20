@@ -5,7 +5,7 @@ export async function getServerSideProps({ params }) {
   const { slug } = params;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`
+    `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`
   );
 
   const data = await res.json();
@@ -16,14 +16,14 @@ export async function getServerSideProps({ params }) {
 
   return {
     props: {
-      service: data[0],
+      industry: data[0],
     },
   };
 }
 
-export default function SingleService({ service }) {
-  const sections = service.acf?.sections || [];
-  
+export default function SingleIndustry({ industry }) {
+  const sections = industry.acf?.sections || [];
+
   return (
     <main>
       {sections.length > 0 ? (
@@ -32,17 +32,10 @@ export default function SingleService({ service }) {
           <SectionRenderer sections={sections} />
         </>
       ) : (
-        // fallback if no flexible content added
         <div className="max-w-5xl mx-auto p-10">
           <h1 className="text-4xl font-bold mb-4">
-            {service.acf.heading}
+            {industry.title?.rendered}
           </h1>
-
-          <div
-            dangerouslySetInnerHTML={{
-              __html: service.acf.description_text,
-            }}
-          />
         </div>
       )}
     </main>
