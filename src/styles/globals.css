@@ -98,12 +98,12 @@ font-family: Merriweather;
 .btn-primary::before {
   content: "";
   position: absolute;
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   background: white;
   border-radius: 50%;
-  right: -19px;
-  bottom: -19px;
+  right: -20px;
+  bottom: -20px;
   transition: all 0.3s ease-out;
   z-index: -1;
 }
