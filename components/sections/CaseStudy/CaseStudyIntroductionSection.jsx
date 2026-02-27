@@ -24,9 +24,9 @@ export default function CaseStudyIntroductionSection({
   return (
     <section
       id="next-section"
-      className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-8 lg:py-[100px] lg:px-[80px]"
+      className="w-full bg-[#EAF1FF] py-6 md:py-8 lg:py-[100px]"
     >
-      <div className="mx-auto">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-0">
 
@@ -42,7 +42,7 @@ export default function CaseStudyIntroductionSection({
                 }}
               >
                 <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[12px] tracking-wider">
+                <span className="uppercase font-montserrat text-[#061837] font-medium text-[12px] tracking-wider">
                   {section_label}
                 </span>
               </div>
@@ -56,7 +56,7 @@ export default function CaseStudyIntroductionSection({
             {heading && (
               <h2
                 className="
-                  font-heading font-semibold text-[#0A1A3A]
+                  font-heading font-semibold text-[#061837]
                   text-[28px]
                   sm:text-[34px]
                   md:text-[40px]
@@ -66,7 +66,7 @@ export default function CaseStudyIntroductionSection({
                   md:leading-[52px]
                   lg:leading-[58px]
                   max-w-[1090px]
-                  mb-10 lg:mb-[64px]
+                  mb-8 lg:mb-10
                   [&_em]:text-[#2655C4]
                   [&_em]:italic
                   [&_em]:font-semibold
@@ -89,24 +89,22 @@ export default function CaseStudyIntroductionSection({
 
                 {left_content && (
                   <div
-                    className="text-[15px] md:text-[16px] leading-[1.7] text-[#000000] space-y-4"
+                    className="text-[15px] md:text-[16px] leading-[1.5] text-[#000000] space-y-4"
                     dangerouslySetInnerHTML={{ __html: left_content }}
                   />
                 )}
               </div>
 
               {/* RIGHT INFO CARD */}
-              <div className="w-full lg:flex-[360px] bg-[#061837] text-white rounded-[3px] pt-[40px] pr-[24px] pb-[32px] pl-[24px]
-sm:pt-[48px] sm:pr-[32px] sm:pb-[36px] sm:pl-[32px]
-lg:pt-[56px] lg:pr-[48px] lg:pb-[40px] lg:pl-[48px]
+              <div className="w-full lg:flex-[360px] bg-[#061837] text-white rounded-[3px] p-[24px] lg:p-[48px]
 ">
 
                 {client && (
                   <div className="mb-8">
-                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
+                    <p className="text-[14px] uppercase !font-montserrat font-medium tracking-[0.84px] text-[#5C83DD] mb-[8px]">
                       Client
                     </p>
-                    <p className="text-[16px] leading-[24px] font-medium">{client}</p>
+                    <p className="text-[16px] leading-[24px] !font-normal ">{client}</p>
                   </div>
                 )}
 

@@ -52,7 +52,7 @@ export default function DocumentTypeSection({
   }, []);
 
   return (
-    <section className="relative w-full py-15 md:py-[80px] bg-[#061837] text-white">
+    <section className="relative w-full py-15 md:py-[100px] bg-[#061837] text-white">
       <div className="web-width mx-auto px-6 md:px-0">
 
         {/* TOP LABEL */}

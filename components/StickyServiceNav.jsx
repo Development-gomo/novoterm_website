@@ -121,18 +121,16 @@ export default function StickyServiceNav({ sections = [], heroLayout = null }) {
       }`}
       style={{ zIndex: 40 }}
     >
-      <div className="max-w-[1920px] mx-auto px-[80px] relative">
-        <div className="flex flex-col gap-0">
-          {navItems.map((item, idx) => {
+      <div className="web-width mx-auto px-6 md:px-0 relative">
+        {navItems.map((item, idx) => {
             const isActive = activeSection === idx;
             const stickyTop = STICKY_START + idx * LABEL_HEIGHT;
 
             return (
               <div
                 key={idx}
-                className="pointer-events-auto"
+                className="pointer-events-auto absolute w-[15%]"
                 style={{
-                  position: "fixed",
                   top: `${stickyTop}px`,
                   zIndex: 10 + idx,
                 }}
@@ -163,7 +161,6 @@ export default function StickyServiceNav({ sections = [], heroLayout = null }) {
               </div>
             );
           })}
-        </div>
       </div>
     </div>
   );

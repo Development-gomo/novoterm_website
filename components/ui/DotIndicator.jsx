@@ -4,7 +4,7 @@ export default function DotIndicator({ variant = "default" }) {
 
   if (variant === "white") {
     borderColor = "border-white";
-    dotColor = "bg-white";
+    dotColor = "bg-[#2655C4]";
   } else if (variant === "blue") {
     borderColor = "border-[#2655C4]";
     dotColor = "bg-[#2655C4]";

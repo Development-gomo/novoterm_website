@@ -33,9 +33,9 @@ export default function CaseStudyChallengeSection({
   return (
     <section
       id={sectionId}
-      className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-8 lg:py-[100px] lg:px-[80px]"
+      className="w-full bg-[#061837] py-6 md:py-8 lg:py-[100px]"
     >
-      <div className="mx-auto max-w-[1440px]">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row gap-6 md:gap-0">
 
@@ -63,7 +63,7 @@ export default function CaseStudyChallengeSection({
 
             {/* HEADING */}
             {heading && (
-              <h2 className="max-w-[577px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-white mb-[16px] sm:mb-[24px]"
+              <h2 className="max-w-[577px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-white mb-[16px]"
               >
                 {heading}
               </h2>
@@ -72,7 +72,7 @@ export default function CaseStudyChallengeSection({
             {/* DESCRIPTION */}
             {description && (
               <div
-                className="max-w-[533px] text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] text-white mb-[40px] sm:mb-[56px]"
+                className="max-w-[533px] text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] text-white mb-[40px]"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}
@@ -91,18 +91,18 @@ export default function CaseStudyChallengeSection({
               )}
 
               {/* CHALLENGES */}
-              <div className="flex-1 space-y-[32px]">
+              <div className="flex-1">
 
                 {challenges.map((item, i) => (
                   <div key={i}>
 
                     <div className="flex gap-4 items-start">
-                      <div className="!font-merriweather flex-shrink-0 w-6 h-6 rounded-full bg-[#2655C4] text-white text-[14px] flex items-center justify-center font-medium mt-[4px]">
+                      <div className=" flex-shrink-0 w-6 h-6 rounded-full bg-[#2655C4] text-white text-[14px] flex items-center justify-center font-normal mt-[4px]">
                         {i + 1}
                       </div>
 
                       <div>
-                        <h4 className="text-[15px] sm:text-[24px] leading-[32px] font-normal text-white mb-2">
+                        <h4 className="text-[15px] sm:text-[24px] leading-[32px] font-medium text-white mb-2">
                           {item.title}
                         </h4>
                         <p className="text-[14px] sm:text-[16px] leading-[24px] text-white">
@@ -112,7 +112,7 @@ export default function CaseStudyChallengeSection({
                     </div>
 
                     {/* DIVIDER */}
-                    <div className="w-full h-px bg-white/15 mt-[24px]" />
+                    <div className="w-full h-px bg-white/15 my-[24px]" />
                   </div>
                 ))}
 

@@ -15,8 +15,7 @@ export default function CaseStudyHeroSection({ section }) {
 
   return (
     <section
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
-                 px-4 sm:px-0"
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
       style={{
         backgroundImage: bgUrl
           ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
@@ -28,7 +27,7 @@ export default function CaseStudyHeroSection({ section }) {
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="w-full max-w-[900px] flex flex-col sm:block">
+      <div className="web-width mx-auto px-6 md:px-0 flex flex-col sm:block">
 
         {/* HEADING */}
         {heading && (

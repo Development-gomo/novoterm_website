@@ -17,7 +17,6 @@ export default function ExpertsCTASection({ section }) {
     <section
       className="relative w-full bg-center bg-cover
                  h-[700px]
-                 px-[24px] sm:px-[40px] lg:px-[80px]
                  py-[100px]"
       style={{
         background: bgUrl
@@ -31,9 +30,9 @@ export default function ExpertsCTASection({ section }) {
       }}
     >
       {/* CONTENT */}
-      <div className="relative z-10 h-full flex items-end">
+      <div className="web-width relative z-10 h-full flex items-end">
         <div
-          className="w-full mx-auto
+          className="w-full px-6 md:px-0
                      flex flex-col lg:flex-row
                      lg:items-end
                      lg:justify-between
@@ -42,7 +41,7 @@ export default function ExpertsCTASection({ section }) {
           {/* HEADING */}
           {heading && (
             <div
-              className="text-white font-heading font-normal
+              className="text-white font-heading font-medium
                          text-[28px] sm:text-[40px] md:text-[60px] lg:text-[80px]
                          leading-tight max-w-[760px]
                          [&_em]:italic

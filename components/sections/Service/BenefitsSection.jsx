@@ -13,8 +13,8 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
   const { heading, section_description, cta_text, cta_link, benefits = [] } = section;
 
   return (
-    <section id={sectionId} className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
-      <div className="mx-auto">
+    <section id={sectionId} className="w-full bg-[#EAF1FF] py-6 md:py-10 lg:py-[100px]">
+      <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% */}

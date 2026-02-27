@@ -9,20 +9,20 @@ export default function Footer({ data }) {
   const { cta, services, quick, resources, contact, branding } = data;
 
   return (
-    <footer className="w-full bg-[#061837] text-white  py-10 sm:py-12  md:py-16  lg:p-[80px]  px-4  sm:px-6  md:px-10">
-      <div className="mx-auto">
+    <footer className="w-full bg-[#061837] text-white pt-10  sm:pt-12 md:pt-16 lg:pt-[80px]">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         {/* ROW 1 — Custom Width Columns */}
-        <div className="flex flex-wrap lg:flex-nowrap gap-16">
+        <div className="flex flex-wrap lg:flex-nowrap gap-12">
 
           {/* COLUMN 1 — CTA (40%) */}
-          <div className="w-full lg:w-[42%]">
-            <h2 className="text-[32px] md:text-[36px] font-semibold leading-[1.3] mb-6 text-white/90">
+          <div className="w-full lg:w-[616px]">
+            <h2 className="text-[36px] md:text-[40px] font-semibold leading-[1.3] mb-8 text-white">
               {cta?.cta_heading}
             </h2>
 
             {/* CTA BUTTON + SOCIAL */}
-            <div className="flex items-center gap-4 mb-10">
+            <div className="flex items-center gap-4 mb-8">
               <Link href={cta?.cta_button_link} className="btn-primary">
                 {cta?.cta_button_text}
               </Link>
@@ -50,14 +50,14 @@ export default function Footer({ data }) {
               </div>
             </div>
 
-            <p className="text-white/60 text-[14px] leading-relaxed">
+            <p className="text-white/40 text-[14px] leading-relaxed">
               {branding?.copyright_text}
             </p>
           </div>
 
           {/* COLUMN 2 — SERVICES (15%) */}
-          <div className="w-full lg:w-[12%]">
-            <h4 className="uppercase text-[15px] font-medium tracking-wider text-[#5C83DD] mb-4">
+          <div className="w-full lg:w-[14%]">
+            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
               SERVICES
             </h4>
             <ul className="space-y-2">
@@ -72,8 +72,8 @@ export default function Footer({ data }) {
           </div>
 
           {/* COLUMN 3 — QUICK LINKS (15%) */}
-          <div className="w-full lg:w-[12%]">
-            <h4 className="uppercase text-[15px] font-medium tracking-wider text-[#5C83DD] mb-4">
+          <div className="w-full lg:w-[14%]">
+            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
               QUICK LINKS
             </h4>
             <ul className="space-y-2">
@@ -89,7 +89,7 @@ export default function Footer({ data }) {
 
           {/* COLUMN 4 — RESOURCES (15%) */}
           <div className="w-full lg:w-[12%]">
-            <h4 className="uppercase text-[15px] font-medium tracking-wider text-[#5C83DD] mb-4">
+            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
               RESOURCES
             </h4>
             <ul className="space-y-2">
@@ -104,8 +104,8 @@ export default function Footer({ data }) {
           </div>
 
           {/* COLUMN 5 — CONTACT (15%) */}
-          <div className="w-full lg:w-[12%]">
-            <h4 className="uppercase text-[15px] font-medium tracking-wider text-[#5C83DD] mb-4">
+          <div className="w-full lg:w-[16%]">
+            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
               CONTACT
             </h4>
 

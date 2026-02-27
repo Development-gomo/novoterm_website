@@ -27,10 +27,10 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
       id={sectionId}
       className="
         w-full bg-[#061837] text-white
-       px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[100px]
+        py-6 md:py-10 lg:py-[100px]
       "
     >
-      <div className="mx-auto">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         {/* ================= 15 / 85 WRAPPER ================= */}
         <div className="flex flex-col md:flex-row ">

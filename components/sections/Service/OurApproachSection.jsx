@@ -64,8 +64,8 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
   }, [hasAnimated, steps.length]);
 
   return (
-    <section id={sectionId} ref={sectionRef} className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:px-[80px] lg:py-[96px] text-white">
-      <div className="mx-auto">
+    <section id={sectionId} ref={sectionRef} className="w-full bg-[#061837] py-6 md:py-10 lg:py-[96px] text-white">
+      <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% */}

@@ -74,7 +74,7 @@ export default function ServicesSection({
   return (
     <section className="relative w-full overflow-visible bg-[#E3EDFF]">
       {/* ================= INTRO ================= */}
-      <div className="web-width mx-auto px-6 md:px-0 py-15 md:py-[80px]">
+      <div className="web-width mx-auto px-6 md:px-0 pb-15 md:pb-[80px]">
         <div className="max-w-[560px]">
           {section_label && (
             <div className="flex items-center gap-2 mb-4 md:mb-6">
@@ -174,9 +174,10 @@ export default function ServicesSection({
 
             {/* ===== CONTENT ===== */}
             <div
-              style={{ position: "relative", zIndex: 10, maxWidth: "620px", color: "#fff" }}
+              style={{ position: "relative", zIndex: 10, color: "#fff" }}
               className="web-width mx-auto px-6 md:px-0 py-15 md:py-8"
             >
+              <div className="w-full w-auto md:w-[620px]">
               {service.description_text && (
                 <div
                   className="text-[14px] font-normal sm:text-[16px] md:text-[18px] leading-[1.6] md:leading-[1.7]"
@@ -201,6 +202,7 @@ export default function ServicesSection({
                   </ul>
                 </>
               )}
+              </div>
             </div>
           </section>
         );

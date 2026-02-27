@@ -17,8 +17,7 @@ export default function ServicesHeroSection({
         "";
 
   return (
-    <section
-      id={sectionId}
+  <section
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
       style={{
@@ -32,7 +31,7 @@ export default function ServicesHeroSection({
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="w-full max-w-[900px] flex flex-col sm:block">
+      <div className="w-full web-width  px-6  py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
 
         {/* HEADING */}
         {heading && (

@@ -52,9 +52,9 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   return (
     <section
       id={sectionId}
-      className="w-full bg-[#E3EDFF] pt-[56px] pr-[24px] pb-[56px] pl-[24px] sm:pt-[72px] sm:pr-[40px] sm:pb-[72px] sm:pl-[40px] lg:pt-[100px] lg:pr-[80px] lg:pb-[80px] lg:pl-[80px]"
+      className="w-full bg-[#E3EDFF] pt-[56px] pb-[56px] sm:pt-[72px] sm:pb-[72px] lg:pt-[100px] lg:pb-[80px]"
     >
-      <div className="mx-auto max-w-[1440px]">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row gap-8 md:gap-0">
 
@@ -181,7 +181,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
                     </div>
 
                     {/* TEXT AREA */}
-                    <div className="relative">
+                    <div className="relative mt-2">
                       <h3 className="font-semibold leading-[48px] text-[18px] text-[#061837]">
                         {m.name}
                       </h3>
@@ -195,7 +195,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
                       {/* PLUS BUTTON */}
                <button
   onClick={() => setActiveId(isOpen ? null : m.id)}
-  className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#2655C4] flex items-center justify-center transition-transform duration-300"
+  className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#2655C4] flex items-center justify-center transition-transform duration-300"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"

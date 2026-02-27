@@ -44,7 +44,7 @@ export default function CaseStudySection({
   }, []);
 
   return (
-    <section className="relative w-full py-15 md:py-[80px] bg-[#E9F0FF]">
+    <section className="relative w-full py-15 md:py-[100px] bg-[#E9F0FF]">
       <div className="web-width mx-auto px-6 md:px-0">
 
         {/* DOT LABEL */}

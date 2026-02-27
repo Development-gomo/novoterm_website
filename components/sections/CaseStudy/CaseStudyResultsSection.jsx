@@ -12,9 +12,9 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
   return (
     <section
       id={sectionId}
-      className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-8 lg:py-[100px] lg:px-[80px]"
+      className="w-full bg-[#061837] py-6 md:py-8 lg:py-[100px]"
     >
-      <div className="mx-auto max-w-[1440px]">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row gap-6 md:gap-0">
 
@@ -37,17 +37,17 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-[48px] items-start md:w-[85%]">
 
             {/* LEFT CONTENT */}
-            <div className="w-full lg:flex-[566px] max-w-full">
+            <div className="w-full">
 
               {heading && (
-                <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-white mb-[24px]">
+                <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-white mb-[16px] w-full lg:w-[577px]">
                   {heading}
                 </h2>
               )}
 
               {description && (
                 <div
-                  className="max-w-[533px] text-[16px] leading-[24px] text-white mb-[40px]"
+                  className="w-full lg:max-w-[533px] text-[16px] leading-[24px] text-white mb-[40px]"
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               )}
@@ -68,22 +68,22 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
 
             {/* RIGHT CARD */}
             {highlight && (
-              <div className="w-full max-w-full sm:max-w-[360px] bg-[#2655C4] rounded-[8px] p-[24px] sm:p-[32px] text-white">
+              <div className="w-full max-w-full sm:max-w-[360px] bg-[#2655C4] rounded-[3px] p-[24px] sm:p-[32px] text-white">
 
                 {highlight.icon && (
-                  <div className="w-[48px] h-[48px] flex items-center justify-center rounded-full border border-white mb-[32px]">
+                  <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full border border-white mb-[32px]">
                     <img src={highlight.icon?.url || highlight.icon} alt="" className="w-[24px] h-[24px]" />
                   </div>
                 )}
 
                 {highlight.metric && (
-                  <div className="text-[32px] sm:text-[40px] font-semibold mb-1">
+                  <h2 className="text-[32px] !font-montserrat sm:text-[40px] font-semibold mb-1">
                     {highlight.metric}
-                  </div>
+                  </h2>
                 )}
 
                 {highlight.metric_label && (
-                  <div className="uppercase text-[14px] tracking-[0.84px] mb-[24px]">
+                  <div className="uppercase text-[14px] !font-montserrat tracking-[0.84px] mb-[24px]">
                     {highlight.metric_label}
                   </div>
                 )}

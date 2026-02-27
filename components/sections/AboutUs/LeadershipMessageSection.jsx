@@ -37,11 +37,11 @@ export default function LeadershipMessageSection({
     <section
       id={sectionId}
       className="w-full bg-[#061837]
-        pt-[56px] px-[24px] pb-[56px]
-        sm:pt-[72px] sm:px-[40px] sm:pb-[72px]
-        lg:pt-[90px] lg:px-[80px] lg:pb-[100px]"
+        pt-[56px] pb-[56px]
+        sm:pt-[72px] sm:pb-[72px]
+        lg:pt-[90px] lg:pb-[100px]"
     >
-      <div className="mx-auto">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row gap-10 md:gap-0">
 

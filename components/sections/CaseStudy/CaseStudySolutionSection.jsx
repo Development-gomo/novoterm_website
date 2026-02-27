@@ -16,9 +16,9 @@ export default function CaseStudySolutionSection({
   return (
     <section
       id={sectionId}
-      className="w-full bg-[#E3EDFF] px-4 py-6 sm:px-6 md:py-8 lg:py-[100px] lg:px-[80px]"
+      className="w-full bg-[#E3EDFF] py-6 md:py-8 lg:py-[100px]"
     >
-      <div className="mx-auto">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row gap-6 md:gap-0">
 
@@ -47,8 +47,8 @@ export default function CaseStudySolutionSection({
             {/* HEADING */}
             {heading && (
               <h2
-                className="max-w-[760px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold
-                  mb-[16px] sm:mb-[24px]"
+                className="max-w-[760px] font-heading text-[#061837] text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold
+                  mb-[16px]"
               >
                 {heading}
               </h2>
@@ -59,9 +59,9 @@ export default function CaseStudySolutionSection({
               <div
                 className="max-w-[520px]
                   text-[14px] sm:text-[16px]
-                  leading-[1.6] sm:leading-[1.7]
-                  text-[#1A1A1A]
-                  mb-[32px] sm:mb-[48px]"
+                  leading-[1.5] sm:leading-[1.5]
+                  text-black
+                  mb-[40px]"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}
@@ -85,7 +85,7 @@ export default function CaseStudySolutionSection({
                     />
                   </div>
 
-                  <h4 className="text-[16px] sm:text-[17px] font-semibold leading-[1.3] sm:leading-[48px] text-[#061837] mb-[12px]">
+                  <h4 className="text-[16px] sm:text-[17px] font-semibold leading-[1.3] sm:leading-[48px] text-[#061837]">
                     {item.title}
                   </h4>
 

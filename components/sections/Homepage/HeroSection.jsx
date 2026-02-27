@@ -29,7 +29,7 @@ export default function HeroSection({
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="relative z-10 web-width px-6 lg:px-48 py-24 lg:py-36 h-full flex flex-col items-start justify-center lg:justify-start">
+      <div className="relative min-h-[100vh] web-width px-6  py-24 lg:py-36 lg:px-48 h-full flex flex-col items-start justify-center lg:justify-start">
 
         {/* BLOCK 1 */}
         <div className="text-left">
@@ -64,7 +64,7 @@ export default function HeroSection({
             {/* Subheadline */}
             {subheadline && (
               <div
-                className="font-body text-white/90 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px] leading-[1.6] mb-[20px] sm:mb-[24px] font-normal"
+                className="font-body text-white text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px] leading-[24px] mb-[20px] sm:my-[24px] font-normal"
                 dangerouslySetInnerHTML={{ __html: subheadline }}
               />
             )}

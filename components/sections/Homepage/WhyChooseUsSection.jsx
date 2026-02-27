@@ -24,7 +24,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
     typeof right_image === "string" ? right_image : right_image?.url || "";
 
   return (
-    <section className="w-full bg-[#061837] text-white py-15 md:py-[80px]">
+    <section className="w-full bg-[#061837] text-white py-15 md:py-[100px]">
       <div className="web-width mx-auto px-6 md:px-0 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[0px]">
 
         {/* LEFT COLUMN */}
@@ -40,7 +40,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
                   <div className="w-[24px] h-[24px] rounded-full bg-[#2655C4] flex items-center justify-center text-white text-sm font-semibold">
                     {index + 1}
                   </div>
-                  <span className="text-[15px] md:text-[16px] font-light font-montserrat font-normal">
+                  <span className="text-[15px] md:text-[16px]  font-montserrat font-medium">
                     {item.item_label}
                   </span>
                 </div>
@@ -81,7 +81,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
 
           {/* DESCRIPTION */}
           <div
-            className="text-[15px] md:text-[16px] leading-[1.5] font-light mb-8 max-w-[450px]"
+            className="text-[15px] md:text-[16px] leading-[24px] font-light mb-8 max-w-[450px]"
             dangerouslySetInnerHTML={{ __html: description }}
           />
 

@@ -6,8 +6,8 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
   const { heading, translation_methods = [] } = section;
 
   return (
-    <section id={sectionId} className="w-full bg-[#061837] px-4 py-6 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]">
-      <div className="mx-auto">
+    <section id={sectionId} className="w-full bg-[#061837] py-6 md:py-10 lg:py-[100px]">
+      <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row gap-0">
 
           {/* LEFT – 15% */}
@@ -38,7 +38,7 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-[24px] flex flex-col justify-end transition-opacity duration-300 group-hover:opacity-0">
                         {item.card_tag && (
-                          <span className="text-[11px] uppercase tracking-widest text-white/80 mb-1">
+                          <span className="text-[11px] uppercase tracking-widest text-[#5c83dd] mb-1">
                             {item.card_tag}
                           </span>
                         )}

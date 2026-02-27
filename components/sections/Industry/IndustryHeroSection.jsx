@@ -18,26 +18,25 @@ export default function IndustryHeroSection({
 
   return (
     <section
-      id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
       style={{
         backgroundImage: bgUrl
           ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
           : `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)`,
-        backgroundColor: "#061837",
+        backgroundColor: "lightgray",
         backgroundPosition: "top center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="w-full max-w-[900px] flex flex-col sm:block">
+      <div className="w-full web-width  px-6  py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
 
         {/* HEADING */}
         {heading && (
           <h1
-            className="font-heading font-semibold text-white [&_em]:italic [&_em]:font-merriweather
+            className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-merriweather
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
               w-full sm:w-[600px] mx-auto sm:mx-0 mb-10"
@@ -71,26 +70,30 @@ export default function IndustryHeroSection({
         </div>
       </div>
 
-      {/* DOWN ARROW */}
-      <div
-        onClick={() =>
-          document
-            .getElementById("next-section")
-            ?.scrollIntoView({ behavior: "smooth" })
-        }
-        className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
-      >
-        <svg
-          viewBox="0 0 83 83"
-          className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
-          <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-      </div>
+     {/* DOWN ARROW */}
+<div
+  onClick={() =>
+    document
+      .getElementById("next-section")
+      ?.scrollIntoView({ behavior: "smooth" })
+  }
+  className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
+>
+  <svg
+    viewBox="0 0 83 83"
+    className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
+    <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+    <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+</div>
+
+
+      {/* BOTTOM FADE */}
+     
     </section>
   );
 }

@@ -14,14 +14,19 @@ export default function CaseStudyTestimonialSection({ section }) {
 
   return (
     <section
-      className="relative w-full flex bg-cover bg-center px-4 py-6 sm:px-6 md:py-8 lg:py-[100px] lg:px-[80px]"
+      className="relative w-full flex bg-cover bg-center h-auto lg:h-[660px] py-6 md:py-8 lg:pt-[100px] lg:pb-[80px]"
       style={{ backgroundImage: `url(${bgUrl})` }}
     >
-      {/* OVERLAY */}
-      <div className="absolute inset-0 bg-[#061837]/70" />
+      {/* OVERLAY: linear gradient from 10% transparent black to solid black */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, #000000 100%)",
+        }}
+      />
 
       {/* CONTENT */}
-      <div className="relative z-10 max-w-[1440px] mx-auto">
+      <div className="relative z-10 web-width mx-auto px-6 md:px-0">
 
         {/* LABEL */}
         {section_label && (
@@ -42,7 +47,7 @@ export default function CaseStudyTestimonialSection({ section }) {
         )}
 
         {/* AUTHOR */}
-        <div className="text-white/80 text-[12px] sm:text-[14px] uppercase font-heading tracking-widest">
+        <div className="text-white text-[12px] sm:text-[14px] uppercase font-heading font-medium tracking-widest">
           {author_name}
           {author_title && `  ${author_title}`} |
           {author_company && ` at ${author_company}`}

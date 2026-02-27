@@ -98,8 +98,8 @@ font-family: Merriweather;
 .btn-primary::before {
   content: "";
   position: absolute;
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   background: white;
   border-radius: 50%;
   right: -19px;
@@ -154,13 +154,19 @@ font-family: Merriweather;
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
 }
 
-@media (min-width: 1024px) {
+/* Global section label style */
+.section-label {
+  font-family: var(--font-montserrat) !important;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* @media (min-width: 1024px) {
   .web-width {
     padding-left: 2rem;
     padding-right: 2rem;
-  }
-}
+  } } */

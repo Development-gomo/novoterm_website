@@ -41,8 +41,8 @@ export default function ServiceCaseStudySection({
   }, []);
 
   return (
-    <section id={sectionId} className="w-full bg-[#EAF1FF] px-4 py-6 sm:px-6 md:py-10 lg:pb-[100px] lg:pt-[0px] lg:px-[80px]">
-      <div className="mx-auto">
+    <section id={sectionId} className="w-full bg-[#EAF1FF] py-6 md:py-10 lg:pb-[100px] lg:pt-[0px]">
+      <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% */}

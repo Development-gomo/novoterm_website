@@ -45,7 +45,7 @@ export default function FaqSection({ sectionId, index = 0 }) {
         lg:py-[100px]
       "
     >
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         {/* ================= 15 / 85 WRAPPER ================= */}
         <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">

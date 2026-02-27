@@ -17,11 +17,11 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
   return (
     <section
       id={sectionId}
-      className="bg-[#061837] pt-[56px] pr-[24px] pb-[56px] pl-[24px]
-        sm:pt-[72px] sm:pr-[40px] sm:pb-[72px] sm:pl-[40px]
-        lg:pt-[90px] lg:pr-[80px] lg:pb-[100px] lg:pl-[80px]"
+      className="bg-[#061837] pt-[56px] pb-[56px]
+        sm:pt-[72px] sm:pb-[72px]
+        lg:pt-[90px] lg:pb-[100px]"
     >
-      <div className="mx-auto">
+      <div className="web-width mx-auto px-6 md:px-0">
 
         {/* OUTER GRID → 15% / 85% */}
         <div className="grid grid-cols-1 md:grid-cols-[15%_85%] gap-8 md:gap-0">
@@ -38,7 +38,7 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
                 }}
               >
                 <DotIndicator />
-                <span className="uppercase text-[10px] sm:text-[12px] tracking-widest text-white">
+                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[12px] tracking-widest text-white">
                   {section_label}
                 </span>
               </div>

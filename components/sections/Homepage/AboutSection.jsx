@@ -19,7 +19,7 @@ export default function AboutSection({
 
 
   return (
-    <section className="relative bg-[#E3EDFF] py-15 md:py-[80px]">
+    <section className="relative bg-[#E3EDFF] py-15 md:py-[100px]">
       
       {/* LOCAL STYLE */}
       <style>{`

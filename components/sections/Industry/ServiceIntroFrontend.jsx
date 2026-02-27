@@ -72,21 +72,13 @@ const getEmbedUrl = (url) => {
 };
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] px-4 sm:px-6 md:py-10 lg:py-[100px] lg:px-[80px]`}>
-      <div className="mx-auto">
+    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] md:py-10 lg:py-[100px]`}>
+      <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row">
 
           {/* ================= LEFT 15% ================= */}
           <div className="md:w-[15%] relative mb-6 md:mb-0">
-            {section_label && (
-              <div className="flex items-center gap-3">
-                <DotIndicator />
-                <span className={`uppercase text-[12px] tracking-wider font-medium ${labelColor}`}>
-                  {section_label}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* ================= RIGHT 85% ================= */}
