@@ -27,8 +27,7 @@ export function SpeakableSchema({ title, summary, url }) {
     description: stripHtml(summary),
     speakable: {
       "@type": "SpeakableSpecification",
-      // Points to the heading and the rendered summary element on the page
-      cssSelector: ["h1", "[data-speakable]"],
+      cssSelector: ["h1"],
     },
   };
 
