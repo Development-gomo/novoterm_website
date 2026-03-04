@@ -1,5 +1,6 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyIndustryNav from "../../../components/StickyIndustryNav";
+import { SpeakableSchema } from "../../../components/SEO/StructuredData";
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
@@ -23,9 +24,12 @@ export async function getServerSideProps({ params }) {
 
 export default function SingleIndustry({ industry }) {
   const sections = industry.acf?.sections || [];
+  const title = industry.title?.rendered || "";
+  const summary = industry.acf?.article_summary || "";
 
   return (
     <main>
+      <SpeakableSchema title={title} summary={summary} />
       {sections.length > 0 ? (
         <>
           <StickyIndustryNav sections={sections} />

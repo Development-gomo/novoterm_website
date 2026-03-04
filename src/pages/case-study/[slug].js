@@ -1,4 +1,5 @@
 import SectionRenderer from "../../../components/SectionRenderer";
+import { SpeakableSchema } from "../../../components/SEO/StructuredData";
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
@@ -22,8 +23,12 @@ export async function getServerSideProps({ params }) {
 }
 
 export default function CaseStudyPage({ caseStudy, currentSlug }) {
+  const title = caseStudy?.title?.rendered || "";
+  const summary = caseStudy?.acf?.article_summary || "";
+
   return (
     <>
+      <SpeakableSchema title={title} summary={summary} />
       {caseStudy?.acf?.sections && (
         <SectionRenderer
           sections={caseStudy.acf.sections}

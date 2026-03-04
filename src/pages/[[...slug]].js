@@ -2,6 +2,7 @@
 
 import SectionRenderer from "../../components/SectionRenderer";
 import { fetchPages, fetchPageBySlug } from "../../lib/api";
+import { SpeakableSchema } from "../../components/SEO/StructuredData";
 
 // Generate paths for both Swedish & English
 export async function getStaticPaths() {
@@ -62,14 +63,14 @@ export async function getStaticProps({ params }) {
 
 export default function Page({ page, lang }) {
   const title = page?.title?.rendered || "";
+  const summary = page?.acf?.article_summary || "";
 
   // Unified page builder field - all pages use page_sections
   const sections = page?.acf?.page_sections || [];
 
-
-
   return (
     <main className="w-full">
+      <SpeakableSchema title={title} summary={summary} />
 
       {/* PAGE TITLE */}
       {/* <h1

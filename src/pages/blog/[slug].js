@@ -1,4 +1,5 @@
 import SectionRenderer from "../../../components/SectionRenderer";
+import { SpeakableSchema } from "../../../components/SEO/StructuredData";
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
@@ -75,8 +76,12 @@ export async function getServerSideProps({ params }) {
 }
 
 export default function BlogPost({ post, sections, currentSlug }) {
+  const title = post?.title?.rendered || "";
+  const summary = post?.acf?.article_summary || "";
+
   return (
     <>
+      <SpeakableSchema title={title} summary={summary} />
       {sections && (
         <SectionRenderer
           sections={sections}
