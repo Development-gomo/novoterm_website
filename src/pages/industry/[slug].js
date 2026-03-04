@@ -1,5 +1,5 @@
 import SectionRenderer from "../../../components/SectionRenderer";
-import StickyServiceNav from "../../../components/StickyServiceNav";
+import StickyIndustryNav from "../../../components/StickyIndustryNav";
 
 export async function getServerSideProps({ params }) {
   const { slug } = params;
@@ -28,7 +28,7 @@ export default function SingleIndustry({ industry }) {
     <main>
       {sections.length > 0 ? (
         <>
-          <StickyServiceNav sections={sections} />
+          <StickyIndustryNav sections={sections} />
           <SectionRenderer sections={sections} />
         </>
       ) : (

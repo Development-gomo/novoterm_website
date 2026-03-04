@@ -49,6 +49,7 @@ import ContactHeroSection from "./sections/Contact/ContactHeroSection";
 /* ===================== INDUSTRY PAGE ===================== */
 import IndustryHeroSection from "./sections/Industry/IndustryHeroSection";
 import IndustryIntroSection from "./sections/Industry/ServiceIntroFrontend";
+import IndustrySpecialHeading from "./sections/Industry/IndustrySpecialHeading";
 
 
 
@@ -351,6 +352,9 @@ case "inner_hero_section":
 
       case "industry_intro":
         return <IndustryIntroSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+
+      case "industry_special_heading":
+        return <IndustrySpecialHeading key={index} section={block} sectionId={`section-${index}`} />;
 
       default:
         return null;

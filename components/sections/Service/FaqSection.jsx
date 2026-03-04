@@ -1,6 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Head from "next/head";
+
+// Strip HTML tags for clean schema text
+const stripHtml = (html) =>
+  html ? html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() : "";
 
 export default function FaqSection({ sectionId, index = 0 }) {
   const [faqs, setFaqs] = useState([]);
@@ -35,7 +40,30 @@ export default function FaqSection({ sectionId, index = 0 }) {
     return <p className="text-[#5C6C8A]">No FAQs available.</p>;
   }
 
+  // Build FAQ schema
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs
+      .filter((faq) => faq?.acf?.title && faq?.acf?.description)
+      .map((faq) => ({
+        "@type": "Question",
+        name: stripHtml(faq.acf.title),
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: stripHtml(faq.acf.description),
+        },
+      })),
+  };
+
   return (
+    <>
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      </Head>
     <section
       id={sectionId}
       className="
@@ -162,5 +190,6 @@ export default function FaqSection({ sectionId, index = 0 }) {
 
       </div>
     </section>
+    </>
   );
 }
