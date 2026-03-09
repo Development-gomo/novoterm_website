@@ -1,57 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 
 // Strip HTML tags for clean schema text
 const stripHtml = (html) =>
   html ? html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() : "";
 
-export default function FaqSection({ sectionId, index = 0 }) {
-  const [faqs, setFaqs] = useState([]);
+export default function FaqSection({ section, sectionId, index = 0 }) {
   const [openIndex, setOpenIndex] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchFaqs = async () => {
-      try {
-        const res = await fetch(
-          "/wp-api/wp/v2/faq?per_page=20",
-          { cache: "no-store" }
-        );
-        const data = await res.json();
-        setFaqs(Array.isArray(data) ? data : []);
-      } catch (err) {
-        console.error("FAQ fetch error:", err);
-        setFaqs([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const {
+    section_label,
+    section_title,
+    section_description,
+    cta_text,
+    cta_link,
+    faqs: faqList = [],
+  } = section || {};
 
-    fetchFaqs();
-  }, []);
+  const faqs = faqList;
 
-  if (loading) {
-    return <p className="text-[#5C6C8A]">Loading FAQs…</p>;
-  }
-
-  if (!faqs.length) {
-    return <p className="text-[#5C6C8A]">No FAQs available.</p>;
-  }
+  if (!faqs.length) return null;
 
   // Build FAQ schema
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: faqs
-      .filter((faq) => faq?.acf?.title && faq?.acf?.description)
+      .filter((faq) => faq?.faq_title && faq?.faq_answer)
       .map((faq) => ({
         "@type": "Question",
-        name: stripHtml(faq.acf.title),
+        name: stripHtml(faq.faq_title),
         acceptedAnswer: {
           "@type": "Answer",
-          text: stripHtml(faq.acf.description),
+          text: stripHtml(faq.faq_answer),
         },
       })),
   };
@@ -88,47 +71,43 @@ export default function FaqSection({ sectionId, index = 0 }) {
             {/* HEADER */}
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8 md:mb-14">
               <div>
-                <h2
-                  className="
-                    text-[24px]
-                    sm:text-[28px]
-                    md:text-[36px]
-                    lg:text-[40px]
-                    font-semibold
-                    leading-tight
-                    md:leading-[1.15]
-                    max-w-[561px]
-                    mb-4  text-[#061837]
-                  "
-                >
-                  Answers to your queries
-                </h2>
-
-                <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] text-[#000] max-w-[640px]">
-                  Quick answers to help you understand our services with confidence.
-                </p>
+              
+              
+                {section_title && (
+                  <h2 className="text-[24px] sm:text-[28px] md:text-[36px] lg:text-[40px] font-semibold leading-tight md:leading-[1.15] max-w-[561px] mb-4 text-[#061837]">
+                    {section_title}
+                  </h2>
+                )}
+                {section_description && (
+                  <p className="text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] text-[#000] max-w-[640px]">
+                    {section_description}
+                  </p>
+                )}
               </div>
 
-              <a
-                href="/faqs"
-                className="btn-primary self-start sm:self-auto"
-              >
-                View all FAQs
-              </a>
+              {cta_text && cta_link && (
+                <a
+                  href={typeof cta_link === "object" ? cta_link?.url || "#" : cta_link}
+                  target={typeof cta_link === "object" && cta_link?.target ? cta_link.target : undefined}
+                  className="btn-primary self-start sm:self-auto"
+                >
+                  {cta_text}
+                </a>
+              )}
             </div>
 
             {/* FAQ LIST */}
             <div className="space-y-4">
               {faqs.map((faq, i) => {
-                const title = faq?.acf?.title;
-                const description = faq?.acf?.description;
+                const title = faq?.faq_title;
+                const description = faq?.faq_answer;
                 if (!title || !description) return null;
 
                 const isOpen = openIndex === i;
 
                 return (
                   <div
-                    key={faq.id}
+                    key={i}
                     className="rounded-[3px] overflow-hidden"
                   >
                     <button
@@ -174,7 +153,7 @@ export default function FaqSection({ sectionId, index = 0 }) {
                           sm:text-[15px]
                           md:text-[16px]
                           text-[#061837]
-                          leading-relaxed
+                          leading-relaxed [&_a]:text-[#2655c4]  [&_a]:underline
                         "
                         style={{ backgroundColor: 'rgba(196, 208, 230, 0.50)' }}
                         dangerouslySetInnerHTML={{ __html: description }}

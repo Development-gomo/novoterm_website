@@ -81,7 +81,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
         return (
           <HeroSection
             key={`hero-${index}`}
-            headline={block.heading}
+            heading={block.heading}
             subheadline={block.subheading}
             button_text={block.button_text}
             button_link={block.button_link}

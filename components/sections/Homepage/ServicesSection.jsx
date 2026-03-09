@@ -49,7 +49,9 @@ export default function ServicesSection({
         if (!Array.isArray(data)) return;
 
         setServices(
-          data.map((post) => ({
+          data
+            .filter((post) => post.acf?.display_on_homepage === "yes")
+            .map((post) => ({
             id: post.id,
             slug: post.slug || "",
             heading: post.acf?.heading || "",
