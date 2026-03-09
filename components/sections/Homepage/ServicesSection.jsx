@@ -41,7 +41,7 @@ export default function ServicesSection({
     async function loadServices() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?_embed&acf_format=standard`,
+          `/wp-api/wp/v2/service?_embed&acf_format=standard`,
           { cache: "no-store" }
         );
 

@@ -16,7 +16,7 @@ export default function FaqSection({ sectionId, index = 0 }) {
     const fetchFaqs = async () => {
       try {
         const res = await fetch(
-          "https://gomostaging.com/novoterm-headless/wp-json/wp/v2/faq?per_page=20",
+          "/wp-api/wp/v2/faq?per_page=20",
           { cache: "no-store" }
         );
         const data = await res.json();

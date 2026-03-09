@@ -50,6 +50,10 @@ import ContactHeroSection from "./sections/Contact/ContactHeroSection";
 import IndustryHeroSection from "./sections/Industry/IndustryHeroSection";
 import IndustryIntroSection from "./sections/Industry/ServiceIntroFrontend";
 import IndustrySpecialHeading from "./sections/Industry/IndustrySpecialHeading";
+import IconBoxSection from "./sections/Industry/IconBoxSection";
+import NumberDocumentsSection from "./sections/Industry/NumberDocumentsSection";
+import ServiceSliderSection from "./sections/Industry/ServiceSliderSection";
+import IndustryInsightsSection from "./sections/Industry/IndustryInsightsSection";
 
 
 
@@ -64,7 +68,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], currentSlug  }) {
+export default function SectionRenderer({ sections = [], currentSlug, pageType }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -143,6 +147,15 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
         );
 
       case "insights_section":
+        if (pageType === "industry") {
+          return (
+            <IndustryInsightsSection
+              key={`industry-insights-${index}`}
+              section={block}
+              sectionId={`section-${index}`}
+            />
+          );
+        }
         return (
           <InsightsSection
             key={`insights-${index}`}
@@ -150,6 +163,7 @@ export default function SectionRenderer({ sections = [], currentSlug  }) {
             heading={block.heading}
             paragraph={block.paragraph}
             button={block.button}
+            button_url={block.button_url}
           />
         );
 
@@ -355,6 +369,24 @@ case "inner_hero_section":
 
       case "industry_special_heading":
         return <IndustrySpecialHeading key={index} section={block} sectionId={`section-${index}`} />;
+
+      case "icon_box_section":
+        return <IconBoxSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+
+      case "number_documents_examples":
+        return <NumberDocumentsSection key={index} section={block} sectionId={`section-${index}`} />;
+
+      case "service_slider":
+        return <ServiceSliderSection key={index} section={block} sectionId={`section-${index}`} />;
+
+      case "industry_insights":
+        return (
+          <IndustryInsightsSection
+            key={`industry-insights-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+          />
+        );
 
       default:
         return null;

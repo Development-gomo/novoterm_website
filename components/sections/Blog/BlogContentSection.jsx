@@ -22,7 +22,7 @@ export default function BlogContentSection({ section }) {
     async function loadRelatedPosts() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?_embed&per_page=6`
+          `/wp-api/wp/v2/posts?_embed&per_page=6`
         );
         const data = await res.json();
 

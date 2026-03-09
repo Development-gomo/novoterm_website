@@ -25,6 +25,7 @@ const formatLabel = (layout) => {
 };
 
 const isHeroSection = (layout) => /hero/i.test(layout);
+const EXCLUDED_FROM_NAV = ["number_documents_examples"];
 
 export default function StickyIndustryNav({ sections = [], heroLayout = null }) {
   const [activeSection, setActiveSection] = useState(0);
@@ -38,7 +39,7 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
       acf_fc_layout: section.acf_fc_layout,
       index,
     }))
-    .filter((item) => item.label && !isHeroSection(item.acf_fc_layout));
+    .filter((item) => item.label && !isHeroSection(item.acf_fc_layout) && !EXCLUDED_FROM_NAV.includes(item.acf_fc_layout));
 
   useEffect(() => {
     const handleScroll = () => {

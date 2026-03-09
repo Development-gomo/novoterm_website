@@ -17,7 +17,7 @@ export default function CaseStudySection({
     async function getData() {
       try {
       const res = await fetch(
-  `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?acf_format=standard`
+  `/wp-api/wp/v2/case_study?acf_format=standard`
 );
 
         const data = await res.json();

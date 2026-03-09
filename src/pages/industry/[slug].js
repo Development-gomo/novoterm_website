@@ -33,7 +33,7 @@ export default function SingleIndustry({ industry }) {
       {sections.length > 0 ? (
         <>
           <StickyIndustryNav sections={sections} />
-          <SectionRenderer sections={sections} />
+          <SectionRenderer sections={sections} pageType="industry" />
         </>
       ) : (
         <div className="max-w-5xl mx-auto p-10">

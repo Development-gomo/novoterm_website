@@ -23,7 +23,7 @@ export default function IndustrySpecialHeading({ section, sectionId }) {
   const labelColor = isDark ? "text-white/70" : "text-[#061837]";
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] md:py-10 lg:py-[100px]`}>
+    <section id={sectionId} className={`w-full ${sectionBg} pt-[40px] md:pt-10 lg:pt-[100px]`}>
       <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row">

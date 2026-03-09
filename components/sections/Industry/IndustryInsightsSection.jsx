@@ -1,0 +1,109 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
+import DotIndicator from "../../ui/DotIndicator";
+
+export default function IndustryInsightsSection({ section, sectionId }) {
+  if (!section) return null;
+
+  const { section_title, heading, paragraph, button, button_url } = section;
+
+  const [slides, setSlides] = useState([]);
+
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const res = await fetch(`/wp-api/wp/v2/posts?_embed`);
+        let data = await res.json();
+
+        data = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const formatted = data.map((post) => {
+          const category =
+            post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+
+          const image =
+            post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+            "/default-blog.jpg";
+
+          const date = new Date(post.date).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+
+          const clean = post.content.rendered.replace(/<[^>]*>/g, "");
+          const words = clean.split(/\s+/).length;
+          const readTime = `${Math.max(1, Math.ceil(words / 200))} MIN READ`;
+
+          return {
+            title: post.title.rendered,
+            excerpt:
+              post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) +
+              "...",
+            url: `/blog/${post.slug}`,
+            image,
+            category,
+            date,
+            readTime,
+          };
+        });
+
+        setSlides(formatted);
+      } catch (e) {
+        console.log("INDUSTRY INSIGHTS FETCH ERROR:", e);
+      }
+    }
+
+    loadPosts();
+  }, []);
+
+  return (
+    <section
+      id={sectionId}
+      className="relative w-full py-[40px] md:py-[60px] lg:py-[100px] bg-[#E3EDFF]"
+    >
+      <div className="web-width mx-auto px-6 md:px-0">
+        <div className="flex flex-col lg:flex-row">
+
+          {/* LEFT – 15% spacer */}
+          <div className="w-full lg:w-[15%] mb-6 lg:mb-0" />
+
+          {/* RIGHT – 85% */}
+          <div className="w-full lg:w-[85%]">
+
+            {/* HEADING */}
+            {heading && (
+              <h2
+                className="font-heading font-semibold text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] leading-[36px] sm:leading-[44px] md:leading-[52px] lg:leading-[58px] text-[#061837] [&_em]:text-[#2655C4] [&_em]:font-bold max-w-[780px] mb-4"
+                dangerouslySetInnerHTML={{ __html: heading }}
+              />
+            )}
+
+            {/* PARAGRAPH */}
+            {paragraph && (
+              <div
+                className="text-[16px] text-[#061837]/80 leading-[1.7] max-w-[533px] mb-12"
+                dangerouslySetInnerHTML={{ __html: paragraph }}
+              />
+            )}
+
+            {/* SLIDER */}
+            {slides.length > 0 && <InsightsSlider slides={slides} />}
+
+            {/* BUTTON */}
+            {button && (
+              <div className="text-center mt-10">
+                <a href={button_url || "#"} className="btn-primary inline-block">
+                  {button}
+                </a>
+              </div>
+            )}
+
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -18,7 +18,7 @@
         try {
             // IMPORTANT: Correct WordPress REST API route for your website
             const res = await fetch(
-            `${process.env.NEXT_PUBLIC_WP_URL}/index.php?rest_route=/wp/v2/posts&_embed`
+            `/wp-api/wp/v2/posts?_embed`
             );
 
         let data = await res.json();

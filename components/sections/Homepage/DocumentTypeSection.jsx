@@ -17,7 +17,7 @@ export default function DocumentTypeSection({
     async function getData() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/document_type?acf_format=standard`
+          `/wp-api/wp/v2/document_type?acf_format=standard`
         );
 
         let data = await res.json();

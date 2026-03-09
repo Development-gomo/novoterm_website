@@ -17,7 +17,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
   useEffect(() => {
     async function fetchIndustries() {
       try {
-        const res = await fetch("https://gomostaging.com/novoterm-headless/wp-json/wp/v2/industry?_embed&per_page=20");
+        const res = await fetch("/wp-api/wp/v2/industry?_embed&per_page=20");
         const json = await res.json();
 
         const formatted = Array.isArray(json)
