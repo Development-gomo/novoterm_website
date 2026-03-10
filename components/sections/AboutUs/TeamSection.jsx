@@ -24,7 +24,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   useEffect(() => {
     async function fetchTeam() {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/our-team?_embed&per_page=50`
+        `/wp-api/wp/v2/our-team?_embed&per_page=50`
       );
       const data = await res.json();
 

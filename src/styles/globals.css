@@ -93,6 +93,7 @@ font-family: Merriweather;
   mask-image: radial-gradient(circle 21px at calc(100% + -3px) calc(100% + -3px), transparent 21px, black 22px);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
+  cursor: pointer;
 }
 
 .btn-primary::before {
