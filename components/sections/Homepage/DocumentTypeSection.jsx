@@ -27,7 +27,9 @@ export default function DocumentTypeSection({
           heading: post.acf.heading,
           subtext: post.acf.subtext,
           cs_image: post.acf.cs_image,
+          last_block: Array.isArray(post.acf.last_block) && post.acf.last_block.some(v => v === "yes" || v.startsWith("yes:")),
         }));
+
 
         const order = [
           "Web pages",
@@ -36,11 +38,10 @@ export default function DocumentTypeSection({
           "Other documents",
         ];
 
-        formatted = formatted.sort(
-          (a, b) =>
-            order.indexOf(a.heading.trim()) -
-            order.indexOf(b.heading.trim())
-        );
+        formatted = formatted.sort((a, b) => {
+          if (a.last_block !== b.last_block) return a.last_block ? 1 : -1;
+          return order.indexOf(a.heading.trim()) - order.indexOf(b.heading.trim());
+        });
 
         setSlides(formatted);
       } catch (error) {

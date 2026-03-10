@@ -34,7 +34,7 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
                 )}
                  {section_description && (
   <div 
-    className="text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
+    className="text-[14px] sm:text-[15px] md:text-[16px]
                leading-[24px] text-[#061837]"
     dangerouslySetInnerHTML={{ __html: section_description }}
   />

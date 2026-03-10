@@ -79,7 +79,7 @@ export default function DocumentTypeSlider({ slides }) {
         > 
 
         {slides.map((slide, index) => {
-          const isLast = index === slides.length - 1;
+          const isLast = slide.last_block === true;
 
           return (
             <SwiperSlide key={index} className="pointer-events-none">

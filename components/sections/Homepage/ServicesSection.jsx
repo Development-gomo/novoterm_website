@@ -41,7 +41,7 @@ export default function ServicesSection({
     async function loadServices() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/service?_embed&acf_format=standard`,
+          `/wp-api/wp/v2/service?_embed&acf_format=standard&per_page=100`,
           { cache: "no-store" }
         );
 
@@ -61,6 +61,7 @@ export default function ServicesSection({
               ? post.acf.service_highlights
               : [],
             bg:
+              post.acf?.background_image ||
               post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
               "",
           }))
