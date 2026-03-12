@@ -2,15 +2,20 @@ import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
 import { SpeakableSchema } from "../../../components/SEO/StructuredData";
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
 
+  // Dynamically set the language based on the locale (en or sv)
+  const lang = locale === 'en' ? 'en' : 'sv';
+
+  // Fetch the service data for the specified language
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`
+    `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&lang=${lang}&acf_format=standard`
   );
 
   const data = await res.json();
 
+  // If no data is found, return a 404 page
   if (!data.length) {
     return { notFound: true };
   }
@@ -21,7 +26,6 @@ export async function getServerSideProps({ params }) {
     },
   };
 }
-
 export default function SingleService({ service }) {
   const sections = service.acf?.sections || [];
   const title = service.title?.rendered || "";

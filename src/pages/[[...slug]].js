@@ -1,6 +1,5 @@
 // pages/[[...slug]].jsx
 
-import Head from "next/head";
 import SectionRenderer from "../../components/SectionRenderer";
 import { fetchPages, fetchPageBySlug } from "../../lib/api";
 import { SpeakableSchema } from "../../components/SEO/StructuredData";
@@ -69,29 +68,15 @@ export default function Page({ page, lang }) {
   // Unified page builder field - all pages use page_sections
   const sections = page?.acf?.page_sections || [];
 
-  // Extract Yoast SEO data
-  const yoastSEO = page?.yoast_head_json || {};
-  const seoTitle = yoastSEO.title || title;
-  const seoDescription = yoastSEO.description || summary;
-  const seoOgImage = yoastSEO.og_image?.[0]?.url || "";
-
   return (
-    <>
-      <Head>
-        <title>{seoTitle}</title>
-        <meta name="description" content={seoDescription} />
-        {seoOgImage && <meta property="og:image" content={seoOgImage} />}
-        <meta property="og:title" content={seoTitle} />
-        {seoDescription && <meta property="og:description" content={seoDescription} />}
-      </Head>
-      <main className="w-full">
-        <SpeakableSchema title={title} summary={summary} />
+    <main className="w-full">
+      <SpeakableSchema title={title} summary={summary} />
 
-        {/* PAGE TITLE */}
-        {/* <h1
-          className="text-3xl font-bold mb-6"
-          dangerouslySetInnerHTML={{ __html: title }}
-        /> */}
+      {/* PAGE TITLE */}
+      {/* <h1
+        className="text-3xl font-bold mb-6"
+        dangerouslySetInnerHTML={{ __html: title }}
+      /> */}
 
       {/* RENDER SECTIONS */}
       {sections.length ? (
@@ -99,7 +84,6 @@ export default function Page({ page, lang }) {
       ) : (
         <div>No sections found</div>
       )}
-      </main>
-    </>
+    </main>
   );
 }

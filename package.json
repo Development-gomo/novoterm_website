@@ -12,7 +12,8 @@
     "next": "^16.1.0-canary.13",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "swiper": "^12.1.2"
+    "swiper": "^12.1.2",
+    "swr": "^2.4.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
