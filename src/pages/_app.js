@@ -51,8 +51,12 @@ export default function MyApp({ Component, pageProps, initialHeader, initialFoot
 
   // Re-fetch header + menu on client-side locale changes
   useEffect(() => {
-    // Skip on first render if we already have SSR data for the same locale
-    if (initialHeader && lang === (router.defaultLocale || DEFAULT_LANG) && headerData) return;
+    // Prefer server-provided data for each route/locale transition.
+    // This avoids stale menu state while waiting for client fetches.
+    if (initialHeader) {
+      setHeaderData(initialHeader);
+      return;
+    }
 
     async function loadHeader() {
       try {
@@ -66,10 +70,13 @@ export default function MyApp({ Component, pageProps, initialHeader, initialFoot
       }
     }
     loadHeader();
-  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [lang, initialHeader]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (initialFooter && lang === (router.defaultLocale || DEFAULT_LANG) && footerData) return;
+    if (initialFooter) {
+      setFooterData(initialFooter);
+      return;
+    }
 
     async function loadFooter() {
       try {
@@ -80,7 +87,7 @@ export default function MyApp({ Component, pageProps, initialHeader, initialFoot
       }
     }
     loadFooter();
-  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [lang, initialFooter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
