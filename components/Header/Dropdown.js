@@ -90,7 +90,7 @@ export default function Dropdown({ item }) {
       {/* Dropdown panel */}
       {open && childArray.length > 0 && (
         <div
-          className="absolute   left-0 top-full mt-1 bg-white text-black rounded-lg shadow-lg p-3 min-w-[220px] z-50 font-montserrat text-[14px]"
+          className="absolute left-0 top-full mt-1 bg-white text-black rounded-lg shadow-lg p-3 min-w-[220px] z-50 font-montserrat text-[14px]"
           role="menu"
           onMouseEnter={openNow}
           onMouseLeave={closeSoon}
@@ -99,7 +99,7 @@ export default function Dropdown({ item }) {
             <Link
               key={sub.ID || sub.id || sub.title}
               href={wpToPath(sub.url)}
-              className="block py-2   font-montserrat text-[14px] px-2 text-gray-800 hover:text-blue-600"
+              className="block py-2 font-montserrat text-[14px] px-2 text-gray-800 hover:text-blue-600"
               role="menuitem"
             >
               {sub.title}

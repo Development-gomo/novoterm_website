@@ -5,9 +5,6 @@ import MobileMenu from "./MobileMenu";
 import { useEffect, useState } from "react";
 import { wpToPath } from "../../lib/api";
 
-
-
-
 export default function Header({ logo, menu = [], languages = [], cta = {}, translations = null }) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -37,8 +34,8 @@ export default function Header({ logo, menu = [], languages = [], cta = {}, tran
         {/* Logo */}
         <Link href="/" className="shrink-0">
           <img
-            src={logo}  className="h-[28px] md:h-[30px] lg:h-[32px]"
-            alt="Logo"
+            src={logo}  className="h-7 md:h-[30px] lg:h-8"
+            alt="Novoterm Logo"
           />
         </Link>
 
@@ -57,9 +54,6 @@ export default function Header({ logo, menu = [], languages = [], cta = {}, tran
             )
           )}
         </nav>
-        
-
-        {/* Right Side */}
         <div className="flex items-center gap-4">
 
           {/* Language switcher – visible everywhere */}
@@ -75,7 +69,6 @@ export default function Header({ logo, menu = [], languages = [], cta = {}, tran
             </Link>
           )}
 
-          {/* ✅ Mobile menu – visible below lg */}
           <div className="lg:hidden flex">
             <MobileMenu menu={cleanMenu} logo={logo} />
           </div>

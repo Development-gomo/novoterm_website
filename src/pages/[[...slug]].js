@@ -60,12 +60,6 @@ export default function Page({ page, lang, yoastHead }) {
       <YoastHead yoastHead={yoastHead} />
       <SpeakableSchema title={title} summary={summary} />
 
-      {/* PAGE TITLE */}
-      {/* <h1
-        className="text-3xl font-bold mb-6"
-        dangerouslySetInnerHTML={{ __html: title }}
-      /> */}
-
       {/* RENDER SECTIONS */}
       {sections.length ? (
         <SectionRenderer sections={sections} lang={lang} />

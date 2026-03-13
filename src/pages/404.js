@@ -41,7 +41,7 @@ export default function Custom404() {
               </button>
             </Link>
             
-            <Link href={isEN ? "/en/contact-us" : "/contact-us"}>
+            <Link href={isEN ? "/en/contact-us" : "/kontakta-oss"}>
               <button className="btn-primary lg:mt-[6px] w-fit">
                 {isEN ? "Contact us" : "Kontakta oss"}
               </button>

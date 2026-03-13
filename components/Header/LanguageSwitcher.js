@@ -26,15 +26,9 @@ export default function LanguageSwitcher({ languages = [], translations = null }
     extractImgSrc(otherLang.flag);
 
   const otherLocale = getLangCode(otherLang);
-
-  // Use the WPML translation URL if available.
-  // If no translation exists for this content, go to the home page of the target locale
-  // rather than applying the current slug (which only exists in the current language).
   const translationWpUrl = translations?.[otherLocale];
   let href = "/"; // default: home page of the target locale
   if (translationWpUrl) {
-    // wpToPath gives e.g. "/en/services/ai-translation"
-    // Strip the locale prefix because <Link locale={otherLocale}> re-adds it
     const raw = wpToPath(translationWpUrl);
     href = raw.replace(new RegExp(`^/${otherLocale}(?=/|$)`), "") || "/";
   }
