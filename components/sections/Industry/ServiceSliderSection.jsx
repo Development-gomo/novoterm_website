@@ -1,7 +1,8 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ServiceSlider from "../../Sliders/Industrypage_sliders/ServiceSlider";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function ServiceSliderSection({ section, sectionId }) {
   if (!section) return null;
@@ -19,13 +20,15 @@ export default function ServiceSliderSection({ section, sectionId }) {
   const textColor    = isDark ? "text-white/80"  : "text-[#061837]/80";
   const labelColor   = isDark ? "text-white/70"  : "text-[#061837]";
 
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [services, setServices] = useState([]);
 
   useEffect(() => {
     async function fetchServices() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/service?_embed&acf_format=standard`,
+          `/wp-api/wp/v2/service?_embed&acf_format=standard&lang=${lang}`,
           { cache: "no-store" }
         );
         const data = await res.json();
@@ -45,7 +48,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
     }
 
     fetchServices();
-  }, []);
+  }, [lang]);
 
   return (
     <section id={sectionId} className={`w-full ${sectionBg} py-[40px] md:py-[60px] lg:py-[100px]`}>

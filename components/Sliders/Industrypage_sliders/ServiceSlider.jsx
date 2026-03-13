@@ -1,4 +1,3 @@
-"use client";
 
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -6,8 +5,12 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function ServiceSlider({ slides = [], isDark = false }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -64,7 +67,7 @@ export default function ServiceSlider({ slides = [], isDark = false }) {
         {slides.map((service, i) => (
           <SwiperSlide key={i} className="h-auto">
             <Link
-              href={`/services/${service.slug}`}
+              href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/services/${service.slug}`}
               className={`flex flex-col rounded-[3px] overflow-hidden h-full ${cardBg} group`}
             >
               {/* FEATURED IMAGE */}

@@ -1,6 +1,6 @@
-"use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { wpToPath } from "../../../lib/api";
 
 export default function OurApproachSection({ section, sectionId, index = 0}) {
   if (!section) return null;
@@ -81,7 +81,7 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
                 {heading}
               </h2>
               {ctaText && ctaUrl && (
-                <Link href={ctaUrl} className="btn-primary whitespace-nowrap w-fit">
+                <Link href={wpToPath(ctaUrl) || "#"} className="btn-primary whitespace-nowrap w-fit">
                   {ctaText}
                 </Link>
               )}

@@ -1,8 +1,8 @@
-"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { wpToPath } from "../../../lib/api";
 
 
 export default function WhyChooseUsSection({ left_column, right_column }) {
@@ -87,7 +87,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
 
           {/* CTA */}
           {button_text && (
-            <Link href={button_link || "#"} className="btn-primary w-[161px] mb-12">
+            <Link href={wpToPath(button_link) || "#"} className="btn-primary w-[161px] mb-12">
               {button_text}
             </Link>
           )}

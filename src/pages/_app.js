@@ -1,17 +1,13 @@
-// /src/pages/_app.js
 import "@/styles/globals.css";
 import { useRouter } from "next/router";
-import Head from "next/head";
 import { useEffect, useState } from "react";
 
-import { getHeaderData, getMainMenu, getFooterData } from "../../lib/api";
-
+import { getHeaderData, getMainMenu, getFooterData, DEFAULT_LANG } from "../../lib/api";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
-// Fonts
 const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -32,70 +28,87 @@ const cabin = Cabin({
   variable: "--font-cabin",
 });
 
-// MAIN APP
-export default function MyApp({ Component, pageProps }) {
+function buildHeaderData(header, menu) {
+  return {
+    logo: header.logo?.url,
+    cta: { text: header.cta_text, url: header.cta_url },
+    languages: Object.values(header.languages || {}),
+    menu: Array.isArray(menu.items) ? menu.items : menu,
+  };
+}
+
+export default function MyApp({ Component, pageProps, initialHeader, initialFooter }) {
   const router = useRouter();
-  const path = router.asPath || "";
-  const lang = path.startsWith("/en") ? "en" : "sv";
+  const lang = router.locale || DEFAULT_LANG;
 
-  const [headerData, setHeaderData] = useState(null);
-  const [footerData, setFooterData] = useState(null);
+  const [headerData, setHeaderData] = useState(initialHeader || null);
+  const [footerData, setFooterData] = useState(initialFooter || null);
 
-    //  UPDATE <html lang> ON ROUTE CHANGE
+  // Keep <html lang> in sync with the active locale
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  // LOAD HEADER + MENU
+  // Re-fetch header + menu on client-side locale changes
   useEffect(() => {
+    // Skip on first render if we already have SSR data for the same locale
+    if (initialHeader && lang === (router.defaultLocale || DEFAULT_LANG) && headerData) return;
+
     async function loadHeader() {
       try {
-        const header = await getHeaderData();
-        const menu = await getMainMenu();
-
-        setHeaderData({
-          logo: header.logo?.url,
-          cta: {
-            text: header.cta_text,
-            url: header.cta_url,
-          },
-          languages: Object.values(header.languages || {}),
-          menu: Array.isArray(menu.items) ? menu.items : menu,
-        });
+        const [header, menu] = await Promise.all([
+          getHeaderData(lang),
+          getMainMenu(lang),
+        ]);
+        setHeaderData(buildHeaderData(header, menu));
       } catch (err) {
         console.error("HEADER LOAD ERROR:", err);
       }
     }
-
     loadHeader();
-  }, []);
+  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // LOAD FOOTER
   useEffect(() => {
+    if (initialFooter && lang === (router.defaultLocale || DEFAULT_LANG) && footerData) return;
+
     async function loadFooter() {
       try {
-        const footer = await getFooterData();
+        const footer = await getFooterData(lang);
         setFooterData(footer);
       } catch (err) {
         console.error("FOOTER LOAD ERROR:", err);
       }
     }
-
     loadFooter();
-  }, []);
+  }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
-      
-      {/* GLOBAL HEADER */}
-      {headerData && <Header {...headerData} />}
-
-      {/* PAGE CONTENT */}
+      {headerData && <Header {...headerData} translations={pageProps.translations || null} />}
       <Component {...pageProps} lang={lang} />
-
-      {/* GLOBAL FOOTER */}
       {footerData && <Footer data={footerData} />}
-
     </div>
   );
 }
+
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  const lang = ctx.locale || DEFAULT_LANG;
+
+  // Fetch header, menu, footer in parallel on the server
+  const [header, menu, footer] = await Promise.all([
+    getHeaderData(lang).catch(() => null),
+    getMainMenu(lang).catch(() => null),
+    getFooterData(lang).catch(() => null),
+  ]);
+
+  let pageProps = {};
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+  return {
+    pageProps,
+    initialHeader: header && menu ? buildHeaderData(header, menu) : null,
+    initialFooter: footer,
+  };
+};

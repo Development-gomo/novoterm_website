@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 /* Normalize image safely */
 const getImage = (img) => {
@@ -53,7 +54,7 @@ export default function ExpertsCTASection({ section }) {
           {/* CTA BUTTON */}
           {cta_text && cta_url && (
             <Link
-              href={cta_url}
+              href={wpToPath(cta_url) || "#"}
               className="btn-primary inline-flex items-center mb-5"
             >
               {cta_text}

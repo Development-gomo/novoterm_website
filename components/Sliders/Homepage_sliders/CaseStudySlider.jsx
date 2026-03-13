@@ -1,4 +1,3 @@
-"use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
@@ -6,8 +5,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import { useRef } from "react";
+import { useRouter } from "next/router";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function ServiceCaseStudySlider({ slides }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const nextRef = useRef(null);
   const prevRef = useRef(null);
 
@@ -58,7 +61,7 @@ export default function ServiceCaseStudySlider({ slides }) {
 
                   {slide.button_text && (
                    <Link
-  href={`/case-study/${slide.slug}`}
+  href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/case-study/${slide.slug}`}
   className="btn-primary mb-8">
   {slide.button_text}
 </Link>

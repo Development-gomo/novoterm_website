@@ -3,11 +3,12 @@ import Dropdown from "./Dropdown";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
 import { useEffect, useState } from "react";
+import { wpToPath } from "../../lib/api";
 
 
 
 
-export default function Header({ logo, menu = [], languages = [], cta = {} }) {
+export default function Header({ logo, menu = [], languages = [], cta = {}, translations = null }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
             ) : (
               <Link
                 key={item.ID}
-                href={item.url || "#"}
+                href={wpToPath(item.url)}
                 className="text-white hover:opacity-75 text-[14px] font-normal font-montserrat">
                 {item.title}
               </Link>
@@ -62,21 +63,21 @@ export default function Header({ logo, menu = [], languages = [], cta = {} }) {
         <div className="flex items-center gap-4">
 
           {/* Language switcher – visible everywhere */}
-          <LanguageSwitcher languages={languages} />
+          <LanguageSwitcher languages={languages} translations={translations} />
 
-          {/* ❌ CTA – FORCE HIDDEN ON MOBILE */}
+          {/* CTA button – hidden on mobile, shown on desktop */}
           {cta?.url && (
             <Link
-              href={cta.url}
+              href={wpToPath(cta.url)}
               className="btn-primary !hidden lg:!inline-flex"
             >
-              Get in touch
+              {cta.text || "Get in touch"}
             </Link>
           )}
 
           {/* ✅ Mobile menu – visible below lg */}
           <div className="lg:hidden flex">
-            <MobileMenu menu={cleanMenu} />
+            <MobileMenu menu={cleanMenu} logo={logo} />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { wpToPath } from "../../../lib/api";
 
 export default function CaseStudyChallengeSection({
   section,
@@ -117,7 +118,7 @@ export default function CaseStudyChallengeSection({
                 ))}
 
                 {cta_text && cta_url && (
-                  <Link href={cta_url} className="btn-primary inline-flex w-fit">
+                  <Link href={wpToPath(cta_url) || "#"} className="btn-primary inline-flex w-fit">
                     {cta_text}
                   </Link>
                 )}

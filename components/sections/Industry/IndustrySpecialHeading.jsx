@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 export default function IndustrySpecialHeading({ section, sectionId }) {
   if (!section) return null;
@@ -69,7 +70,7 @@ export default function IndustrySpecialHeading({ section, sectionId }) {
 
             {/* Button */}
             {showButton && (
-              <Link href={button_link} className="btn-primary">
+              <Link href={wpToPath(button_link) || "#"} className="btn-primary">
                 {button_text}
               </Link>
             )}

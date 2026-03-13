@@ -1,4 +1,3 @@
-"use client";
 
 export default function NumberDocumentsSection({ section, sectionId }) {
   if (!section) return null;

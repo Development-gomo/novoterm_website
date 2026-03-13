@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 export default function InnerHeroSection({ section }) {
   if (!section) return null;
@@ -63,7 +64,7 @@ export default function InnerHeroSection({ section }) {
 
           {cta_text && cta_url && (
             <Link
-              href={cta_url}
+              href={wpToPath(cta_url) || "#"}
               className="btn-primary !inline-flex !w-auto px-6 sm:px-8
                          text-sm sm:text-base mx-auto sm:mx-0"
             >

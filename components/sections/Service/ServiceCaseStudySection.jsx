@@ -1,7 +1,8 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ServiceCaseStudySlider from "../../Sliders/Servicepage_sliders/ServiceCaseStudySlider";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function ServiceCaseStudySection({
   heading,
@@ -9,13 +10,15 @@ export default function ServiceCaseStudySection({
   sectionId,
   index = 0,
 }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [slides, setSlides] = useState([]);
 
   useEffect(() => {
     async function getData() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/case_study?acf_format=standard&per_page=10`
+          `/wp-api/wp/v2/case_study?acf_format=standard&per_page=10&lang=${lang}`
         );
         const data = await res.json();
 
@@ -38,7 +41,7 @@ export default function ServiceCaseStudySection({
     }
 
     getData();
-  }, []);
+  }, [lang]);
 
   return (
     <section id={sectionId} className="w-full bg-[#EAF1FF] py-6 md:py-10 lg:pb-[100px] lg:pt-[0px]">

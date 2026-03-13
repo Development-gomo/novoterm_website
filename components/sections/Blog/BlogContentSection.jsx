@@ -1,12 +1,16 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function BlogContentSection({ section }) {
-  if (!section) return null;
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
 
-  const { 
+  const [relatedPosts, setRelatedPosts] = useState([]);
+
+  const {
     heading,
     excerpt,
     content,
@@ -14,22 +18,20 @@ export default function BlogContentSection({ section }) {
     published_date,
     reading_time,
     category,
-  } = section;
-
-  const [relatedPosts, setRelatedPosts] = useState([]);
+  } = section || {};
 
   useEffect(() => {
     async function loadRelatedPosts() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/posts?_embed&per_page=6`
+          `/wp-api/wp/v2/posts?_embed&per_page=6&lang=${lang}`
         );
         const data = await res.json();
 
         const formatted = data.map((post) => ({
           title: post.title?.rendered || '',
           excerpt: post.excerpt?.rendered?.replace(/<[^>]*>/g, '').slice(0, 100) + '...' || '',
-          url: `/blog/${post.slug}`,
+          url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
           image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/default-blog.jpg',
           category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'General',
           date: new Date(post.date).toLocaleDateString('en-US', {
@@ -47,7 +49,7 @@ export default function BlogContentSection({ section }) {
     }
 
     loadRelatedPosts();
-  }, []);
+  }, [lang]);
 
   return (
     <section 

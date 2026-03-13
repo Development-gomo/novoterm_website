@@ -1,8 +1,9 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 const SITE_HEADER_DESKTOP = 80;
 const SITE_HEADER_MOBILE = 64;
@@ -17,6 +18,8 @@ export default function ServicesSection({
   heading = "",
   description = "",
 }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [services, setServices] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -41,7 +44,7 @@ export default function ServicesSection({
     async function loadServices() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/service?_embed&acf_format=standard&per_page=100`,
+          `/wp-api/wp/v2/service?_embed&acf_format=standard&per_page=100&lang=${lang}`,
           { cache: "no-store" }
         );
 
@@ -72,7 +75,7 @@ export default function ServicesSection({
     }
 
     loadServices();
-  }, []);
+  }, [lang]);
 
   return (
     <section className="relative w-full overflow-visible bg-[#E3EDFF]">
@@ -144,7 +147,7 @@ export default function ServicesSection({
 
                 {service.cta_text && (
                   <Link
-                    href={`/services/${service.slug}`}
+                    href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/services/${service.slug}`}
                     className="btn-primary hidden md:inline-flex text-sm"
                   >
                     {service.cta_text}

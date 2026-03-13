@@ -1,5 +1,6 @@
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { wpToPath } from "../../../lib/api";
 
 export default function FullWidthExpertsSection({
   background_image,
@@ -110,7 +111,7 @@ export default function FullWidthExpertsSection({
         >
           {cta_button_text?.trim() && (
             <Link
-              href={cta_button_link || "#"}
+              href={wpToPath(cta_button_link) || "#"}
               className="btn-primary text-sm sm:text-base px-5 py-3 sm:px-6 md:px-8 md:py-4"
             >
               {cta_button_text}

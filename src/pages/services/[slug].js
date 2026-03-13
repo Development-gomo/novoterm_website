@@ -1,38 +1,43 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
-import { SpeakableSchema } from "../../../components/SEO/StructuredData";
+import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
+import { resolveLang } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
+  const lang = resolveLang(locale);
 
-  // Dynamically set the language based on the locale (en or sv)
-  const lang = locale === 'en' ? 'en' : 'sv';
+  const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`;
 
-  // Fetch the service data for the specified language
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&lang=${lang}&acf_format=standard`
-  );
+  // Fetch with language filter first, then fall back to default language
+  let res = await fetch(`${base}&lang=${lang}`);
+  let data = await res.json();
 
-  const data = await res.json();
+  if (!Array.isArray(data) || !data.length) {
+    res = await fetch(base);
+    data = await res.json();
+  }
 
-  // If no data is found, return a 404 page
-  if (!data.length) {
+  if (!Array.isArray(data) || !data.length) {
     return { notFound: true };
   }
 
   return {
     props: {
       service: data[0],
+      translations: data[0].translations || null,
+      yoastHead: data[0].yoast_head || null,
     },
   };
 }
-export default function SingleService({ service }) {
+export default function SingleService({ service, yoastHead }) {
   const sections = service.acf?.sections || [];
   const title = service.title?.rendered || "";
   const summary = service.acf?.article_summary || "";
 
   return (
     <main>
+      <YoastHead yoastHead={yoastHead} />
       <SpeakableSchema title={title} summary={summary} />
       {sections.length > 0 ? (
         <>

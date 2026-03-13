@@ -1,5 +1,6 @@
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { wpToPath } from "../../../lib/api";
 
 export default function AboutSection({
   section_label,
@@ -90,7 +91,7 @@ export default function AboutSection({
 
               {button_text && (
                 <Link
-                  href={button_link}
+                  href={wpToPath(button_link) || "#"}
                   className="btn-primary inline-block text-sm sm:text-base"
                 >
                   {button_text}

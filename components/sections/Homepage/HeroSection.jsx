@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 export default function HeroSection({
   background_image,
@@ -46,7 +47,7 @@ export default function HeroSection({
             )}
             {button_text && (
               <Link
-                href={button_link}
+                href={wpToPath(button_link) || "#"}
                 className="btn-primary inline-block text-sm sm:text-base"
               >
                 {button_text}

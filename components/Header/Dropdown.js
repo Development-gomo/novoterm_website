@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { wpToPath } from "../../lib/api";
 
 export default function Dropdown({ item }) {
   const [open, setOpen] = useState(false);
@@ -97,7 +98,7 @@ export default function Dropdown({ item }) {
           {childArray.map((sub) => (
             <Link
               key={sub.ID || sub.id || sub.title}
-              href={sub.url || "#"}
+              href={wpToPath(sub.url)}
               className="block py-2   font-montserrat text-[14px] px-2 text-gray-800 hover:text-blue-600"
               role="menuitem"
             >

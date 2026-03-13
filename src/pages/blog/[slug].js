@@ -1,93 +1,67 @@
 import SectionRenderer from "../../../components/SectionRenderer";
-import { SpeakableSchema } from "../../../components/SEO/StructuredData";
+import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
+import { resolveLang } from "../../../lib/api";
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
+  const lang = resolveLang(locale);
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?slug=${slug}&acf_format=standard&_embed`
-  );
+  const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?slug=${slug}&acf_format=standard&_embed`;
 
-  const data = await res.json();
+  let res = await fetch(`${base}&lang=${lang}`);
+  let data = await res.json();
 
-  if (!data.length) {
+  if (!Array.isArray(data) || !data.length) {
+    res = await fetch(base);
+    data = await res.json();
+  }
+
+  if (!Array.isArray(data) || !data.length) {
     return { notFound: true };
   }
 
   const post = data[0];
-
-  // Extract featured image
-  const featuredImage = post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '';
-
-  // Extract category
-  const categories = post._embedded?.['wp:term']?.[0] || [];
-  const categoryName = categories[0]?.name || '';
-
-  // Extract author
-  const author = post._embedded?.author?.[0]?.name || '';
-
-  // Format date
-  const publishedDate = new Date(post.date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "";
+  const categories = post._embedded?.["wp:term"]?.[0] || [];
+  const author = post._embedded?.author?.[0]?.name || "";
+  const publishedDate = new Date(post.date).toLocaleDateString("en-US", {
+    year: "numeric", month: "long", day: "numeric",
   });
+  const wordCount = post.content?.rendered?.replace(/<[^>]*>/g, "").split(/\s+/).length || 0;
 
-  // Calculate reading time (approx 200 words per minute)
-  const wordCount = post.content?.rendered?.replace(/<[^>]*>/g, '').split(/\s+/).length || 0;
-  const readingTime = Math.ceil(wordCount / 200);
-
-  // Build sections array
-  const sections = [
-    {
-      acf_fc_layout: 'blog_hero',
-      featured_image: featuredImage,
-    },
-    {
-      acf_fc_layout: 'blog_content',
-      heading: post.title?.rendered || '',
-      excerpt: post.excerpt?.rendered || '',
-      content: post.content?.rendered || '',
-      author: author,
-      published_date: publishedDate,
-      reading_time: readingTime,
-      category: categoryName,
-    }
-  ];
-
-  // If ACF sections exist, use those instead
   if (post.acf?.sections && Array.isArray(post.acf.sections)) {
-    return {
-      props: {
-        post: data[0],
-        sections: post.acf.sections,
-        currentSlug: slug,
-      },
-    };
+    return { props: { post, sections: post.acf.sections, currentSlug: slug, translations: post.translations || null, yoastHead: post.yoast_head || null } };
   }
 
   return {
     props: {
-      post: data[0],
-      sections: sections,
+      post,
       currentSlug: slug,
+      translations: post.translations || null,
+      yoastHead: post.yoast_head || null,
+      sections: [
+        { acf_fc_layout: "blog_hero", featured_image: featuredImage },
+        {
+          acf_fc_layout: "blog_content",
+          heading: post.title?.rendered || "",
+          excerpt: post.excerpt?.rendered || "",
+          content: post.content?.rendered || "",
+          author,
+          published_date: publishedDate,
+          reading_time: Math.ceil(wordCount / 200),
+          category: categories[0]?.name || "",
+        },
+      ],
     },
   };
 }
 
-export default function BlogPost({ post, sections, currentSlug }) {
-  const title = post?.title?.rendered || "";
-  const summary = post?.acf?.article_summary || "";
-
+export default function BlogPost({ post, sections, currentSlug, yoastHead }) {
   return (
     <>
-      <SpeakableSchema title={title} summary={summary} />
-      {sections && (
-        <SectionRenderer
-          sections={sections}
-          currentSlug={currentSlug}
-        />
-      )}
+      <YoastHead yoastHead={yoastHead} />
+      <SpeakableSchema title={post?.title?.rendered || ""} summary={post?.acf?.article_summary || ""} />
+      {sections && <SectionRenderer sections={sections} currentSlug={currentSlug} />}
     </>
   );
 }

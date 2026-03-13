@@ -1,4 +1,3 @@
-"use client";
 
 import { useState } from "react";
 
@@ -18,7 +17,7 @@ export default function ContactForm() {
 
     try {
       const res = await fetch(
-        "https://gomostaging.com/novoterm-headless/wp-json/custom/v1/contact",
+        `/wp-api/custom/v1/contact`,
         {
           method: "POST",
           body: formData,
@@ -136,9 +135,9 @@ export default function ContactForm() {
               <option value="" className="text-black bg-white">
                 AREA OF INTEREST
               </option>
-              <option className="text-black bg-white">Translation</option>
-              <option className="text-black bg-white">Localization</option>
-              <option className="text-black bg-white">Review</option>
+              <option value="Translation" className="text-black bg-white">Translation</option>
+              <option value="Localization" className="text-black bg-white">Localization</option>
+              <option value="Review" className="text-black bg-white">Review</option>
             </select>
 
             <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">

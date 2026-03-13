@@ -1,5 +1,5 @@
-"use client";
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 const getImageUrl = (img) => {
   if (!img) return null;
@@ -76,7 +76,7 @@ export default function IconBoxSection({ section, sectionId, index = 0 }) {
               </div>
 
               {cta_text && cta_link && (
-                <Link href={cta_link} className="btn-primary w-fit shrink-0">
+                <Link href={wpToPath(cta_link) || "#"} className="btn-primary w-fit shrink-0">
                   {cta_text}
                 </Link>
               )}

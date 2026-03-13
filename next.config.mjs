@@ -6,8 +6,9 @@ const nextConfig = {
 
     // Add the i18n (internationalization) configuration for multilingual support
   i18n: {
-    locales: ['sv', 'en'], // Supported languages: Swedish and English
-    defaultLocale: 'sv',    // Default language is Swedish
+    locales: ['sv', 'en'],
+    defaultLocale: 'sv',
+    localeDetection: false, // Don't auto-redirect based on browser language
   },
 
   images: {

@@ -1,8 +1,9 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
 import DotIndicator from "../../ui/DotIndicator";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 
 export default function CaseStudySection({
@@ -11,26 +12,27 @@ export default function CaseStudySection({
   paragraph,
 }) {
   const [slides, setSlides] = useState([]);
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
 
-  // 🔵 Fetch CPT inside section (Option 1)
   useEffect(() => {
     async function getData() {
       try {
-      const res = await fetch(
-  `/wp-api/wp/v2/case_study?acf_format=standard`
-);
+        const res = await fetch(
+          `/wp-api/wp/v2/case_study?acf_format=standard&lang=${lang}`
+        );
 
         const data = await res.json();
 
         const formatted = data.map(post => ({
-          slug: post.slug,  
+          slug: post.slug,
           review_heading: post.acf.review_heading,
           button_text: post.acf.button_text,
           button_link: post.acf.button_link,
           time_text: post.acf.time_text,
           subtext: post.acf.subtext,
           service_used: post.acf.service_used,
-          cs_image: post.acf.cs_image, 
+          cs_image: post.acf.cs_image,
         }));
 
         setSlides(formatted);
@@ -41,7 +43,7 @@ export default function CaseStudySection({
     }
 
     getData();
-  }, []);
+  }, [lang]);
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-[#E9F0FF]">

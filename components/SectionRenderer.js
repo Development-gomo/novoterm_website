@@ -1,4 +1,3 @@
-"use client";
 
 /* ===================== HOMEPAGE ===================== */
 import HeroSection from "./sections/Homepage/HeroSection";

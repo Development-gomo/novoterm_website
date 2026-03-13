@@ -1,7 +1,6 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
+import { wpToPath } from "../../lib/api";
 
 export default function Footer({ data }) {
   if (!data) return null;
@@ -23,7 +22,7 @@ export default function Footer({ data }) {
 
             {/* CTA BUTTON + SOCIAL */}
             <div className="flex items-center gap-4 mb-8">
-              <Link href={cta?.cta_button_link} className="btn-primary">
+              <Link href={wpToPath(cta?.cta_button_link)} className="btn-primary">
                 {cta?.cta_button_text}
               </Link>
 
@@ -63,7 +62,7 @@ export default function Footer({ data }) {
             <ul className="space-y-2">
               {services?.service_links?.map((item, i) => (
                 <li key={i}>
-                  <Link href={item.url} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
+                  <Link href={wpToPath(item.url)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
                     {item.title}
                   </Link>
                 </li>
@@ -79,7 +78,7 @@ export default function Footer({ data }) {
             <ul className="space-y-2">
               {quick?.quick_links?.map((item, i) => (
                 <li key={i}>
-                  <Link href={item.url} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
+                  <Link href={wpToPath(item.url)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
                     {item.title}
                   </Link>
                 </li>
@@ -95,7 +94,7 @@ export default function Footer({ data }) {
             <ul className="space-y-2">
               {resources?.resource_links?.map((item, i) => (
                 <li key={i}>
-                  <Link href={item.url} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
+                  <Link href={wpToPath(item.url)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
                     {item.title}
                   </Link>
                 </li>

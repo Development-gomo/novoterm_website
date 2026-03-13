@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 export default function TranslationMethodsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
@@ -63,7 +64,7 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
                         </h3>
                       )}
                       {item.cta_text && item.cta_link && (
-                        <Link href={item.cta_link} className="btn-primary inline-block text-sm sm:text-base w-full text-center mt-[24px]">
+                        <Link href={wpToPath(item.cta_link) || "#"} className="btn-primary inline-block text-sm sm:text-base w-full text-center mt-[24px]">
                           {item.cta_text}
                         </Link>
                       )}

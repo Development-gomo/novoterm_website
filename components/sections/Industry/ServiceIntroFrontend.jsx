@@ -1,8 +1,8 @@
-"use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { wpToPath } from "../../../lib/api";
 
 export default function IndustryIntro({
   section,
@@ -126,7 +126,7 @@ const getEmbedUrl = (url) => {
 
                 {/* BUTTON – LEFT / BELOW STATIC */}
                 {showButton && button_position !== "right" && (
-                  <Link href={button_link} className="btn-primary">
+                  <Link href={wpToPath(button_link) || "#"} className="btn-primary">
                     {button_text}
                   </Link>
                 )}
@@ -179,7 +179,7 @@ const getEmbedUrl = (url) => {
 
                 {/* BUTTON – RIGHT / BELOW MEDIA */}
                 {showButton && button_position === "right" && (
-                  <Link href={button_link} className="btn-primary">
+                  <Link href={wpToPath(button_link) || "#"} className="btn-primary">
                     {button_text}
                   </Link>
                 )}

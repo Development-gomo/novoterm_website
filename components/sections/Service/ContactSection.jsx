@@ -1,4 +1,3 @@
-"use client";
 
 import CF7ContactForm from "../../ui/CF7ContactForm";
 

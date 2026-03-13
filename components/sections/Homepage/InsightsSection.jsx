@@ -1,8 +1,9 @@
-    "use client";
-
     import { useEffect, useState } from "react";
+    import { useRouter } from "next/router";
+    import Link from "next/link";
     import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
     import DotIndicator from "../../ui/DotIndicator";
+    import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 
     export default function InsightsSection({
     section_title,
@@ -11,21 +12,20 @@
     button,
     button_url,
     }) {
+    const router = useRouter();
+    const lang = router.locale || DEFAULT_LANG;
     const [slides, setSlides] = useState([]);
 
     useEffect(() => {
         async function loadPosts() {
         try {
-            // IMPORTANT: Correct WordPress REST API route for your website
             const res = await fetch(
-            `/wp-api/wp/v2/posts?_embed`
+            `/wp-api/wp/v2/posts?_embed&lang=${lang}`
             );
 
         let data = await res.json();
 
             data = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            console.log("RAW POSTS:", data);
 
             const formatted = data.map((post) => {
             // CATEGORY (fallback to General)
@@ -54,7 +54,7 @@
                 excerpt:
                 post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) +
                 "...",
-                url: `/blog/${post.slug}`,
+                url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
                 image,
                 category,
                 date,
@@ -69,7 +69,7 @@
         }
 
         loadPosts();
-    }, []);
+    }, [lang]);
 
     return (
         <section className="relative w-full py-15 md:py-[100px] bg-[#E3EDFF]">
@@ -102,9 +102,9 @@
             {/* BUTTON */}
             {button && (
             <div className="text-center mt-10">
-                <a href={button_url || "#"} className="btn-primary inline-block">
+                <Link href={wpToPath(button_url) || "#"} locale={lang} className="btn-primary inline-block">
                 {button}
-                </a>
+                </Link>
             </div>
             )}
             

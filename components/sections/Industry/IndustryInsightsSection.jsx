@@ -1,20 +1,24 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
 import DotIndicator from "../../ui/DotIndicator";
+import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
+import Link from "next/link";
 
 export default function IndustryInsightsSection({ section, sectionId }) {
   if (!section) return null;
 
   const { section_title, heading, paragraph, button, button_url } = section;
 
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [slides, setSlides] = useState([]);
 
   useEffect(() => {
     async function loadPosts() {
       try {
-        const res = await fetch(`/wp-api/wp/v2/posts?_embed`);
+        const res = await fetch(`/wp-api/wp/v2/posts?_embed&lang=${lang}`);
         let data = await res.json();
 
         data = data.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -42,7 +46,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             excerpt:
               post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) +
               "...",
-            url: `/blog/${post.slug}`,
+            url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
             image,
             category,
             date,
@@ -57,7 +61,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
     }
 
     loadPosts();
-  }, []);
+  }, [lang]);
 
   return (
     <section
@@ -95,9 +99,9 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             {/* BUTTON */}
             {button && (
               <div className="text-center mt-10">
-                <a href={button_url || "#"} className="btn-primary inline-block">
+                <Link href={wpToPath(button_url) || "#"} className="btn-primary inline-block">
                   {button}
-                </a>
+                </Link>
               </div>
             )}
 

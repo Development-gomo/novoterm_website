@@ -1,16 +1,59 @@
 import Head from "next/head";
 
-/**
- * SpeakableSchema
- *
- * Injects a Speakable JSON-LD block into <head> when an article_summary
- * ACF field is present on the page.
- *
- * Props:
- *   title   – plain-text page title  (page.title.rendered, stripped)
- *   summary – value of the article_summary ACF field
- *   url     – canonical URL for the page (optional but recommended)
- */
+// ─── YoastHead ────────────────────────────────────────────────────────────────
+// Parses the yoast_head HTML string WordPress/Yoast adds to REST responses and
+// renders each tag individually inside next/head.
+
+function parseAttrs(tagStr) {
+  const attrs = {};
+  const re = /([\w-]+)=["']([^"']*)["']/g;
+  let m;
+  while ((m = re.exec(tagStr)) !== null) {
+    // Map HTML attr names → React prop names where needed
+    const key = m[1] === "class" ? "className" : m[1] === "http-equiv" ? "httpEquiv" : m[1];
+    attrs[key] = m[2];
+  }
+  return attrs;
+}
+
+export function YoastHead({ yoastHead }) {
+  if (!yoastHead) return null;
+
+  const els = [];
+
+  // <title>
+  const titleM = yoastHead.match(/<title>([\s\S]*?)<\/title>/);
+  if (titleM) els.push(<title key="yt">{titleM[1]}</title>);
+
+  // <meta ...>
+  [...yoastHead.matchAll(/<meta\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
+    els.push(<meta key={`ym${i}`} {...parseAttrs(m[0])} />);
+  });
+
+  // <link ...>
+  [...yoastHead.matchAll(/<link\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
+    els.push(<link key={`yl${i}`} {...parseAttrs(m[0])} />);
+  });
+
+  // <script type="application/ld+json">
+  [...yoastHead.matchAll(/<script\s([^>]*)>([\s\S]*?)<\/script>/g)].forEach((m, i) => {
+    els.push(
+      <script key={`ys${i}`} {...parseAttrs(m[1])}
+        dangerouslySetInnerHTML={{ __html: m[2] }} />
+    );
+  });
+
+  return <Head>{els}</Head>;
+}
+
+// ─── SpeakableSchema ──────────────────────────────────────────────────────────
+// Injects a Speakable JSON-LD block into <head> when an article_summary
+// ACF field is present on the page.
+//
+// Props:
+//   title   – plain-text page title  (page.title.rendered, stripped)
+//   summary – value of the article_summary ACF field
+//   url     – canonical URL for the page (optional but recommended)
 
 const stripHtml = (html) =>
   html ? html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() : "";

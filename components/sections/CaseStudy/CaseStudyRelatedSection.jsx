@@ -1,8 +1,9 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function CaseStudyRelatedSection({
   section,
@@ -11,6 +12,8 @@ export default function CaseStudyRelatedSection({
   index = 0,
 }) {
   const { section_title, heading, paragraph } = section;
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [slides, setSlides] = useState([]);
 
   const STICKY_START = 120;
@@ -20,7 +23,7 @@ export default function CaseStudyRelatedSection({
   useEffect(() => {
     async function getData() {
       const res = await fetch(
-        `/wp-api/wp/v2/case_study?acf_format=standard`
+        `/wp-api/wp/v2/case_study?acf_format=standard&lang=${lang}`
       );
       const data = await res.json();
 
@@ -37,7 +40,7 @@ export default function CaseStudyRelatedSection({
     }
 
     getData();
-  }, [currentSlug]);
+  }, [currentSlug, lang]);
 
   if (!slides.length) return null;
 

@@ -1,7 +1,7 @@
-"use client";
 
 import { useState } from "react";
 import Head from "next/head";
+import { wpToPath } from "../../../lib/api";
 
 // Strip HTML tags for clean schema text
 const stripHtml = (html) =>
@@ -87,7 +87,7 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
 
               {cta_text && cta_link && (
                 <a
-                  href={typeof cta_link === "object" ? cta_link?.url || "#" : cta_link}
+                  href={wpToPath(typeof cta_link === "object" ? cta_link?.url : cta_link) || "#"}
                   target={typeof cta_link === "object" && cta_link?.target ? cta_link.target : undefined}
                   className="btn-primary self-start sm:self-auto"
                 >

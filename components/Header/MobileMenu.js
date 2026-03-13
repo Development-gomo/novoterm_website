@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { wpToPath } from "../../lib/api";
 
 export default function MobileMenu({ menu = [], logo }) {
   const [open, setOpen] = useState(false);
@@ -72,7 +73,7 @@ export default function MobileMenu({ menu = [], logo }) {
                 <div key={item.ID} className="border-b border-white/10">
                   <div className="flex items-center justify-between py-3">
                     <Link
-                      href={item.url || "#"}
+                      href={wpToPath(item.url)}
                       onClick={() => setOpen(false)}
                       className="text-white font-medium hover:opacity-80 transition"
                     >
@@ -94,7 +95,7 @@ export default function MobileMenu({ menu = [], logo }) {
                       {subItems.map((sub) => (
                         <li key={sub.ID}>
                           <Link
-                            href={sub.url || "#"}
+                            href={wpToPath(sub.url)}
                             onClick={() => setOpen(false)}
                             className="flex items-center gap-2 text-white/75 hover:text-white transition text-sm"
                           >

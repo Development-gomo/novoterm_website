@@ -1,4 +1,3 @@
-"use client";
 
 export default function PhilosophySection({
   section,
@@ -77,13 +76,13 @@ export default function PhilosophySection({
                   max-w-[1150px]" /* ← was fixed width */
               >
                 {left_description && (
-                  <p
+                  <div
                     dangerouslySetInnerHTML={{ __html: left_description }}
                   />
                 )}
 
                 {right_description && (
-                  <p
+                  <div
                     dangerouslySetInnerHTML={{ __html: right_description }}
                   />
                 )}

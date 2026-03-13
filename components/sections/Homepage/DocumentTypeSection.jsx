@@ -1,8 +1,9 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
 import DotIndicator from "../../ui/DotIndicator";
+import { wpToPath } from "../../../lib/api";
 
 export default function DocumentTypeSection({
   section_title,
@@ -97,9 +98,9 @@ export default function DocumentTypeSection({
         {/* CTA BUTTON BELOW SLIDER */}
         {button && (
           <div className="flex justify-center mt-8 md:mt-10">
-            <a href={button_url} className="btn-primary">
+            <Link href={wpToPath(button_url) || "#"} className="btn-primary">
               {button}
-            </a>
+            </Link>
           </div>
         )}
       </div>

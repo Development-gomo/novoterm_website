@@ -1,12 +1,15 @@
-"use client";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function DocumentTypeSlider({ slides }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   return (
     <div className="relative w-full">
 
@@ -84,7 +87,7 @@ export default function DocumentTypeSlider({ slides }) {
           return (
             <SwiperSlide key={index} className="pointer-events-none">
               <Link
-                href={`/document-type/${slide.slug}`}
+                href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/document-type/${slide.slug}`}
                 className="block h-full pointer-events-auto"
               >
                 <div className="relative group h-[400px] overflow-hidden">

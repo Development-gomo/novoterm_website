@@ -1,8 +1,9 @@
-"use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { DEFAULT_LANG } from "../../../lib/api";
 import { Navigation, Pagination } from "swiper/modules";
 
 import "swiper/css";
@@ -12,12 +13,14 @@ import "swiper/css/pagination";
 export default function IndustriesSection({ data, sectionId, index = 0 }) {
   const { section_title, section_description } = data || {};
 
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [industries, setIndustries] = useState([]);
 
   useEffect(() => {
     async function fetchIndustries() {
       try {
-        const res = await fetch("/wp-api/wp/v2/industry?_embed&per_page=20");
+        const res = await fetch(`/wp-api/wp/v2/industry?_embed&per_page=20&lang=${lang}`);
         const json = await res.json();
 
         const formatted = Array.isArray(json)
@@ -36,7 +39,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
     }
 
     fetchIndustries();
-  }, []);
+  }, [lang]);
 
   if (!industries.length) return null;
 
@@ -94,7 +97,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
             >
               {industries.map((item) => (
                 <SwiperSlide key={item.id}>
-                  <Link href={`/industry/${item.slug}`} className="relative h-[420px] rounded-[3px] overflow-hidden group block">
+                  <Link href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/industry/${item.slug}`} className="relative h-[420px] rounded-[3px] overflow-hidden group block">
                     <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(6, 24, 55, 0.25) 0%, rgba(6, 24, 55, 0.90) 100%), url(${item.image}) center / cover no-repeat` }} />
                     <div className="absolute top-6 left-6 right-6 z-10">
                       <h3 

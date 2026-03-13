@@ -1,5 +1,5 @@
-"use client";
 import Link from "next/link";
+import { wpToPath } from "../../../lib/api";
 
 const getImageUrl = (img) => {
   if (!img) return null;
@@ -43,7 +43,7 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
               </div>
 
               {cta_text && cta_link && (
-                <Link href={cta_link} className="btn-primary lg:mt-[6px] w-fit">
+                <Link href={wpToPath(cta_link) || "#"} className="btn-primary lg:mt-[6px] w-fit">
                   {cta_text}
                 </Link>
               )}
