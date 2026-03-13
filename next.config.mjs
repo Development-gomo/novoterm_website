@@ -4,7 +4,7 @@ const WP_URL = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, '') || '';
 const nextConfig = {
   reactStrictMode: true,
 
-    // Add the i18n (internationalization) configuration for multilingual support
+  // Add the i18n (internationalization) configuration for multilingual support
   i18n: {
     locales: ['sv', 'en'],
     defaultLocale: 'sv',
@@ -23,7 +23,21 @@ const nextConfig = {
       },
     ];
   },
-};
 
+  async redirects() {
+    return [
+      {
+        source: '/home',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/en/home',
+        destination: '/en',
+        permanent: true,
+      },
+    ];
+  },
+};
 
 export default nextConfig;
