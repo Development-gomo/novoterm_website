@@ -28,9 +28,15 @@ export default function LanguageSwitcher({ languages = [], translations = null }
   const otherLocale = getLangCode(otherLang);
   const translationWpUrl = translations?.[otherLocale];
   let href = "/"; // default: home page of the target locale
-  if (translationWpUrl) {
+  const currentPath = (router.asPath || "/").split(/[?#]/)[0].replace(/\/+$/, "") || "/";
+  const isHomePath = currentPath === "/" || currentPath === `/${currentLocale}`;
+
+  // On home pages, always switch to locale root (e.g. / -> /en)
+  if (!isHomePath && translationWpUrl) {
     const raw = wpToPath(translationWpUrl);
-    href = raw.replace(new RegExp(`^/${otherLocale}(?=/|$)`), "") || "/";
+    const normalized = raw.replace(new RegExp(`^/${otherLocale}(?=/|$)`), "") || "/";
+    const withoutTrailingSlash = normalized.replace(/\/+$/, "") || "/";
+    href = withoutTrailingSlash === "/home" ? "/" : withoutTrailingSlash;
   }
 
   return (
