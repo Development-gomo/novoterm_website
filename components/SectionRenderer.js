@@ -8,6 +8,8 @@ import DocumentTypeSection from "./sections/Homepage/DocumentTypeSection";
 import WhyChooseUsSection from "./sections/Homepage/WhyChooseUsSection";
 import InsightsSection from "./sections/Homepage/InsightsSection";
 import ServicesSection from "./sections/Homepage/ServicesSection";
+import HomepageFaqSection from "./sections/Homepage/FaqSection";
+import ArticlesSection from "./sections/Homepage/ArticlesSection";
 
 
 /* ===================== SERVICE PAGE ===================== */
@@ -173,6 +175,27 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             section_label={block.section_label}
             heading={block.heading}
             description={block.description}
+          />
+        );
+
+      case "articles_section":
+        return (
+          <ArticlesSection
+            key={`articles-${index}`}
+            section_heading={block.section_heading}
+            category_filter={block.category_filter}
+            max_posts={block.max_posts}
+            cta_text={block.cta_text}
+          />
+        );
+
+      case "faq_section_global":
+        return (
+          <HomepageFaqSection
+            key={`faq-global-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
           />
         );
 
