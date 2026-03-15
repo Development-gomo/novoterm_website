@@ -80,7 +80,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             {/* HEADING */}
             {heading && (
               <h2
-                className="font-heading font-semibold text-[28px] sm:text-[34px] md:text-[40px] lg:text-[48px] leading-[36px] sm:leading-[44px] md:leading-[52px] lg:leading-[58px] text-[#061837] [&_em]:text-[#2655C4] [&_em]:font-bold max-w-[780px] mb-4"
+                className="font-heading font-semibold text-[28px] sm:text-[34px] md:text-[34px] lg:text-[40px] leading-[36px] sm:leading-[40px] md:leading-[44px] lg:leading-[48px] text-[#061837] [&_em]:text-[#2655C4] [&_em]:font-bold max-w-[780px] mb-4"
                 dangerouslySetInnerHTML={{ __html: heading }}
               />
             )}

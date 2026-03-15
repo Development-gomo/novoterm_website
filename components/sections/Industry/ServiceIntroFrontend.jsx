@@ -8,6 +8,7 @@ export default function IndustryIntro({
   section,
   sectionId,
   index = 0,
+  removeBottomPadding = false,
 }) {
   if (!section) return null;
 
@@ -72,7 +73,7 @@ const getEmbedUrl = (url) => {
 };
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] md:py-10 lg:py-[100px]`}>
+    <section id={sectionId} className={`w-full ${sectionBg} ${removeBottomPadding ? 'pt-[40px] md:pt-10 lg:pt-[100px] pb-0' : 'py-[40px] md:py-10 lg:py-[100px]'}`}>
       <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row">
@@ -89,14 +90,13 @@ const getEmbedUrl = (url) => {
               <h2
                 className={`
                   font-heading font-semibold
-                  text-[28px]
-                  sm:text-[34px]
-                  md:text-[40px]
-                  lg:text-[48px]
+                   text-[28px]
+                      md:text-[34px]
+                      lg:text-[40px]
                   leading-[36px]
-                  sm:leading-[44px]
-                  md:leading-[52px]
-                  lg:leading-[58px]
+                  sm:leading-[40px]
+                  md:leading-[44px]
+                  lg:leading-[48px]
                   [&_em]:text-[#2655C4]
                   [&_em]:font-bold
                   mb-8 md:mb-[40px]
@@ -119,7 +119,7 @@ const getEmbedUrl = (url) => {
 
                 {main_content && (
                   <div
-                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline ${textColor}`}
+                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline [&_h2]:font-heading [&_h2]:font-semibold [&_h2]:text-[22px] [&_h2]:md:text-[26px] [&_h2]:leading-snug [&_h2]:mb-3 [&_h3]:font-heading [&_h3]:font-semibold [&_h3]:text-[18px] [&_h3]:md:text-[22px] [&_h3]:leading-snug [&_h3]:mb-3 [&_h4]:font-heading [&_h4]:font-semibold [&_h4]:text-[16px] [&_h4]:md:text-[18px] [&_h4]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-semibold [&_br]:block ${textColor}`}
                     dangerouslySetInnerHTML={{ __html: main_content }}
                   />
                 )}
@@ -170,9 +170,9 @@ const getEmbedUrl = (url) => {
                     )}
                   </div>
                 )}
-                {content && (
+                {layout_type !== "image" && content && (
                   <div
-                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline ${textColor}`}
+                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline [&_h2]:font-heading [&_h2]:font-semibold [&_h2]:text-[22px] [&_h2]:md:text-[26px] [&_h2]:leading-snug [&_h2]:mb-3 [&_h3]:font-heading [&_h3]:font-semibold [&_h3]:text-[18px] [&_h3]:md:text-[22px] [&_h3]:leading-snug [&_h3]:mb-3 [&_h4]:font-heading [&_h4]:font-semibold [&_h4]:text-[16px] [&_h4]:md:text-[18px] [&_h4]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-semibold [&_br]:block ${textColor}`}
                     dangerouslySetInnerHTML={{ __html: content }}
                   />
                 )}

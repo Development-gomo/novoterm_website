@@ -387,7 +387,14 @@ case "inner_hero_section":
         );
 
       case "industry_intro":
-        return <IndustryIntroSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+        // Remove bottom padding if the next section is also industry_intro with the same light theme
+        const nextBlock = sections[index + 1];
+        const currentTheme = block.section_theme || "light";
+        const nextTheme = nextBlock?.section_theme || "light";
+        const nextIsIntro = nextBlock?.acf_fc_layout === "industry_intro";
+        const removePb = nextIsIntro && currentTheme === "light" && nextTheme === "light";
+
+        return <IndustryIntroSection key={index} section={block} sectionId={`section-${index}`} index={index} removeBottomPadding={removePb} />;
 
       case "industry_special_heading":
         return <IndustrySpecialHeading key={index} section={block} sectionId={`section-${index}`} />;

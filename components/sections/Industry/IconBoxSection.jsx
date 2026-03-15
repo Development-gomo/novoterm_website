@@ -50,13 +50,12 @@ export default function IconBoxSection({ section, sectionId, index = 0 }) {
                     className={`
                       font-heading font-semibold
                       text-[28px]
-                      sm:text-[34px]
-                      md:text-[40px]
-                      lg:text-[48px]
+                      md:text-[34px]
+                      lg:text-[40px]
                       leading-[36px]
-                      sm:leading-[44px]
-                      md:leading-[52px]
-                      lg:leading-[58px]
+                      sm:leading-[40px]
+                      md:leading-[44px]
+                      lg:leading-[48px]
                       [&_em]:text-[#2655C4]
                       [&_em]:font-bold
                       mb-8 md:mb-[40px]

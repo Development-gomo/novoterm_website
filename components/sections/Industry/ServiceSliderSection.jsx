@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ServiceSlider from "../../Sliders/Industrypage_sliders/ServiceSlider";
+import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
 import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function ServiceSliderSection({ section, sectionId }) {
@@ -22,32 +22,42 @@ export default function ServiceSliderSection({ section, sectionId }) {
 
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const [services, setServices] = useState([]);
+  const [slides, setSlides] = useState([]);
 
   useEffect(() => {
-    async function fetchServices() {
+    async function fetchDocumentTypes() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/service?_embed&acf_format=standard&lang=${lang}`,
+          `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`,
           { cache: "no-store" }
         );
         const data = await res.json();
         if (!Array.isArray(data)) return;
 
-        setServices(
-          data.map((post) => ({
-            slug: post.slug || "",
-            heading: post.acf?.heading || post.title?.rendered || "",
-            description_text: post.acf?.description_text || "",
-            bg: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
-          }))
-        );
+        let formatted = data.map((post) => ({
+          slug: post.slug,
+          heading: post.acf?.heading || post.title?.rendered || "",
+          subtext: post.acf?.subtext || "",
+          cs_image: post.acf?.cs_image || "",
+          last_block:
+            Array.isArray(post.acf?.last_block) &&
+            post.acf.last_block.some(
+              (v) => v === "yes" || v.startsWith("yes:")
+            ),
+        }));
+
+        formatted = formatted.sort((a, b) => {
+          if (a.last_block !== b.last_block) return a.last_block ? 1 : -1;
+          return 0;
+        });
+
+        setSlides(formatted);
       } catch (e) {
-        console.error("SERVICE SLIDER FETCH ERROR:", e);
+        console.error("DOCUMENT TYPE SLIDER FETCH ERROR:", e);
       }
     }
 
-    fetchServices();
+    fetchDocumentTypes();
   }, [lang]);
 
   return (
@@ -68,14 +78,13 @@ export default function ServiceSliderSection({ section, sectionId }) {
               <h2
                 className={`
                   font-heading font-semibold
-                  text-[28px]
-                  sm:text-[34px]
-                  md:text-[40px]
-                  lg:text-[48px]
+                   text-[28px]
+                      md:text-[34px]
+                      lg:text-[40px]
                   leading-[36px]
-                  sm:leading-[44px]
-                  md:leading-[52px]
-                  lg:leading-[58px]
+                  sm:leading-[40px]
+                  md:leading-[44px]
+                  lg:leading-[48px]
                   [&_em]:text-[#2655C4]
                   [&_em]:font-bold
                   mb-4 max-w-[900px]
@@ -93,7 +102,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
             )}
 
             {/* SLIDER */}
-            <ServiceSlider slides={services} isDark={isDark} />
+            {slides.length > 0 && <DocumentTypeSlider slides={slides} isDark={isDark} />}
 
           </div>
         </div>
