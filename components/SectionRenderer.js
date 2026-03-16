@@ -172,9 +172,8 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
         return (
           <ServicesSection
             key={`services-${index}`}
-            section_label={block.section_label}
-            heading={block.heading}
-            description={block.description}
+            section={block}
+            sectionId={`section-${index}`}
           />
         );
 

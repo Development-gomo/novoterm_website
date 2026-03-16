@@ -31,10 +31,10 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
   const [isVisible, setIsVisible] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  // Build nav items — exclude hero sections, use section_label or auto-generate
+  // Build nav items — exclude hero sections, only use section_label if explicitly set
   const navItems = sections
     .map((section, index) => ({
-      label: section.section_label || formatLabel(section.acf_fc_layout),
+      label: section.section_label || null,
       acf_fc_layout: section.acf_fc_layout,
       index,
     }))

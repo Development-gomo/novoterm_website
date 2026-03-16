@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
@@ -13,17 +12,19 @@ const SERVICE_HEADER_MOBILE = 64;
 
 const MAX_VISIBLE_HEADERS = 2;
 
-export default function ServicesSection({
-  section_label = "",
-  heading = "",
-  description = "",
-}) {
+export default function ServicesSection({ section, sectionId }) {
+  const {
+    section_label = "",
+    heading = "",
+    description = "",
+    service_slide = [],
+  } = section || {};
+
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const [services, setServices] = useState([]);
+
   const [isMobile, setIsMobile] = useState(false);
 
-  /* ---------------- detect screen ---------------- */
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -31,54 +32,25 @@ export default function ServicesSection({
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const SITE_HEADER_HEIGHT = isMobile
-    ? SITE_HEADER_MOBILE
-    : SITE_HEADER_DESKTOP;
+  if (!section) return null;
 
-  const SERVICE_HEADER_HEIGHT = isMobile
-    ? SERVICE_HEADER_MOBILE
-    : SERVICE_HEADER_DESKTOP;
+  const SITE_HEADER_HEIGHT = isMobile ? SITE_HEADER_MOBILE : SITE_HEADER_DESKTOP;
+  const SERVICE_HEADER_HEIGHT = isMobile ? SERVICE_HEADER_MOBILE : SERVICE_HEADER_DESKTOP;
 
-  /* ---------------- fetch services ---------------- */
-  useEffect(() => {
-    async function loadServices() {
-      try {
-        const res = await fetch(
-          `/wp-api/wp/v2/service?_embed&acf_format=standard&per_page=100&lang=${lang}`,
-          { cache: "no-store" }
-        );
+  const getBgUrl = (img) => {
+    if (!img) return "";
+    if (typeof img === "string") return img;
+    return img.url || img.sizes?.large || img.sizes?.medium_large || "";
+  };
 
-        const data = await res.json();
-        if (!Array.isArray(data)) return;
-
-        setServices(
-          data
-            .filter((post) => post.acf?.display_on_homepage === "yes")
-            .map((post) => ({
-            id: post.id,
-            slug: post.slug || "",
-            heading: post.acf?.heading || "",
-            description_text: post.acf?.description_text || "",
-            cta_text: post.acf?.cta_text || "",
-            highlights: Array.isArray(post.acf?.service_highlights)
-              ? post.acf.service_highlights
-              : [],
-            bg:
-              post.acf?.background_image ||
-              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-              "",
-          }))
-        );
-      } catch (e) {
-        console.error("SERVICES FETCH ERROR:", e);
-      }
-    }
-
-    loadServices();
-  }, [lang]);
+  const getCtaUrl = (link) => {
+    if (!link) return "#";
+    if (typeof link === "string") return link;
+    return link.url || "#";
+  };
 
   return (
-    <section className="relative w-full overflow-visible bg-[#E3EDFF]">
+    <section id={sectionId} className="relative w-full overflow-visible bg-[#E3EDFF]">
       {/* ================= INTRO ================= */}
       <div className="web-width mx-auto px-6 md:px-0 pb-15 md:pb-[80px]">
         <div className="max-w-[560px]">
@@ -108,24 +80,24 @@ export default function ServicesSection({
       </div>
 
       {/* ================= SERVICES ================= */}
-      {services.map((service, index) => {
-        const isLast = index === services.length - 1;
-
+      {service_slide.map((service, index) => {
+        const isLast = index === service_slide.length - 1;
         const delayedIndex = Math.max(0, index - 1);
         const slot = delayedIndex % MAX_VISIBLE_HEADERS;
-
-        const headerTop =
-          SITE_HEADER_HEIGHT + slot * SERVICE_HEADER_HEIGHT;
-
+        const headerTop = SITE_HEADER_HEIGHT + slot * SERVICE_HEADER_HEIGHT;
         const stickyEnabled = !isMobile && !isLast;
+
+        const bgUrl = getBgUrl(service.background_image);
+        const ctaUrl = getCtaUrl(service.cta_url);
+        const highlights = Array.isArray(service.service_highlights)
+          ? service.service_highlights
+          : [];
 
         return (
           <section
-            key={service.id}
+            key={index}
             className="relative"
-            style={{
-              minHeight: isMobile ? "auto" : "80vh",
-            }}
+            style={{ minHeight: isMobile ? "auto" : "80vh" }}
           >
             {/* ===== HEADER ===== */}
             <div
@@ -146,31 +118,20 @@ export default function ServicesSection({
                 </h3>
 
                 {service.cta_text && (
-                  <Link
-                    href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/services/${service.slug}`}
-                    className="btn-primary hidden md:inline-flex text-sm"
-                  >
+                  <Link href={ctaUrl} className="btn-primary hidden md:inline-flex text-sm">
                     {service.cta_text}
                   </Link>
                 )}
               </div>
             </div>
 
-            {/* ===== BACKGROUND === */}
-            {service.bg && (
+            {/* ===== BACKGROUND ===== */}
+            {bgUrl && (
               <div
                 style={{
                   position: "absolute",
                   inset: 0,
-                  backgroundImage: `
-                    linear-gradient(
-                      90deg,
-                      rgba(6,24,55,0.8) 0%,
-                      rgba(6,24,55,0.45) 60%,
-                      rgba(6,24,55,0.15) 100%
-                    ),
-                    url(${service.bg})
-                  `,
+                  backgroundImage: `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%), url(${bgUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   zIndex: 1,
@@ -183,31 +144,29 @@ export default function ServicesSection({
               style={{ position: "relative", zIndex: 10, color: "#fff" }}
               className="web-width mx-auto px-6 md:px-0 py-15 md:py-8"
             >
-              <div className="w-full w-auto md:w-[620px]">
-              {service.description_text && (
-                <div
-                  className="text-[14px] font-normal sm:text-[16px] md:text-[18px] leading-[1.6] md:leading-[1.7]"
-                  dangerouslySetInnerHTML={{
-                    __html: service.description_text,
-                  }}
-                />
-              )}
+              <div className="w-full md:w-[620px]">
+                {service.description_text && (
+                  <div
+                    className="text-[14px] font-normal sm:text-[16px] md:text-[18px] leading-[1.6] md:leading-[1.7]"
+                    dangerouslySetInnerHTML={{ __html: service.description_text }}
+                  />
+                )}
 
-              {service.highlights.length > 0 && (
-                <>
-                  <div className="w-full h-[1px] bg-white/40 my-5 md:my-6" />
-                  <ul className="space-y-2 md:space-y-3">
-                    {service.highlights.map((item, i) => (
-                      <li key={i} className="flex gap-3">
-                        <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#2655C4]" />
-                        <span className="italic text-[14px] md:text-[15px]">
-                          {item?.highlight_text}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
+                {highlights.length > 0 && (
+                  <>
+                    <div className="w-full h-[1px] bg-white/40 my-5 md:my-6" />
+                    <ul className="space-y-2 md:space-y-3">
+                      {highlights.map((item, i) => (
+                        <li key={i} className="flex gap-3">
+                          <span className="mt-[7px] w-[6px] h-[6px] rounded-full bg-[#2655C4]" />
+                          <span className="italic text-[14px] md:text-[15px]">
+                            {item?.highlight_text}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
               </div>
             </div>
           </section>

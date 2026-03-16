@@ -19,9 +19,11 @@ export default function NumberDocumentsSection({ section, sectionId }) {
   const itemText     = isDark ? "text-white"      : "text-[#061837]";
 
   // Split into 3 columns
-  // If total > 10 → 4 items per column (up to 12), else → 3 items per column
+  // ≤6 items  → distribute evenly across 3 columns (2 per col max)
+  // ≤9 items  → 3 items per column
+  // >9 items  → 4 items per column
   const total = document_lists.length;
-  const perCol = total > 9 ? 4 : 3;
+  const perCol = total <= 6 ? Math.ceil(total / 3) : total > 9 ? 4 : 3;
 
   const col1 = document_lists.slice(0, perCol);
   const col2 = document_lists.slice(perCol, perCol * 2);
