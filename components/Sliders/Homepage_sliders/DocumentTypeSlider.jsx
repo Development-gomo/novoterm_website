@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 
 export default function DocumentTypeSlider({ slides }) {
   const router = useRouter();
@@ -87,7 +87,7 @@ export default function DocumentTypeSlider({ slides }) {
           return (
             <SwiperSlide key={index} className="pointer-events-none">
               <Link
-                href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/document-type/${slide.slug}`}
+                href={slide.button_url ? wpToPath(slide.button_url) : `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/document-type/${slide.slug}`}
                 className="block h-full pointer-events-auto"
               >
                 <div className="relative group h-[400px] overflow-hidden">

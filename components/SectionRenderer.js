@@ -123,6 +123,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             section_title={block.section_title}
             heading={block.heading}
             paragraph={block.paragraph}
+            display_mode={block.display_mode || "slider_single"}
           />
         );
 

@@ -1,9 +1,10 @@
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
 import DotIndicator from "../../ui/DotIndicator";
-import { wpToPath } from "../../../lib/api";
+import { wpToPath, DEFAULT_LANG } from "../../../lib/api";
 
 export default function DocumentTypeSection({
   section_title,
@@ -12,13 +13,15 @@ export default function DocumentTypeSection({
   button,
   button_url,
 }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [slides, setSlides] = useState([]);
 
   useEffect(() => {
     async function getData() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/document_type?acf_format=standard`
+          `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`
         );
 
         let data = await res.json();
@@ -28,21 +31,16 @@ export default function DocumentTypeSection({
           heading: post.acf.heading,
           subtext: post.acf.subtext,
           cs_image: post.acf.cs_image,
-          last_block: Array.isArray(post.acf.last_block) && post.acf.last_block.some(v => v === "yes" || v.startsWith("yes:")),
+          button_url: post.acf.button_url || "",
+          slider_sequence: parseInt(post.acf.slider_sequence, 10) || 0,
         }));
 
+        formatted = formatted.sort((a, b) => a.slider_sequence - b.slider_sequence);
 
-        const order = [
-          "Web pages",
-          "Annual reports",
-          "Quarterly reports",
-          "Other documents",
-        ];
-
-        formatted = formatted.sort((a, b) => {
-          if (a.last_block !== b.last_block) return a.last_block ? 1 : -1;
-          return order.indexOf(a.heading.trim()) - order.indexOf(b.heading.trim());
-        });
+        // Mark the last item in sequence as the special card
+        if (formatted.length > 0) {
+          formatted[formatted.length - 1].last_block = true;
+        }
 
         setSlides(formatted);
       } catch (error) {
@@ -51,7 +49,7 @@ export default function DocumentTypeSection({
     }
 
     getData();
-  }, []);
+  }, [lang]);
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-[#061837] text-white">
