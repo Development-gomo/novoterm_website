@@ -1,16 +1,40 @@
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG } from "../../../lib/api";
 
+const translations = {
+  sv: {
+    toc: "Innehållsförteckning",
+    shareText: "Gillar du vad du ser? Dela denna artikel",
+    relatedHeading: "Missa inte dessa",
+    minRead: "min läsning",
+  },
+  en: {
+    toc: "Table of contents",
+    shareText: "Like what you see? Share this article",
+    relatedHeading: "Don't miss out on these",
+    minRead: "min read",
+  },
+};
+
 export default function BlogContentSection({ section }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
+  const t = translations[lang] || translations.sv;
 
   const [relatedPosts, setRelatedPosts] = useState([]);
+  const [toc, setToc] = useState([]);
+  const [promo, setPromo] = useState(null);
+  const [processedContent, setProcessedContent] = useState("");
+  const [pageUrl, setPageUrl] = useState("");
+
+  useEffect(() => {
+    setPageUrl(window.location.href);
+  }, []);
 
   const {
+    featured_image,
     heading,
     excerpt,
     content,
@@ -18,146 +42,321 @@ export default function BlogContentSection({ section }) {
     published_date,
     reading_time,
     category,
+    category_id,
+    slug,
   } = section || {};
 
+  const bgUrl =
+    typeof featured_image === "string"
+      ? featured_image
+      : featured_image?.url ||
+        featured_image?.sizes?.large ||
+        featured_image?.sizes?.medium_large ||
+        "";
+
+  /* =========================
+     TOC GENERATION
+  ========================== */
+  useEffect(() => {
+    if (!content) return;
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content, "text/html");
+
+    const headings = doc.querySelectorAll("h2");
+    const tocItems = [];
+
+    headings.forEach((h, index) => {
+      let text = h.textContent;
+
+      let id = text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+      if (!id) id = `heading-${index}`;
+
+      h.setAttribute("id", id);
+
+      tocItems.push({ id, text });
+    });
+
+    setToc(tocItems);
+    setProcessedContent(doc.body.innerHTML);
+  }, [content]);
+
+  /* =========================
+     CATEGORY PROMO (ACF)
+  ========================== */
+  useEffect(() => {
+    async function loadPromo() {
+      if (!category_id) return;
+
+      try {
+const WP_API = process.env.NEXT_PUBLIC_WP_URL;
+
+const res = await fetch(
+  `${WP_API}/wp-json/wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`
+);
+        const data = await res.json();
+
+        if (data?.acf) {
+          setPromo({
+            title: data.acf.title,
+            description: data.acf.description,
+            buttonText: data.acf.button_text,
+            buttonUrl: data.acf.button_url,
+          });
+        }
+      } catch (err) {
+        console.error("Promo fetch error:", err);
+      }
+    }
+
+    loadPromo();
+  }, [category_id]);
+
+  /* =========================
+     RELATED POSTS
+  ========================== */
   useEffect(() => {
     async function loadRelatedPosts() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/posts?_embed&per_page=6&lang=${lang}`
+          `/wp-api/wp/v2/posts?_embed&per_page=6&categories=${category_id}&lang=${lang}`
         );
         const data = await res.json();
 
-        const formatted = data.map((post) => ({
-          title: post.title?.rendered || '',
-          excerpt: post.excerpt?.rendered?.replace(/<[^>]*>/g, '').slice(0, 100) + '...' || '',
-          url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
-          image: post._embedded?.['wp:featuredmedia']?.[0]?.source_url || '/default-blog.jpg',
-          category: post._embedded?.['wp:term']?.[0]?.[0]?.name || 'General',
-          date: new Date(post.date).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          }),
-          readTime: `${Math.max(1, Math.ceil(post.content.rendered.replace(/<[^>]*>/g, '').split(/\s+/).length / 200))} MIN READ`,
-        }));
+        const formatted = data
+          .filter((post) => post.slug !== slug)
+          .map((post) => ({
+            title: post.title?.rendered || "",
+            excerpt:
+              post.excerpt?.rendered
+                ?.replace(/<[^>]*>/g, "")
+                .slice(0, 100) + "..." || "",
+            url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
+            image:
+              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+              "/default-blog.jpg",
+            category:
+              post._embedded?.["wp:term"]?.[0]?.[0]?.name || "General",
+            date: new Date(post.date).toLocaleDateString(),
+            readTime: `${Math.max(
+              1,
+              Math.ceil(
+                post.content.rendered
+                  .replace(/<[^>]*>/g, "")
+                  .split(/\s+/).length / 200
+              )
+            )} min read`,
+          }));
 
-        setRelatedPosts(formatted);
+        setRelatedPosts(formatted.slice(0, 3));
       } catch (error) {
-        console.error('Error fetching related posts:', error);
+        console.error("Error fetching related posts:", error);
       }
     }
 
-    loadRelatedPosts();
-  }, [lang]);
+    if (category_id) loadRelatedPosts();
+  }, [lang, category_id, slug]);
+
+  /* =========================
+     SCROLL
+  ========================== */
+  const handleScroll = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      window.scrollTo({
+        top: el.offsetTop - 100,
+        behavior: "smooth",
+      });
+    }
+  };
 
   return (
-    <section 
-      id="next-section" 
-      className="w-full bg-white py-[100px] px-[80px]"
-    >
-      <div className="mx-auto">
-        
-        {/* CATEGORY TAG */}
-        {category && (
-          <div className="mb-6">
-            <span className="inline-block px-4 py-2 bg-[#2655C4] text-white text-[12px] sm:text-[14px] font-semibold uppercase tracking-wider rounded">
-              {category}
-            </span>
+    <>
+      {/* HERO BANNER */}
+      <section className="relative w-full bg-[#Fff] pb-[60px] pt-[140px] web-width mx-auto px-6 md:px-0">
+        <div className="">
+          <div className="flex flex-col items-start gap-4">
+            {category && (
+              <span className="text-[#2555C4] uppercase text-[18px] font-semibold tracking-wider">
+                {category}
+              </span>
+            )}
+
+            {published_date && (
+              <span className="text-[#2555C4] text-[18px] font-montserrat font-bold">{published_date}</span>
+            )}
+
+            <h1
+              className="font-heading font-semibold text-[#061837] text-[20px] sm:text-[28px] md:text-[36px] lg:text-[48px] leading-tight tracking-[0.5px]"
+              dangerouslySetInnerHTML={{ __html: heading }}
+            />
+
+            {excerpt && (
+              <div
+                className="text-[16px] md:text-[20px] text-[#3A3A3A] max-w-[980px] mt-2"
+                dangerouslySetInnerHTML={{ __html: excerpt }}
+              />
+            )}
+
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex flex-col text-sm text-[#606164] font-montserrat">
+                {/* <span className="font-semibold text-[#061837] font-montserrat">{author}</span> */}
+                <span className="font-montserrat">{reading_time || "5"} {t.minRead}</span>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
+      </section>
 
-        {/* BLOG HEADING */}
-        {heading && (
-          <h1 
-            className="font-heading font-semibold text-[#061837]
-              text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px]
-              leading-tight mb-6"
-            dangerouslySetInnerHTML={{ __html: heading }}
+      {/* FEATURED IMAGE – parallax */}
+      {bgUrl && (
+        <div className="w-full h-[400px] overflow-hidden">
+          <div
+            className="w-full h-full bg-fixed bg-center bg-cover"
+            style={{ backgroundImage: `url(${bgUrl})` }}
+            role="img"
+            aria-label={heading ? heading.replace(/<[^>]*>/g, "") : ""}
           />
-        )}
+        </div>
+      )}
 
-        {/* META INFO */}
-        <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[#5C6C8A] text-[12px] sm:text-[14px] mb-8 pb-8 border-b border-[#E5E7EB]">
-          {author && (
-            <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 8a3 3 0 100-6 3 3 0 000 6zm0 1.5c-2.67 0-8 1.34-8 4v1.5h16v-1.5c0-2.66-5.33-4-8-4z" fill="currentColor"/>
-              </svg>
-              <span className="font-medium text-[#061837]">{author}</span>
+      {/* CONTENT SECTION */}
+      <section className="w-full bg-white py-[60px] web-width mx-auto px-6 md:px-0">
+      <div className="">
+
+        {/* LAYOUT */}
+        <div className="flex gap-[60px]">
+
+          {/* LEFT SIDEBAR */}
+          <div className="w-[28%] hidden lg:block sticky top-[120px] h-fit">
+
+            {/* TOC */}
+            {toc.length > 0 && (
+              <div className="mb-10">
+                <h3 className="text-[20px] font-semibold mb-4">
+                  {t.toc}
+                </h3>
+                <ul className="space-y-3">
+                  {toc.map((item, i) => (
+                    <li key={i}>
+                      <button
+                        onClick={() => handleScroll(item.id)}
+                        className="text-[#2555C4] text-left hover:underline  cursor-pointer"
+                      >
+                        {item.text}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* PROMO MODULE */}
+            {promo && (promo.title || promo.description) && (
+              <div className="bg-[#D1DAE8] rounded-[8px] p-[32px]">
+                {promo.title && (
+                  <h3 className="text-[18px] font-semibold mb-2">
+                    {promo.title}
+                  </h3>
+                )}
+
+                {promo.description && (
+                  <p className="text-[14px] mb-4" dangerouslySetInnerHTML={{ __html: promo.description }} />
+                )}
+
+                {promo.buttonText && promo.buttonUrl && (
+                  <a
+                    href={promo.buttonUrl}
+                    className="btn-primary"
+                  >
+                    {promo.buttonText}
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT CONTENT */}
+          <div className="flex-1">
+            <div
+              className="prose max-w-none [&_h2]:font-montserrat [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:leading-snug [&_h2]:mb-4 [&_h3]:font-montserrat [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:mb-3 [&_p]:font-cabin [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-2 [&_li]:font-cabin [&_li]:text-[16px] [&_li::marker]:text-[#2555C4] [&_img]:h-auto [&_img]:max-w-full"
+              dangerouslySetInnerHTML={{ __html: processedContent || content }}
+            />
+
+            {/* SOCIAL */}
+            <div className="mt-10 p-6 bg-[#e9f1fb] rounded-[8px] flex justify-between items-center flex-wrap gap-4">
+              <p className="font-semibold text-[#061837]">
+                {t.shareText}
+              </p>
+
+              <div className="flex gap-3">
+                {/* X (Twitter) */}
+                <a
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(pageUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-[40px] h-[40px] rounded-full bg-[#D1D9E6] flex items-center justify-center hover:bg-[#2555C4] hover:text-white transition text-[#061837]"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </a>
+
+                {/* Facebook */}
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-[40px] h-[40px] rounded-full bg-[#D1D9E6] flex items-center justify-center hover:bg-[#2555C4] hover:text-white transition text-[#061837]"
+                >
+                  <svg width="10" height="18" viewBox="0 0 10 18" fill="currentColor">
+                    <path d="M6.39 18V9.79h2.75l.41-3.2H6.39V4.55c0-.93.26-1.56 1.59-1.56h1.7V.13A22.82 22.82 0 0 0 7.19 0C4.71 0 3.03 1.49 3.03 4.23v2.36H.28v3.2h2.75V18h3.36z"/>
+                  </svg>
+                </a>
+
+                {/* LinkedIn */}
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(pageUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-[40px] h-[40px] rounded-full bg-[#D1D9E6] flex items-center justify-center hover:bg-[#2555C4] hover:text-white transition text-[#061837]"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </a>
+
+                {/* Email */}
+                <a
+                  href={`mailto:?subject=${encodeURIComponent(heading ? heading.replace(/<[^>]*>/g, "") : "")}&body=${encodeURIComponent(pageUrl)}`}
+                  className="w-[40px] h-[40px] rounded-full bg-[#D1D9E6] flex items-center justify-center hover:bg-[#2555C4] hover:text-white transition text-[#061837]"
+                >
+                  <svg width="18" height="14" viewBox="0 0 20 16" fill="currentColor">
+                    <path d="M18 0H2C.9 0 .01.9.01 2L0 14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V2c0-1.1-.9-2-2-2zm0 4-8 5-8-5V2l8 5 8-5v2z"/>
+                  </svg>
+                </a>
+              </div>
             </div>
-          )}
-          {published_date && (
-            <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M13 2h-1V1a1 1 0 00-2 0v1H6V1a1 1 0 00-2 0v1H3a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2V4a2 2 0 00-2-2zm0 11H3V6h10v7z" fill="currentColor"/>
-              </svg>
-              <span>{published_date}</span>
-            </div>
-          )}
-          {reading_time && (
-            <div className="flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 12.5A5.5 5.5 0 118 2.5a5.5 5.5 0 010 11z" fill="currentColor"/>
-                <path d="M8.5 4.5h-1v4l3.5 2.1.5-.8-3-1.8V4.5z" fill="currentColor"/>
-              </svg>
-              <span>{reading_time} min read</span>
-            </div>
-          )}
+          </div>
         </div>
 
-        {/* EXCERPT */}
-        {excerpt && (
-          <div
-            className="text-[#5C6C8A] text-[16px] sm:text-[18px] leading-[28px] italic mb-10 pb-10 border-b border-[#E5E7EB]"
-            dangerouslySetInnerHTML={{ __html: excerpt }}
-          />
-        )}
-
-        {/* CONTENT */}
-        {content && (
-          <div
-            className="
-              prose prose-lg max-w-none
-              [&_h2]:font-heading [&_h2]:text-[22px] [&_h2]:sm:text-[24px] [&_h2]:md:text-[28px]
-              [&_h2]:font-semibold [&_h2]:text-[#061837] [&_h2]:mb-4 [&_h2]:mt-8
-              [&_h3]:font-heading [&_h3]:text-[18px] [&_h3]:sm:text-[20px] [&_h3]:md:text-[22px]
-              [&_h3]:font-semibold [&_h3]:text-[#061837] [&_h3]:mb-3 [&_h3]:mt-6
-              [&_h4]:font-heading [&_h4]:text-[16px] [&_h4]:sm:text-[18px] [&_h4]:md:text-[20px]
-              [&_h4]:font-semibold [&_h4]:text-[#061837] [&_h4]:mb-2 [&_h4]:mt-5
-              [&_p]:text-[#000] [&_p]:text-[14px] [&_p]:sm:text-[16px] [&_p]:leading-[24px]
-              [&_p]:sm:leading-[28px] [&_p]:mb-6
-              [&_ul]:mb-6 [&_ul]:pl-6 [&_ul]:list-disc
-              [&_ol]:mb-6 [&_ol]:pl-6 [&_ol]:list-decimal
-              [&_li]:text-[#000] [&_li]:text-[14px] [&_li]:sm:text-[16px] [&_li]:leading-[24px]
-              [&_li]:mb-2
-              [&_a]:text-[#2655C4] [&_a]:underline [&_a]:hover:text-[#061837]
-              [&_img]:rounded-[3px] [&_img]:my-8 [&_img]:w-full
-              [&_blockquote]:border-l-4 [&_blockquote]:border-[#2655C4] [&_blockquote]:pl-6
-              [&_blockquote]:italic [&_blockquote]:text-[#061837] [&_blockquote]:my-6
-              [&_code]:bg-[#EAF1FF] [&_code]:px-2 [&_code]:py-1 [&_code]:rounded
-              [&_code]:text-[#061837] [&_code]:text-[14px]
-              [&_pre]:bg-[#061837] [&_pre]:text-white [&_pre]:p-4 [&_pre]:rounded-[3px]
-              [&_pre]:overflow-x-auto [&_pre]:my-6
-              [&_table]:w-full [&_table]:border-collapse [&_table]:my-6
-              [&_th]:bg-[#EAF1FF] [&_th]:text-[#061837] [&_th]:font-semibold
-              [&_th]:p-3 [&_th]:text-left [&_th]:border [&_th]:border-[#C4D0E6]
-              [&_td]:p-3 [&_td]:border [&_td]:border-[#C4D0E6] [&_td]:text-[#000]
-            "
-            dangerouslySetInnerHTML={{ __html: content }}
-          />
-        )}
-
-        {/* RELATED POSTS SLIDER */}
+        {/* RELATED */}
         {relatedPosts.length > 0 && (
-          <div className="mt-16 pt-16 border-t border-[#E5E7EB]">
-            <h2 className="font-heading text-[28px] sm:text-[32px] md:text-[36px] font-semibold text-[#061837] mb-10">
-              Related Articles
+          <div className="mt-20">
+            <h2 className="text-[28px] font-semibold mb-10">
+              {t.relatedHeading}
             </h2>
             <BlogSlider slides={relatedPosts} />
           </div>
         )}
       </div>
     </section>
+    </>
   );
 }

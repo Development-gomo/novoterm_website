@@ -3,10 +3,15 @@ import Dropdown from "./Dropdown";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { wpToPath } from "../../lib/api";
 
 export default function Header({ logo, menu = [], languages = [], cta = {}, translations = null }) {
   const [scrolled, setScrolled] = useState(false);
+  const router = useRouter();
+
+  // Blog single pages have a light hero, so header needs solid bg from the start
+  const isBlogSingle = /^\/blog\/.+/.test(router.asPath);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -23,7 +28,7 @@ export default function Header({ logo, menu = [], languages = [], cta = {}, tran
     <header
       className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-300
         ${
-          scrolled
+          scrolled || isBlogSingle
             ? "bg-[#061837]/95 backdrop-blur-md shadow-lg"
             : "bg-transparent"
         }

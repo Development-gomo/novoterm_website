@@ -28,26 +28,27 @@ export default function BlogHeroSection({ section }) {
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="w-full max-w-[900px] flex flex-col sm:block">
-
+      <div className="w-full flex flex-col sm:block">
+      <div className="web-width mx-auto ">
         {/* HEADING */}
         <h1
           className="font-heading  font-semibold text-white 
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
-              w-full sm:w-[600px] mx-auto sm:mx-0 mb-10"
+              w-full  mx-auto sm:mx-0 mb-10"
         >
-          Novoterm <i className=" italic  font-merriweather">Blogs</i>
+          Varför är tekniska  <i className=" italic  font-merriweather">översättningar viktiga?</i>
         </h1>
 
 
         {/* DESCRIPTION */}
-        <div className="max-w-full sm:max-w-[411px] mt-6 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left sm:!justify-self-end">
+        <div className="max-w-full sm:max-w-[611px] mt-6 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left sm:!justify-self-end">
           <p className="font-body text-white/90
             text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
             leading-[24px]">
             Stay updated with the latest insights, trends, and news from the world of translation and localization. Explore expert tips, industry updates, and stories from our team.
           </p>
+        </div>
         </div>
       </div>
 

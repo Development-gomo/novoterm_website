@@ -41,7 +41,6 @@ import HistorySection from "./sections/AboutUs/HistorySection";
 import ExpertsCTASection from "./sections/AboutUs/ExpertsCTASection";
 
 /* ===================== BLOG PAGE ===================== */
-import BlogHeroSection from "./sections/Blog/BlogHeroSection";
 import BlogContentSection from "./sections/Blog/BlogContentSection";
 
 /* ===================== CONTACT PAGE ===================== */
@@ -346,13 +345,6 @@ case "inner_hero_section":
         );
 
       /* ===================== BLOG PAGE ===================== */
-      case "blog_hero":
-        return (
-          <BlogHeroSection
-            key={`blog-hero-${index}`}
-            section={block}
-          />
-        );
 
       case "blog_content":
         return (

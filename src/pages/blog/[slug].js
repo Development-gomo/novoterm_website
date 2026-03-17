@@ -40,9 +40,9 @@ export async function getServerSideProps({ params, locale }) {
       translations: post.translations || null,
       yoastHead: post.yoast_head || null,
       sections: [
-        { acf_fc_layout: "blog_hero", featured_image: featuredImage },
         {
           acf_fc_layout: "blog_content",
+          featured_image: featuredImage,
           heading: post.title?.rendered || "",
           excerpt: post.excerpt?.rendered || "",
           content: post.content?.rendered || "",
@@ -50,6 +50,8 @@ export async function getServerSideProps({ params, locale }) {
           published_date: publishedDate,
           reading_time: Math.ceil(wordCount / 200),
           category: categories[0]?.name || "",
+          category_id: categories[0]?.id || null,
+          slug,
         },
       ],
     },

@@ -171,3 +171,9 @@ font-family: Merriweather;
     padding-left: 2rem;
     padding-right: 2rem;
   } } */
+.sb-quote {
+    background: #d1dae8;
+    padding: 30px 40px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
