@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://novoterm-website.vercel.app/sitemap.xml
+
