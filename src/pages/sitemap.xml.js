@@ -95,6 +95,7 @@ ${urls
   res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
   res.write(xml);
   res.end();
+  
 
   return { props: {} };
 }
