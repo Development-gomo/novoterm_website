@@ -76,30 +76,33 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
                 const isImageCard = !!bgUrl;
 
                 return (
-                  <div key={`benefit-${i}`} className="relative justify-end h-[320px] overflow-hidden bg-[#CCD8EE]">
+                  <div key={`benefit-${i}`} className="relative justify-end min-h-[320px] overflow-hidden bg-[#CCD8EE]">
 
                     {/* IMAGE BACKGROUND */}
                     {isImageCard && (
                     <div
-  className="absolute inset-0"
+  className="absolute inset-0 "
   style={{
-    background: `linear-gradient(180deg, rgba(0, 0, 0, 0.00) -14.94%, #000 100%), url(${bgUrl}) lightgray -20.739px 0px / 126.954% 100% no-repeat`,
+    background: `linear-gradient(180deg, rgba(0, 0, 0, 0.00) -14.94%, #000 100%), url(${bgUrl})  lightgray -20.739px 0px / 126.954% 100% no-repeat`,
   }}
 />
 
                     )}
 
                     {/* CONTENT */}
-                    <div className={`relative z-10 h-full flex flex-col ${isImageCard ? "justify-end p-[24px] pb-[26px] text-white" : "p-[24px] pb-[32px] text-[#061837]"}`}>
+                    <div className={`relative z-10 h-full flex flex-col ${isImageCard ? "p-[24px] pb-[26px] text-white" : "p-[24px] pb-[32px] text-[#061837]"}`}>
 
                       {iconUrl && (
                         <div className="w-[48px] h-[48px] mb-[102px]">
                           <img src={iconUrl} alt={item.title || "Benefit icon"} className="w-full h-full object-contain" />
                         </div>
                       )}
+                      {!iconUrl && isImageCard && (
+                        <div className="w-[48px] h-[48px] mb-[102px]" />
+                      )}
 
                       {item.title && (
-                        <h3 className="text-[16px] sm:text-[17px] md:text-[18px] leading-[48px] font-semibold">
+                        <h3 className="text-[16px] sm:text-[17px] md:text-[18px] leading-[24px] mb-4 font-semibold">
                           {item.title}
                         </h3>
                       )}

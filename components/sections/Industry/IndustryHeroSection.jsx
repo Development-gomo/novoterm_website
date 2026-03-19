@@ -61,41 +61,42 @@ export default function IndustryHeroSection({
           )}
 
           {cta_text && cta_url && (
-            <Link
-              href={wpToPath(cta_url) || "#"}
-              className="btn-primary !inline-flex !w-auto px-6 sm:px-8
-                         text-sm sm:text-base mx-auto sm:mx-0"
+                      <Link
+                        href={wpToPath(cta_url) || "#"}
+                        className="btn-primary !inline-flex !w-auto px-6 sm:px-8
+                                   text-sm sm:text-base mx-auto sm:mx-0"
+                      >
+                        {cta_text}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+          
+               {/* DOWN ARROW */}
+          <div
+            onClick={(e) => {
+              const section = e.currentTarget.closest("section");
+              const next = section?.nextElementSibling;
+              if (next) next.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
+          >
+            <svg
+              viewBox="0 0 83 83"
+              className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              {cta_text}
-            </Link>
-          )}
-        </div>
-      </div>
-
-     {/* DOWN ARROW */}
-<div
-  onClick={() =>
-    document
-      .getElementById("next-section")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }
-  className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
->
-  <svg
-    viewBox="0 0 83 83"
-    className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
-    <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-</div>
-
-
-      {/* BOTTOM FADE */}
-     
-    </section>
-  );
-}
+              <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
+              <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </div>
+          
+          
+                {/* BOTTOM FADE */}
+               
+              </section>
+            );
+          }
+          

@@ -15,11 +15,17 @@ export default function DotIndicator({ variant = "default" }) {
 
   return (
     <div className="relative w-[16px] h-[16px] flex items-center justify-center shrink-0">
-      {/* Outer ring */}
-      <div className={`absolute inset-0 rounded-full border ${borderColor}`} />
+      {/* Outer ring: only show if not gray (active) */}
+      {variant !== "gray" && (
+        <div
+          className={`absolute inset-0 rounded-full border ${borderColor} transition-all duration-300`}
+        />
+      )}
 
       {/* Inner dot */}
-      <div className={`w-[8px] h-[8px] rounded-full ${dotColor}`} />
+      <div
+        className={`w-[6px] h-[6px] rounded-full ${dotColor} transition-all duration-300`}
+      />
     </div>
   );
 }
