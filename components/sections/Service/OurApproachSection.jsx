@@ -19,6 +19,16 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
   const ctaText = cta_text || button_text;
   const ctaUrl = cta_link || cta_url || button_link;
 
+  const formatLabel = (layout) => {
+    if (!layout) return null;
+    return layout
+      .replace(/_section$/, '')
+      .replace(/^(services?_|casestudy_|blog_)/, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+  const mobileLabel = section.section_label || formatLabel(section.acf_fc_layout);
+
   const [activeStep, setActiveStep] = useState(1);
   const [hasAnimated, setHasAnimated] = useState(false);
   const stepRefs = useRef([]);
@@ -70,6 +80,14 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
 
           {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
+            {mobileLabel && (
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-white">
+                  {mobileLabel}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* RIGHT – 85% */}

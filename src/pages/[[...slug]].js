@@ -1,6 +1,7 @@
 // pages/[[...slug]].jsx
 
 import SectionRenderer from "../../components/SectionRenderer";
+import StickyPageNav from "../../components/StickyPageNav";
 import { fetchPages, fetchPageBySlug, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 
@@ -62,7 +63,10 @@ export default function Page({ page, lang, yoastHead }) {
 
       {/* RENDER SECTIONS */}
       {sections.length ? (
-        <SectionRenderer sections={sections} lang={lang} />
+        <>
+          {page?.slug !== "home" && <StickyPageNav sections={sections} />}
+          <SectionRenderer sections={sections} lang={lang} />
+        </>
       ) : (
         <div>No sections found</div>
       )}

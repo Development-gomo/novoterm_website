@@ -28,16 +28,9 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
           {/* LEFT – STICKY LABEL */}
           <div className="relative">
             {section_label && (
-              <div
-                className="flex items-center gap-2"
-                style={{
-                  position: "sticky",
-                  top: `${stickyTop}px`,
-                  zIndex: 10 + index,
-                }}
-              >
-                <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[12px] tracking-widest text-white">
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-widest text-white">
                   {section_label}
                 </span>
               </div>

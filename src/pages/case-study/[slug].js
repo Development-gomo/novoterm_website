@@ -1,4 +1,5 @@
 import SectionRenderer from "../../../components/SectionRenderer";
+import StickyPageNav from "../../../components/StickyPageNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { resolveLang } from "../../../lib/api";
 
@@ -39,10 +40,13 @@ export default function CaseStudyPage({ caseStudy, currentSlug, yoastHead }) {
       <YoastHead yoastHead={yoastHead} />
       <SpeakableSchema title={title} summary={summary} />
       {caseStudy?.acf?.sections && (
-        <SectionRenderer
-          sections={caseStudy.acf.sections}
-          currentSlug={currentSlug}
-        />
+        <>
+          <StickyPageNav sections={caseStudy.acf.sections} />
+          <SectionRenderer
+            sections={caseStudy.acf.sections}
+            currentSlug={currentSlug}
+          />
+        </>
       )}
     </>
   );

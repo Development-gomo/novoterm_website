@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
 
-export default function InnerHeroSection({ section }) {
+export default function InnerHeroSection({ section, sectionId }) {
   if (!section) return null;
 
   const {
@@ -22,6 +22,7 @@ export default function InnerHeroSection({ section }) {
 
   return (
     <section
+      id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
       style={{

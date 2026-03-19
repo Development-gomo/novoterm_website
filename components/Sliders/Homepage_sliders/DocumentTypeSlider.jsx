@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 
-export default function DocumentTypeSlider({ slides }) {
+export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
   return (
@@ -75,7 +75,7 @@ export default function DocumentTypeSlider({ slides }) {
               slidesPerView: 2,
             },
             1024: {
-              slidesPerView: 4,   // ✅ desktop = 4 slides
+              slidesPerView: desktopSlides,
             },
           }}
           className="relative z-10"

@@ -5,6 +5,15 @@ import DotIndicator from "../../ui/DotIndicator";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
 import { DEFAULT_LANG } from "../../../lib/api";
 
+const formatLabel = (layout) => {
+  if (!layout) return null;
+  return layout
+    .replace(/_section$/, '')
+    .replace(/^(services?_|casestudy_|blog_|industry_)/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export default function CaseStudyRelatedSection({
   section,
   currentSlug,
@@ -56,19 +65,14 @@ export default function CaseStudyRelatedSection({
 
           {/* LEFT – 15% (STICKY) */}
           <div className="md:w-[15%] relative">
-            <div
-              className="flex items-center gap-2 mt-1 md:mt-2"
-              style={{
-                position: "sticky",
-                top: `${stickyTop}px`,
-                zIndex: 10 + index,
-              }}
-            >
-              <DotIndicator />
-              <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[12px] tracking-widest text-[#061837]">
-                {section_title}
-              </span>
-            </div>
+            {(section_title || section?.acf_fc_layout) && (
+              <div className="flex items-center gap-2 mt-1 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-widest text-[#061837]">
+                  {section_title || formatLabel(section?.acf_fc_layout)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* RIGHT – 85% */}

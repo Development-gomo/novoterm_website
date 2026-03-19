@@ -1,5 +1,14 @@
 import DotIndicator from "../../ui/DotIndicator";
 
+const formatLabel = (layout) => {
+  if (!layout) return null;
+  return layout
+    .replace(/_section$/, '')
+    .replace(/^(services?_|casestudy_|blog_|industry_)/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export default function CaseStudyIntroductionSection({
   section,
   sectionId,
@@ -23,7 +32,7 @@ export default function CaseStudyIntroductionSection({
 
   return (
     <section
-      id="next-section"
+      id={sectionId}
       className="w-full bg-[#EAF1FF] py-6 md:py-8 lg:py-[100px]"
     >
       <div className="web-width mx-auto px-6 md:px-0">
@@ -32,18 +41,11 @@ export default function CaseStudyIntroductionSection({
 
           {/* LEFT LABEL */}
           <div className="lg:w-[15%] relative">
-            {section_label && (
-              <div
-                className="flex items-center gap-2 text-[#0A1A3A]"
-                style={{
-                  position: "sticky",
-                  top: `${stickyTop}px`,
-                  zIndex: 10 + index,
-                }}
-              >
-                <DotIndicator />
-                <span className="uppercase font-montserrat text-[#061837] font-medium text-[12px] tracking-wider">
-                  {section_label}
+            {(section_label || section?.acf_fc_layout) && (
+              <div className="flex items-center gap-2 text-[#0A1A3A] mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat text-[#061837] font-medium text-[10px] tracking-wider">
+                  {section_label || formatLabel(section?.acf_fc_layout)}
                 </span>
               </div>
             )}

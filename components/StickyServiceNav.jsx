@@ -47,7 +47,7 @@ export default function StickyServiceNav({ sections = [], heroLayout = null }) {
       const firstSection = document.getElementById(`section-0`);
       if (firstSection && isHeroSection(sections[0]?.acf_fc_layout)) {
         const rect = firstSection.getBoundingClientRect();
-        if (rect.bottom > 0 && rect.top >= 0) {
+        if (rect.bottom > 0) {
           setIsVisible(false);
           return;
         }

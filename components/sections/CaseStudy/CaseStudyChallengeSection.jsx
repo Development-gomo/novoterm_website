@@ -2,6 +2,15 @@ import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
 
+const formatLabel = (layout) => {
+  if (!layout) return null;
+  return layout
+    .replace(/_section$/, '')
+    .replace(/^(services?_|casestudy_|blog_|industry_)/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export default function CaseStudyChallengeSection({
   section,
   sectionId,
@@ -42,18 +51,11 @@ export default function CaseStudyChallengeSection({
 
           {/* LEFT – 15% (STICKY LABEL) */}
           <div className="md:w-[15%] relative">
-            {section_label && (
-              <div
-                className="flex items-center gap-2 mt-2 mb-4 md:mb-0"
-                style={{
-                  position: "sticky",
-                  top: `${stickyTop}px`,
-                  zIndex: 10 + index,
-                }}
-              >
-                <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-white">
-                  {section_label}
+            {(section_label || section?.acf_fc_layout) && (
+              <div className="flex items-center gap-2 mt-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-white">
+                  {section_label || formatLabel(section?.acf_fc_layout)}
                 </span>
               </div>
             )}

@@ -122,7 +122,7 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
 
                   {isOpen && (
                     <div
-                      className="px-4 sm:px-6 py-6 text-[14px] sm:text-[15px] md:text-[16px] text-[#061837] leading-relaxed [&_a]:text-[#2655c4] [&_a]:underline"
+                      className="px-4 sm:px-6 py-6 text-[14px] sm:text-[15px] md:text-[16px] text-[#061837] leading-relaxed [&_a]:text-[#2655c4] [&_a]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:marker:text-[#2655c4] [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:marker:text-[#2655c4] [&_li]:mb-1 [&_p]:mb-2 [&_br]:block [&_br]:content-[''] [&_br]:mb-2 [&_strong]:font-semibold [&_em]:italic"
                       style={{ backgroundColor: "rgba(196, 208, 230, 0.50)" }}
                       dangerouslySetInnerHTML={{ __html: answer }}
                     />

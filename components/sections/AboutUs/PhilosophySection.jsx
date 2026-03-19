@@ -33,17 +33,10 @@ export default function PhilosophySection({
           {/* LEFT – LABEL */}
           <div className="md:w-[15%] relative">
             {section_label && (
-              <div
-                className="flex items-center gap-2
-                  md:sticky"
-                style={{
-                  top: `${stickyTop}px`,
-                  zIndex: 10 + index,
-                }}
-              >
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
                 <span className="uppercase font-montserrat font-medium
-                  text-[10px] md:text-[12px] tracking-wider">
+                  text-[10px] tracking-wider">
                   {section_label}
                 </span>
               </div>

@@ -7,9 +7,18 @@ import { DEFAULT_LANG } from "../../../lib/api";
 export default function ServiceCaseStudySection({
   heading,
   paragraph,
+  sectionLabel,
   sectionId,
   index = 0,
 }) {
+  const formatLabel = (layout) => {
+    if (!layout) return null;
+    return layout
+      .replace(/_section$/, '')
+      .replace(/^(services?_|casestudy_|blog_)/, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
   const [slides, setSlides] = useState([]);
@@ -50,6 +59,14 @@ export default function ServiceCaseStudySection({
 
           {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
+            {sectionLabel && (
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-[#061837]">
+                  {sectionLabel}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* RIGHT – 85% */}

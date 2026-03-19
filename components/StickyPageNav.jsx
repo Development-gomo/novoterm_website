@@ -13,37 +13,38 @@ const isDarkBackground = (element) => {
 };
 
 // Convert acf_fc_layout to readable label
-// e.g. "industry_special_heading" → "Special Heading"
 const formatLabel = (layout) => {
   if (!layout) return null;
   return layout
-    .replace(/_section$/, '')
-    .replace(/^industry_/, '')
-    .replace(/_/g, ' ')
+    .replace(/_section$/, "")
+    .replace(/^(services?_|casestudy_|blog_|industry_|inner_)/, "")
+    .replace(/_/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
 const isHeroSection = (layout) => /hero/i.test(layout);
-const EXCLUDED_FROM_NAV = ["number_documents_examples"];
 
-export default function StickyIndustryNav({ sections = [], heroLayout = null }) {
+export default function StickyPageNav({ sections = [] }) {
   const [activeSection, setActiveSection] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  // Build nav items — exclude hero sections, use section_label or auto-generate from layout name
+  // Build nav items — exclude hero, use section_label or auto-generate from layout name
   const navItems = sections
     .map((section, index) => ({
-      label: section.section_label || formatLabel(section.acf_fc_layout),
+      label:
+        section.section_label ||
+        section.section_title ||
+        formatLabel(section.acf_fc_layout),
       acf_fc_layout: section.acf_fc_layout,
       index,
     }))
-    .filter((item) => item.label && !isHeroSection(item.acf_fc_layout) && !EXCLUDED_FROM_NAV.includes(item.acf_fc_layout));
+    .filter((item) => item.label && !isHeroSection(item.acf_fc_layout));
 
   useEffect(() => {
     const handleScroll = () => {
-      // -- Visibility: hide while hero is still visible --
-      const firstSection = document.getElementById(`section-0`);
+      // Hide while hero (first section) is still visible
+      const firstSection = document.getElementById("section-0");
       if (firstSection && isHeroSection(sections[0]?.acf_fc_layout)) {
         const rect = firstSection.getBoundingClientRect();
         if (rect.bottom > 0) {
@@ -52,8 +53,8 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
         }
       }
 
-      // Hide when approaching footer
-      const footer = document.querySelector('footer');
+      // Hide near footer
+      const footer = document.querySelector("footer");
       if (footer) {
         const footerRect = footer.getBoundingClientRect();
         if (footerRect.top < window.innerHeight * 0.5) {
@@ -64,17 +65,16 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
 
       setIsVisible(true);
 
-      // -- Active section tracking --
+      // Active section tracking
       const sectionElements = navItems.map((item) =>
         document.getElementById(`section-${item.index}`)
       );
 
       let currentIndex = 0;
-
       sectionElements.forEach((element, index) => {
         if (element) {
           const rect = element.getBoundingClientRect();
-          if (rect.top <= 120) {
+          if (rect.top <= 100) {
             currentIndex = index;
           }
         }
@@ -82,21 +82,20 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
 
       setActiveSection(currentIndex);
 
-      // -- Detect dark/light from active section's background --
+      // Detect dark/light from active section's background
       const activeEl = sectionElements[currentIndex];
       setIsDark(isDarkBackground(activeEl));
     };
 
     window.addEventListener("scroll", handleScroll);
     handleScroll();
-
     return () => window.removeEventListener("scroll", handleScroll);
   }, [navItems.length]);
 
   const scrollToSection = (index) => {
     const element = document.getElementById(`section-${index}`);
     if (element) {
-      const offset = 100;
+      const offset = 10;
       const offsetPosition =
         element.getBoundingClientRect().top + window.pageYOffset - offset;
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
@@ -105,7 +104,7 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
 
   if (navItems.length === 0) return null;
 
-  const STICKY_START = 120;
+  const STICKY_START = 100;
   const LABEL_HEIGHT = 40;
 
   return (

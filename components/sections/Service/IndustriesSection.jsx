@@ -13,6 +13,16 @@ import "swiper/css/pagination";
 export default function IndustriesSection({ data, sectionId, index = 0 }) {
   const { section_title, section_description } = data || {};
 
+  const formatLabel = (layout) => {
+    if (!layout) return null;
+    return layout
+      .replace(/_section$/, '')
+      .replace(/^(services?_|casestudy_|blog_)/, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+  const mobileLabel = data?.section_label || formatLabel(data?.acf_fc_layout);
+
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
   const [industries, setIndustries] = useState([]);
@@ -50,6 +60,14 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
 
           {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] relative">
+            {mobileLabel && (
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-[#061837]">
+                  {mobileLabel}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* RIGHT – 85% */}

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
 
-export default function CaseStudyHeroSection({ section }) {
+export default function CaseStudyHeroSection({ section, sectionId }) {
   if (!section) return null;
 
   const { heading, sub_heading, background_image, cta_text, cta_url } = section;
@@ -16,6 +16,7 @@ export default function CaseStudyHeroSection({ section }) {
 
   return (
     <section
+      id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
       style={{
         backgroundImage: bgUrl

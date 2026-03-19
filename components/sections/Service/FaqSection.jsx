@@ -21,6 +21,16 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
 
   const faqs = faqList;
 
+  const formatLabel = (layout) => {
+    if (!layout) return null;
+    return layout
+      .replace(/_section$/, '')
+      .replace(/^(services?_|casestudy_|blog_)/, '')
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  };
+  const mobileLabel = section_label || formatLabel(section?.acf_fc_layout);
+
   if (!faqs.length) return null;
 
   // Build FAQ schema
@@ -59,10 +69,18 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
       <div className="web-width mx-auto px-6 md:px-0">
 
         {/* ================= 15 / 85 WRAPPER ================= */}
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+        <div className="flex flex-col lg:flex-row">
 
           {/* ================= LEFT – 15% ================= */}
           <div className="w-full lg:w-[15%] relative">
+            {mobileLabel && (
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-[#061837]">
+                  {mobileLabel}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* ================= RIGHT – 85% ================= */}
@@ -153,7 +171,12 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
                           sm:text-[15px]
                           md:text-[16px]
                           text-[#061837]
-                          leading-relaxed [&_a]:text-[#2655c4]  [&_a]:underline
+                          leading-relaxed [&_a]:text-[#2655c4] [&_a]:underline
+                          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:marker:text-[#2655c4]
+                          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:marker:text-[#2655c4]
+                          [&_li]:mb-1 [&_p]:mb-2
+                          [&_br]:block [&_br]:content-[''] [&_br]:mb-2
+                          [&_strong]:font-semibold [&_em]:italic
                         "
                         style={{ backgroundColor: 'rgba(196, 208, 230, 0.50)' }}
                         dangerouslySetInnerHTML={{ __html: description }}

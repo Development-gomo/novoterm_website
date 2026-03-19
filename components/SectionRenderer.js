@@ -22,6 +22,9 @@ import ContactSection from "./sections/Service/ContactSection";
 import FaqSection from "./sections/Service/FaqSection";
 import IndustriesSection from "./sections/Service/IndustriesSection";
 import ServiceCaseStudySection from "./sections/Service/ServiceCaseStudySection";
+import InnerDocumentTypeSection from "./sections/Service/InnerDocumentTypeSection";
+import InnerServiceSection from "./sections/Service/InnerServiceSection";
+import InnerWhyChooseUsSection from "./sections/Service/InnerWhyChooseUsSection";
 
 /* ===================== CASE STUDY PAGE ===================== */
 import CaseStudyHeroSection from "./sections/CaseStudy/CaseStudyHeroSection";
@@ -231,10 +234,20 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             key={index} 
             heading={block.heading}
             paragraph={block.paragraph}
+            sectionLabel={block.section_label}
             sectionId={`section-${index}`}
             index={index}
           />
         );
+
+      case "inner_document_types":
+        return <InnerDocumentTypeSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+
+      case "inner_service_section":
+        return <InnerServiceSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+
+      case "inner_why_choose_us":
+        return <InnerWhyChooseUsSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       /* ===================== CASE STUDY PAGE ===================== */
       case "casestudy_hero":
@@ -242,6 +255,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
           <CaseStudyHeroSection
             key={`cs-hero-${index}`}
             section={block}
+            sectionId={`section-${index}`}
           />
         );
 
@@ -250,6 +264,8 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             <CaseStudyIntroductionSection
               key={`cs-intro-${index}`}
               section={block}
+              sectionId={`section-${index}`}
+              index={index}
             />
           ); 
 
@@ -258,6 +274,8 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             <CaseStudyChallengeSection
               key={`cs-challenge-${index}`}
               section={block}
+              sectionId={`section-${index}`}
+              index={index}
             />
           );
           
@@ -266,14 +284,16 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             <CaseStudySolutionSection
               key={`cs-solution-${index}`}
               section={block}
+              sectionId={`section-${index}`}
+              index={index}
             />
           );
 
             case "casestudy_results":
-          return <CaseStudyResultsSection key={`cs-results-${index}`} section={block} />;
+          return <CaseStudyResultsSection key={`cs-results-${index}`} section={block} sectionId={`section-${index}`} index={index} />;
 
           case "casestudy_testimonial":
-          return <CaseStudyTestimonialSection key={`cs-testimonial-${index}`} section={block} />;
+          return <CaseStudyTestimonialSection key={`cs-testimonial-${index}`} section={block} sectionId={`section-${index}`} index={index} />;
 
           case "casestudy_related":
         return (
@@ -281,6 +301,8 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             key={`cs-related-${index}`}
             section={block}
             currentSlug={currentSlug}
+            sectionId={`section-${index}`}
+            index={index}
           />
         );
 
@@ -290,6 +312,7 @@ case "inner_hero_section":
     <InnerHeroSection
       key={`inner-hero-${index}`}
       section={block}
+      sectionId={`section-${index}`}
     />
   );
 

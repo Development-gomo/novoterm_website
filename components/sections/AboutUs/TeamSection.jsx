@@ -1,6 +1,8 @@
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 /* normalize image */
 const getImage = (img) => {
@@ -15,6 +17,8 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   const { section_label, heading } = section;
   const [team, setTeam] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
 
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
@@ -23,7 +27,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   useEffect(() => {
     async function fetchTeam() {
       const res = await fetch(
-        `/wp-api/wp/v2/our-team?_embed&per_page=50`
+        `/wp-api/wp/v2/our-team?_embed&per_page=50&lang=${lang}`
       );
       const data = await res.json();
 
@@ -46,7 +50,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
     }
 
     fetchTeam();
-  }, []);
+  }, [lang]);
 
   return (
     <section
@@ -60,12 +64,9 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
           {/* LEFT – 15% (STICKY LABEL) */}
           <div className="md:w-[15%] relative">
             {section_label && (
-              <div
-                className="flex items-center gap-2 mb-6 md:mb-0"
-                style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}
-              >
-                <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
+              <div className="flex items-center gap-2 mb-6 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider">
                   {section_label}
                 </span>
               </div>
@@ -129,7 +130,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
                           className="absolute top-4 right-4  flex items-center justify-center z-20"
                         >
                          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="15.4" stroke="white" stroke-width="1.2"/>
+                                                            <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="15.4" stroke="white" strokeWidth="1.2"/>
                                                             <path d="M16.2501 15.8109L22.7751 11H9.7251L16.2501 15.8109Z" fill="white"/>
                                                             <path d="M16.25 16.9708C16.1412 16.9708 16.0325 16.9397 15.9444 16.8724L9 11.7509V19.5964C9 19.8813 9.23303 20.1143 9.51786 20.1143H22.9821C23.267 20.1143 23.5 19.8813 23.5 19.5964V11.7509L16.5556 16.8724C16.4675 16.9397 16.3587 16.9708 16.25 16.9708Z" fill="white"/>
                                                             </svg>
@@ -143,17 +144,17 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
                           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
                         }`}
                       >
-                        <div>
+                        <div className="flex flex-col h-full">
 
-                                    {/* QUOTE IMAGE */}
+                                    {/* QUOTE IMAGE – shrinks when content is longer */}
                                 {m.quote_image && (
                                 <img
                                     src={m.quote_image}
                                     alt=""
-                                    className="w-full h-[159px] mb-[22px]"
+                                    className="w-full max-h-[159px] min-h-0 flex-shrink object-cover"
                                 />
                                 )}
-                                <div className="px-[24px]">
+                                <div className="px-[24px] pt-[22px] pb-[24px] mt-auto">
                                 {m.quote && (
                                             <div
                                                 className="

@@ -1,6 +1,15 @@
 import DotIndicator from "../../ui/DotIndicator";
 
-export default function CaseStudyTestimonialSection({ section }) {
+const formatLabel = (layout) => {
+  if (!layout) return null;
+  return layout
+    .replace(/_section$/, '')
+    .replace(/^(services?_|casestudy_|blog_|industry_)/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
+export default function CaseStudyTestimonialSection({ section, sectionId }) {
   if (!section) return null;
 
   const { section_label, quote, author_name, author_title, author_company, background_image } = section;
@@ -14,6 +23,7 @@ export default function CaseStudyTestimonialSection({ section }) {
 
   return (
     <section
+      id={sectionId}
       className="relative w-full flex bg-cover bg-center h-auto lg:h-[660px] py-6 md:py-8 lg:pt-[100px] lg:pb-[80px]"
       style={{ backgroundImage: `url(${bgUrl})` }}
     >
@@ -29,11 +39,11 @@ export default function CaseStudyTestimonialSection({ section }) {
       <div className="relative z-10 web-width mx-auto px-6 md:px-0">
 
         {/* LABEL */}
-        {section_label && (
+        {(section_label || section?.acf_fc_layout) && (
           <div className="flex items-center gap-2 mb-[64px] sm:mb-[120px] lg:mb-[197px]">
-            <DotIndicator />
-            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[12px] tracking-widest text-white">
-              {section_label}
+            <span className="w-2 h-2 rounded-full bg-[#2655C4] lg:hidden" />
+            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[12px] tracking-widest text-white lg:hidden">
+              {section_label || formatLabel(section?.acf_fc_layout)}
             </span>
           </div>
         )}

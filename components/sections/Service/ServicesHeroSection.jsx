@@ -19,6 +19,7 @@ export default function ServicesHeroSection({
 
   return (
   <section
+      id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
       style={{

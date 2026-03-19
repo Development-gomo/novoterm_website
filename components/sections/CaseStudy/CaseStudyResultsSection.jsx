@@ -1,5 +1,14 @@
 import DotIndicator from "../../ui/DotIndicator";
 
+const formatLabel = (layout) => {
+  if (!layout) return null;
+  return layout
+    .replace(/_section$/, '')
+    .replace(/^(services?_|casestudy_|blog_|industry_)/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export default function CaseStudyResultsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
@@ -20,14 +29,11 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
 
           {/* LEFT – 15% (STICKY LABEL) */}
           <div className="md:w-[15%] relative">
-            {section_label && (
-              <div
-                className="flex items-center gap-2 mt-2 mb-4 md:mb-0"
-                style={{ position: "sticky", top: `${stickyTop}px`, zIndex: 10 + index }}
-              >
-                <DotIndicator />
-                <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[12px] tracking-widest text-white">
-                  {section_label}
+            {(section_label || section?.acf_fc_layout) && (
+              <div className="flex items-center gap-2 mt-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-widest text-white">
+                  {section_label || formatLabel(section?.acf_fc_layout)}
                 </span>
               </div>
             )}

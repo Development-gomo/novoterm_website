@@ -80,6 +80,14 @@ const getEmbedUrl = (url) => {
 
           {/* ================= LEFT 15% ================= */}
           <div className="md:w-[15%] relative mb-6 md:mb-0">
+            {(section_label || section?.acf_fc_layout) && (
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${isDark ? 'text-white' : 'text-[#061837]'}`}>
+                  {section_label || section.acf_fc_layout?.replace(/_section$/, '').replace(/^industry_/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* ================= RIGHT 85% ================= */}

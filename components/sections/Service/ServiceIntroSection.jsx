@@ -1,5 +1,14 @@
 import DotIndicator from "../../ui/DotIndicator";
 
+const formatLabel = (layout) => {
+  if (!layout) return null;
+  return layout
+    .replace(/_section$/, '')
+    .replace(/^(services?_|casestudy_|blog_)/, '')
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
 export default function ServiceIntroFrontend({
   section,
   sectionId,
@@ -30,6 +39,14 @@ export default function ServiceIntroFrontend({
 
           {/* LEFT – 15% */}
           <div className="md:w-[15%] relative">
+            {(section?.section_label || section?.acf_fc_layout) && (
+              <div className="flex items-center gap-2 mb-4 lg:hidden">
+                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
+                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-[#061837]">
+                  {section.section_label || formatLabel(section.acf_fc_layout)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* RIGHT – 85% */}
