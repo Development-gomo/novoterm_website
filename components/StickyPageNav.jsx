@@ -34,8 +34,7 @@ export default function StickyPageNav({ sections = [] }) {
     .map((section, index) => ({
       label:
         section.section_label ||
-        section.section_title ||
-        formatLabel(section.acf_fc_layout),
+        section.section_title || null,
       acf_fc_layout: section.acf_fc_layout,
       index,
     }))

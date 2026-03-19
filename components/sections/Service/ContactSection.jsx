@@ -18,8 +18,16 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
     subheading,
     image,
     form_id,
+    section_theme = "dark",
+    section_label,
+    acf_fc_layout,
   } = section;
   const imageUrl = getImageUrl(image);
+
+  // Theme-based classes
+  const isDark = section_theme === "dark";
+  const sectionBg = isDark ? "bg-[#061837]" : "bg-[#E3EDFF]";
+  const labelColor = isDark ? "text-white/70" : "text-[#061837]";
 
   const formatLabel = (layout) => {
     if (!layout) return null;
@@ -29,15 +37,12 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
       .replace(/_/g, ' ')
       .replace(/\b\w/g, (c) => c.toUpperCase());
   };
-  const mobileLabel = section.section_label || formatLabel(section.acf_fc_layout);
+  const mobileLabel = section_label || formatLabel(acf_fc_layout);
 
   return (
     <section
       id={sectionId}
-      className="
-        w-full bg-[#061837] text-white
-        py-6 md:py-10 lg:py-[100px]
-      "
+      className={`w-full ${sectionBg} py-6 md:py-10 lg:py-[100px] ${isDark ? 'text-white' : 'text-[#061837]'}`}
     >
       <div className="web-width mx-auto px-6 md:px-0">
 
@@ -49,7 +54,7 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
             {mobileLabel && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
-                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-white">
+                <span className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${labelColor}`}>
                   {mobileLabel}
                 </span>
               </div>
@@ -74,14 +79,8 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
             {/* SUBHEADING */}
             {subheading && (
               <p
-                className="
-                  text-[14px]
-                  sm:text-[16px]
-                  text-[#fff]
-                  max-w-[520px]
-                  mb-8
-                  md:mb-10
-                "
+                className={'text-[14px] sm:text-[16px] leading-[24px] max-w-[520px] mb-8 md:mb-10 ' + (isDark ? 'text-white/85' : 'text-[#061837]/85')}
+             
               >
                 {subheading}
               </p>

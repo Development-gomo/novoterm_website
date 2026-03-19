@@ -7,6 +7,7 @@ export default function NumberDocumentsSection({ section, sectionId }) {
     heading,
     select_theme = "light",
     document_lists = [],
+    padding_top = "0px",
   } = section;
 
   // Theme-based classes
@@ -34,17 +35,21 @@ export default function NumberDocumentsSection({ section, sectionId }) {
   let counter = 0;
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} pb-[40px] md:pb-10 lg:pb-[100px]`}>
+    <section
+      id={sectionId}
+      className={`w-full ${sectionBg} pb-[40px] md:pb-10 lg:pb-[100px]`}
+      style={{ paddingTop: padding_top || "0px" }}
+    >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col md:flex-row">
 
           {/* LEFT 15% spacer */}
           <div className="md:w-[15%] relative mb-6 md:mb-0">
-            {(section?.section_label || section?.acf_fc_layout) && (
+            {section.section_label && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
                 <span className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${isDark ? 'text-white' : 'text-[#061837]'}`}>
-                  {section.section_label || section.acf_fc_layout?.replace(/_section$/, '').replace(/^industry_/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                  {section.section_label}
                 </span>
               </div>
             )}

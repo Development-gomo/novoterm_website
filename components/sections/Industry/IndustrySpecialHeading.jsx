@@ -43,11 +43,11 @@ export default function IndustrySpecialHeading({ section, sectionId }) {
 
           {/* ===== LEFT 15% spacer ===== */}
           <div className="md:w-[15%] relative mb-6 md:mb-0">
-            {(section_label || section?.acf_fc_layout) && (
+            {section_label && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
                 <span className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${isDark ? 'text-white' : 'text-[#061837]'}`}>
-                  {section_label || section.acf_fc_layout?.replace(/_section$/, '').replace(/^industry_/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                  {section_label}
                 </span>
               </div>
             )}
@@ -83,7 +83,12 @@ export default function IndustrySpecialHeading({ section, sectionId }) {
             {/* Main Content */}
             {main_content && (
               <div
-                className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-8 ${isFullWidth ? '' : 'max-w-[780px]'} [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline ${textColor}`}
+                className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-8 [&_a]:text-[#2655c4] [&_a]:underline
+                          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:marker:text-[#2655c4]
+                          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:marker:text-[#2655c4]
+                          [&_li]:mb-1 [&_p]:mb-2
+                          [&_br]:block [&_br]:content-[''] [&_br]:mb-2
+                          [&_strong]:font-semibold [&_em]:italic [&_h3]:text-[22px] [&_h3]:font-semibold  ${isFullWidth ? '' : 'max-w-[780px]'} [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline ${textColor}`}
                 dangerouslySetInnerHTML={{ __html: main_content }}
               />
             )}

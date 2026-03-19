@@ -10,6 +10,7 @@ import InsightsSection from "./sections/Homepage/InsightsSection";
 import ServicesSection from "./sections/Homepage/ServicesSection";
 import HomepageFaqSection from "./sections/Homepage/FaqSection";
 import ArticlesSection from "./sections/Homepage/ArticlesSection";
+import FullContentSection from "./sections/Homepage/FullContentSection";
 
 
 /* ===================== SERVICE PAGE ===================== */
@@ -78,6 +79,14 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
     const layout = block?.acf_fc_layout;
 
     switch (layout) {
+      case "full_content_section":
+        return (
+          <FullContentSection
+            key={`full-content-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+          />
+        );
 
       /* ===================== HOMEPAGE ===================== */
       case "hero_section":

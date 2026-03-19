@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { wpToPath } from "../../../lib/api";
 
-export default function OurApproachSection({ section, sectionId, index = 0}) {
+export default function OurApproachSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
   const { 
@@ -12,22 +12,20 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
     cta_url,
     button_text,
     button_link,
-    steps = [] 
+    steps = [],
+    section_theme = "dark"
   } = section;
+
+  // Theme-based classes
+  const isDark = section_theme === "dark";
+  const sectionBg = isDark ? "bg-[#061837]" : "bg-[#E3EDFF]";
+  const headingColor = isDark ? "text-white" : "text-[#061837]";
+  const stepTagColor = isDark ? "text-[#6E8BFF]" : "text-[#2655C4]";
+  const stepDescColor = isDark ? "text-white/85" : "text-[#061837]/85";
   
   // Support multiple field name variants
   const ctaText = cta_text || button_text;
   const ctaUrl = cta_link || cta_url || button_link;
-
-  const formatLabel = (layout) => {
-    if (!layout) return null;
-    return layout
-      .replace(/_section$/, '')
-      .replace(/^(services?_|casestudy_|blog_)/, '')
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, (c) => c.toUpperCase());
-  };
-  const mobileLabel = section.section_label || formatLabel(section.acf_fc_layout);
 
   const [activeStep, setActiveStep] = useState(1);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -74,20 +72,16 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
   }, [hasAnimated, steps.length]);
 
   return (
-    <section id={sectionId} ref={sectionRef} className="w-full bg-[#061837] py-6 md:py-10 lg:py-[96px] text-white">
+    <section
+      id={sectionId}
+      ref={sectionRef}
+      className={`w-full ${sectionBg} py-6 md:py-10 lg:py-[96px] ${isDark ? 'text-white' : 'text-[#061837]'}`}
+    >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% */}
           <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
-            {mobileLabel && (
-              <div className="flex items-center gap-2 mb-4 lg:hidden">
-                <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
-                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-white">
-                  {mobileLabel}
-                </span>
-              </div>
-            )}
           </div>
 
           {/* RIGHT – 85% */}
@@ -120,8 +114,12 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
                   <h3 className="text-[22px] font-semibold mb-[10px]">
                     {step.step_title}
                   </h3>
-                  <p className="text-[16px] leading-[1.7] text-white/85">
-                    {step.step_description}
+                <p className={`text-[16px] leading-[24px] ${stepDescColor} w-[200px]`}>
+  {step.step_description ? (
+    <span dangerouslySetInnerHTML={{ __html: step.step_description }} />
+  ) : (
+    "Loading description..." // Fallback for SSR and client hydration
+  )}
                   </p>
                 </div>
               ))}
@@ -178,9 +176,7 @@ export default function OurApproachSection({ section, sectionId, index = 0}) {
               <div className="grid grid-cols-4 gap-[48px]">
                 {steps.map((step, index) => (
                   <div key={`desc-${index}`}>
-                    <p className="text-[16px] leading-[24px] text-white/85 w-[200px]">
-                      {step.step_description}
-                    </p>
+                    <p className={`text-[16px] leading-[24px] ${stepDescColor} w-[200px]`} dangerouslySetInnerHTML={{ __html: step.step_description }} />
                   </div>
                 ))}
               </div>
