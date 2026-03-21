@@ -28,7 +28,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
       <div className="web-width mx-auto px-6 md:px-0 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-[0px]">
 
         {/* LEFT COLUMN */}
-        <div className="flex flex-col gap-[80px] md:gap-[120px] lg:gap-[172px]">
+        <div className="flex flex-col gap-[60px] md:gap-[120px] lg:gap-[172px]">
 
           {/* WHY ITEMS */}
           <div className="flex flex-col">

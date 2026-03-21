@@ -16,9 +16,8 @@ export default function ExpertsCTASection({ section }) {
 
   return (
     <section
-      className="relative w-full bg-center bg-cover
-                 h-[700px]
-                 py-[100px]"
+      className="relative w-full bg-center bg-cover  h-[500px] lg:h-[700px]
+                  py-[60px] sm:py-[80px] lg:py-[100px]"
       style={{
         background: bgUrl
           ? `linear-gradient(

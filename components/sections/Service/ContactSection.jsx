@@ -42,7 +42,7 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
   return (
     <section
       id={sectionId}
-      className={`w-full ${sectionBg} py-6 md:py-10 lg:py-[100px] ${isDark ? 'text-white' : 'text-[#061837]'}`}
+      className={`w-full ${sectionBg}  py-[60px] sm:py-[80px] lg:py-[100px] ${isDark ? 'text-white' : 'text-[#061837]'}`}
     >
       <div className="web-width mx-auto px-6 md:px-0">
 

@@ -61,8 +61,8 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
       id={sectionId}
       className="
         w-full bg-[#EEF3FF]
-        py-[40px]
-        md:py-[80px]
+        py-[60px]
+        sm:py-[80px]
         lg:py-[100px]
       "
     >

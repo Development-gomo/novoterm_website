@@ -11,12 +11,12 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
   return (
-    <div className="relative w-full">
+    <div className="relative w-full mt-25 md:mt-0 lg:mt-0">
 
       {/* ---------------- NAVIGATION BUTTONS --------------- */}
       <div className="absolute
-              top-4
-              right-4
+              top-[-80px]
+              right-0
               sm:top-6
               sm:right-6
               md:-top-25
@@ -98,8 +98,7 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
                       <h3 className="text-[24px] font-semibold text-black mb-4">
                         {slide.heading}
                       </h3>
-                      <div
-                        className="text-[16px] text-black leading-[1.5] max-w-[260px]"
+                      <div className="text-[16px] text-black leading-[1.5] max-w-[260px]"
                         dangerouslySetInnerHTML={{ __html: slide.subtext }}
                       />
                       {/* Black arrow for last slide */}
@@ -147,7 +146,7 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
                           absolute inset-0 opacity-0 group-hover:opacity-100 
                           bg-[#FEE4CA] 
                           transition-all z-30 flex flex-col
-                          p-8 pr-[74px]
+                          p-8 pr-[74px] 
                         "
                       >
                         <h3 className="text-[24px] font-semibold text-black mb-4">

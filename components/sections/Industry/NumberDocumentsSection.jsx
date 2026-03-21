@@ -37,7 +37,7 @@ export default function NumberDocumentsSection({ section, sectionId }) {
   return (
     <section
       id={sectionId}
-      className={`w-full ${sectionBg} pb-[40px] md:pb-10 lg:pb-[100px]`}
+      className={`w-full ${sectionBg} pb-[60px] md:pb-10 lg:pb-[100px]`}
       style={{ paddingTop: padding_top || "0px" }}
     >
       <div className="web-width mx-auto px-6 md:px-0">

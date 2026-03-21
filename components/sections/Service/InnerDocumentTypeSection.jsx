@@ -58,7 +58,7 @@ export default function InnerDocumentTypeSection({ section, sectionId, index = 0
   return (
     <section
       id={sectionId}
-      className="relative w-full py-[40px] md:py-[80px] lg:py-[100px] bg-[#061837] text-white"
+      className="relative w-full py-[60px] md:py-[80px] lg:py-[100px] bg-[#061837] text-white"
     >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">

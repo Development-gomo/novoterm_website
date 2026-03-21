@@ -48,7 +48,7 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
 
       <section
         id={sectionId}
-        className="w-full bg-[#EEF3FF] py-[40px] md:py-[80px] lg:py-[100px]"
+        className="w-full bg-[#EEF3FF] py-[60px] md:py-[80px] lg:py-[100px]"
       >
         <div className="web-width mx-auto px-6 md:px-0">
           {/* HEADER */}

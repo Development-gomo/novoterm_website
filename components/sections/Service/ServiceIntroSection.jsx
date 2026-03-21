@@ -32,7 +32,7 @@ export default function ServiceIntroFrontend({
 
   return (
     <section id={sectionId}
-      className="w-full bg-[#EAF1FF] py-[40px] md:py-10 lg:py-[100px]"
+      className="w-full bg-[#EAF1FF]  py-[60px] sm:py-[80px] lg:py-[100px]"
     >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col md:flex-row">

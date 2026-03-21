@@ -31,7 +31,7 @@ export default function IndustrySpecialHeading({ section, sectionId }) {
     section_padding === "no-bottom" ? "pt-[40px] md:pt-10 lg:pt-[100px] pb-0" :
     section_padding === "no-both"   ? "py-0" :
     section_padding === "Add-bottom" ? "lg:pt-[100px] lg:pb-[100px]" :
-    "pt-[40px] md:pt-10 lg:pt-[100px]"; // default — keep original top-only
+    "pt-[60px] md:pt-20 lg:pt-[100px]"; // default — keep original top-only
 
   // Section width
   const isFullWidth = section_width === "full";

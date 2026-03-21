@@ -70,7 +70,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
   }, [lang]);
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] md:py-[60px] lg:py-[100px]`}>
+    <section id={sectionId} className={`w-full ${sectionBg} py-[60px] md:py-[80px] lg:py-[100px]`}>
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col md:flex-row">
 

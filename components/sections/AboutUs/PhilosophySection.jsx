@@ -28,7 +28,7 @@ export default function PhilosophySection({
     >
       <div className="web-width mx-auto px-6 md:px-0">
 
-        <div className="flex flex-col md:flex-row gap-8 md:gap-0">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-0">
 
           {/* LEFT – LABEL */}
           <div className="md:w-[15%] relative">

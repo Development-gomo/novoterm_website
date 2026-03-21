@@ -36,18 +36,16 @@ export default function LeadershipMessageSection({
     <section
       id={sectionId}
       className="w-full bg-[#061837]
-        pt-[56px] pb-[56px]
-        sm:pt-[72px] sm:pb-[72px]
-        lg:pt-[90px] lg:pb-[100px]"
+        py-[60px] sm:py-[80px] lg:py-[100px]"
     >
       <div className="web-width mx-auto px-6 md:px-0">
 
-        <div className="flex flex-col md:flex-row gap-10 md:gap-0">
+        <div className="flex flex-col md:flex-row gap-0">
 
           {/* LEFT – LABEL */}
           <div className="md:w-[15%] relative">
             {section_label && (
-              <div className="flex items-center gap-2 mb-6 lg:hidden">
+              <div className="flex items-center gap-2 mb-4 lg:mb-6 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
                 <span className="uppercase font-montserrat font-medium
                   text-[10px]
@@ -66,8 +64,8 @@ export default function LeadershipMessageSection({
               <h2
                 className="text-white font-heading font-semibold
                   text-[24px] sm:text-[28px] md:text-[40px]
-                  leading-tight md:leading-[48px]
-                  mb-10
+                  leading-tight md:leading-[48px] mb-4
+                  md:mb-10 
                   max-w-[577px]"   /* ← was fixed width */
               >
                 {heading}
@@ -80,8 +78,8 @@ export default function LeadershipMessageSection({
               <div className="flex-1 max-w-full">
 
                 {name && (
-                  <p className="text-white font-heading
-                    text-[24px] leading-[32px]
+                  <p className="text-white font-heading text-[20px]
+                    md:text-[24px] leading-[32px]
                     font-semibold mb-2">
                     {name}
                   </p>
@@ -89,7 +87,7 @@ export default function LeadershipMessageSection({
 
                 {role && (
                   <p className="uppercase text-[14px] font-montserrat font-medium
-                    tracking-widest text-white mb-8">
+                    tracking-widest text-white mb-4 md:mb-8">
                     {role}
                   </p>
                 )}
@@ -109,7 +107,7 @@ export default function LeadershipMessageSection({
                   <img
                     src={signatureImg}
                     alt="Signature"
-                    className="h-[40px] sm:h-[85px]"
+                    className="h-[100px] sm:h-[85px]"
                   />
                 )}
               </div>
@@ -126,7 +124,7 @@ export default function LeadershipMessageSection({
                         mx-auto lg:mx-0
                         object-cover object-top
                         rounded-[3px]
-                        h-[360px] sm:h-[420px] lg:h-[510px]
+                        h-[420px] sm:h-[420px] lg:h-[510px]
                       "
                     />
                   </div>

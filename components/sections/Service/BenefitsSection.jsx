@@ -23,12 +23,12 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
   const mobileLabel = section.section_label || formatLabel(section.acf_fc_layout);
 
   return (
-    <section id={sectionId} className="w-full bg-[#EAF1FF] py-6 md:py-10 lg:py-[100px]">
+    <section id={sectionId} className="w-full bg-[#EAF1FF]  py-[60px] sm:py-[80px] lg:py-[100px]">
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% */}
-          <div className="w-full lg:w-[15%] mb-6 lg:mb-0 relative">
+          <div className="w-full lg:w-[15%] lg:mb-0 relative">
             {mobileLabel && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />

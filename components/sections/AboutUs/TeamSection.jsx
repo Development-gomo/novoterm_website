@@ -55,16 +55,16 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   return (
     <section
       id={sectionId}
-      className="w-full bg-[#E3EDFF] pt-[56px] pb-[56px] sm:pt-[72px] sm:pb-[72px] lg:pt-[100px] lg:pb-[80px]"
+      className="w-full bg-[#E3EDFF] py-[60px] sm:py-[72px] lg:py-[100px]"
     >
       <div className="web-width mx-auto px-6 md:px-0">
 
-        <div className="flex flex-col md:flex-row gap-8 md:gap-0">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-0">
 
           {/* LEFT – 15% (STICKY LABEL) */}
           <div className="md:w-[15%] relative">
             {section_label && (
-              <div className="flex items-center gap-2 mb-6 lg:hidden">
+              <div className="flex items-center gap-2 lg:mb-6 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
                 <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider">
                   {section_label}

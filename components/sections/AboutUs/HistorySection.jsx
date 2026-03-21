@@ -16,9 +16,7 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
   return (
     <section
       id={sectionId}
-      className="bg-[#061837] pt-[56px] pb-[56px]
-        sm:pt-[72px] sm:pb-[72px]
-        lg:pt-[90px] lg:pb-[100px]"
+      className="bg-[#061837]  py-[60px] sm:py-[80px] lg:py-[100px]"
     >
       <div className="web-width mx-auto px-6 md:px-0">
 
@@ -50,7 +48,7 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
             )}
 
             {/* DESCRIPTION + STATS GRID */}
-            <div className="grid grid-cols-1 lg:grid-cols-[538px_1fr] gap-[80px] items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[538px_1fr] gap-4 md:gap-[80px] items-start">
 
               {/* DESCRIPTION */}
               {description && (

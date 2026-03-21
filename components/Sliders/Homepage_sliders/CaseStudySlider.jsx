@@ -15,10 +15,10 @@ export default function ServiceCaseStudySlider({ slides }) {
   const prevRef = useRef(null);
 
   return (
-    <div className="relative w-full mt-5 sm:mt-0">
+    <div className="relative w-full mt-10 sm:mt-0">
 
       {/* Custom Navigation Buttons */}
-      <div className="flex gap-3 absolute right-0 top-0 lg:top-[-54px] z-10 pointer-events-auto">
+      <div className="flex gap-3 absolute right-0 top-[-24] lg:top-[-54px] z-10 pointer-events-auto">
         <button ref={prevRef} className="swiper-prev w-[48px] h-[48px] rounded-full bg-[#BBC8E1] flex items-center justify-center text-[#1B3A6F] hover:bg-[#2655c4] cursor-pointer hover:text-white transition">
          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="15" viewBox="0 0 23 15" fill="none">
   <path d="M8.14526 14.1729C7.98211 14.3215 7.7207 14.3399 7.53296 14.2285L7.45679 14.1729L7.45679 14.1719L0.246826 7.5293L0.184326 7.45899C0.129799 7.38393 0.100073 7.29453 0.100341 7.2002L0.110107 7.1084C0.129634 7.01842 0.177351 6.93598 0.247802 6.8711L7.45679 0.228517C7.64346 0.0570564 7.96037 0.0578416 8.14526 0.228517C8.34077 0.409054 8.34036 0.705293 8.14526 0.885743L8.14429 0.885743L1.79272 6.73926L21.8093 6.73926C22.0724 6.73932 22.2995 6.93869 22.2996 7.2002C22.2996 7.46174 22.0725 7.66107 21.8093 7.66113L1.79175 7.66113L8.14624 13.5146C8.34135 13.6951 8.34121 13.9913 8.14624 14.1719L8.14526 14.1729Z" fill="#E3EDFF" stroke="#E3EDFF" stroke-width="0.2"/>
@@ -50,12 +50,12 @@ export default function ServiceCaseStudySlider({ slides }) {
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
-            <div className="w-full mt-12 bg-[#071937] text-white rounded-[3px] overflow-hidden grid grid-cols-1 md:grid-cols-[60%_40%]">
+            <div className="w-full mt-12 bg-[#071937] text-white rounded-[3px] overflow-hidden grid grid-cols-1 md:grid-cols-[60%_40%] max-w-full sm:max-w-full">
 
               {/* LEFT SIDE — TEXT */}
               <div className="p-10 md:p-12 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-[24px] font-semibold leading-8 mb-8 max-w-[550px]">
+                  <h3 className="text-[24px] font-semibold leading-8 mb-8 max-w-[550px] line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     {slide.review_heading}
                   </h3>
 

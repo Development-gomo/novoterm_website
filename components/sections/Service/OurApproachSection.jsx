@@ -103,7 +103,7 @@ export default function OurApproachSection({ section, sectionId, index = 0 }) {
             <div className="flex flex-col gap-[32px] lg:hidden">
               {steps.map((step, index) => (
                 <div key={index} className="border-b border-white/15 pb-[24px]">
-                  <div className="flex items-center gap-3 mb-[12px]">
+                  <div className="flex items-center gap-3 mb-5 lg:mb-[12px]">
                     <span className="w-[32px] h-[32px] rounded-full bg-[#2F5BDE] flex items-center justify-center text-[14px] font-medium">
                       {step.step_number}
                     </span>
@@ -114,7 +114,7 @@ export default function OurApproachSection({ section, sectionId, index = 0 }) {
                   <h3 className="text-[22px] font-semibold mb-[10px]">
                     {step.step_title}
                   </h3>
-                <p className={`text-[16px] leading-[24px] ${stepDescColor} w-[200px]`}>
+                <p className={`text-[16px] leading-[24px] ${stepDescColor} w-full lg:w-[200px]`}>
   {step.step_description ? (
     <span dangerouslySetInnerHTML={{ __html: step.step_description }} />
   ) : (

@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ServiceCaseStudySlider from "../../Sliders/Servicepage_sliders/ServiceCaseStudySlider";
+import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
 import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function ServiceCaseStudySection({
@@ -91,7 +91,7 @@ export default function ServiceCaseStudySection({
             </div>
 
             {/* SLIDER */}
-            {slides.length > 0 && <ServiceCaseStudySlider slides={slides} />}
+            {slides.length > 0 && <CaseStudySlider slides={slides} />}
 
           </div>
         </div>

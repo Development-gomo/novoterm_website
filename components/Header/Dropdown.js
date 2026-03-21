@@ -90,21 +90,49 @@ export default function Dropdown({ item }) {
       {/* Dropdown panel */}
       {open && childArray.length > 0 && (
         <div
-          className="absolute left-0 top-full mt-1 bg-white text-black rounded-lg shadow-lg p-3 min-w-[220px] z-50 font-montserrat text-[14px]"
+          className={`absolute left-0 top-full mt-1 bg-white text-black rounded-lg shadow-lg p-3 z-50 font-montserrat text-[14px] ${childArray.length > 6 ? 'min-w-[500px]' : 'min-w-[200px]'} `}
           role="menu"
           onMouseEnter={openNow}
           onMouseLeave={closeSoon}
         >
-          {childArray.map((sub) => (
-            <Link
-              key={sub.ID || sub.id || sub.title}
-              href={wpToPath(sub.url)}
-              className="block py-2 font-montserrat text-[14px] px-2 text-gray-800 hover:text-blue-600"
-              role="menuitem"
-            >
-              {sub.title}
-            </Link>
-          ))}
+          {childArray.length > 6 ? (
+            <div className="grid grid-cols-2 gap-x-4 divide-x divide-gray-200">
+              {(() => {
+                const half = Math.ceil(childArray.length / 2);
+                const col1 = childArray.slice(0, half);
+                const col2 = childArray.slice(half);
+                return [col1, col2].map((col, i) => (
+                  <div key={i} className="flex flex-col px-2">
+                    {col.map((sub) => (
+                      <Link
+                        key={sub.ID || sub.id || sub.title}
+                        href={wpToPath(sub.url)}
+                        className="flex items-center gap-2 py-2 font-montserrat text-[14px] px-2 text-gray-800 hover:text-[#2655c4] border-b border-gray-200 last:border-b-0 transition-colors duration-150"
+                        role="menuitem"
+                      >
+                        <span className="w-1.5 h-1.5 bg-[#2655c4] rounded-full inline-block mr-2"></span>
+                        {sub.title}
+                      </Link>
+                    ))}
+                  </div>
+                ));
+              })()}
+            </div>
+          ) : (
+            <div className="flex flex-col min-w-[150px]">
+              {childArray.map((sub) => (
+                <Link
+                  key={sub.ID || sub.id || sub.title}
+                  href={wpToPath(sub.url)}
+                  className="flex items-center gap-2 py-2 font-montserrat text-[14px] px-2 text-gray-800 hover:text-[#2655c4] border-b border-gray-200 last:border-b-0 transition-colors duration-150"
+                  role="menuitem"
+                >
+                  <span className="w-1.5 h-1.5 bg-[#2655c4] rounded-full inline-block mr-2"></span>
+                  {sub.title}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

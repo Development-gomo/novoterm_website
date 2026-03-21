@@ -74,13 +74,13 @@ const getEmbedUrl = (url) => {
 };
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} ${removeBottomPadding ? 'pt-[40px] md:pt-10 lg:pt-[100px] pb-0' : 'py-[40px] md:py-10 lg:py-[100px]'}`}>
+    <section id={sectionId} className={`w-full ${sectionBg} ${removeBottomPadding ? 'pt-[60px] md:pt-[80px] lg:pt-[100px] pb-0' : 'py-[60px] sm:py-[80px] lg:py-[100px]'}`}>
       <div className="web-width mx-auto px-6 md:px-0">
 
         <div className="flex flex-col md:flex-row">
 
           {/* ================= LEFT 15% ================= */}
-          <div className="md:w-[15%] relative mb-6 md:mb-0">
+          <div className="md:w-[15%] relative   md:mb-0">
             {(section_label || section?.acf_fc_layout) && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />

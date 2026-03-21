@@ -31,12 +31,12 @@ export default function IconBoxSection({ section, sectionId, index = 0 }) {
   const cardText     = isDark ? "text-white/80"   : "text-[#061837]/75";
 
   return (
-    <section id={sectionId} className={`w-full ${sectionBg} py-[40px] md:py-[60px] lg:py-[100px]`}>
+    <section id={sectionId} className={`w-full ${sectionBg} py-[60px] sm:py-[80px] lg:py-[100px]`}>
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
           {/* LEFT – 15% spacer */}
-          <div className="w-full lg:w-[15%] mb-6 lg:mb-0">
+          <div className="w-full lg:w-[15%]  lg:mb-0">
             {(section?.section_label || section?.acf_fc_layout) && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
