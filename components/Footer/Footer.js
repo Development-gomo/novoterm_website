@@ -50,7 +50,7 @@ export default function Footer({ data }) {
             </div>
 
             <p className="text-white/40 text-[14px] leading-relaxed">
-              {branding?.copyright_text}
+              <span suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: branding?.copyright_text || "" }} />
             </p>
           </div>
 
