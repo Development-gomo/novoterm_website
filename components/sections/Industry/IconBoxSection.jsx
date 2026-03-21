@@ -52,7 +52,7 @@ export default function IconBoxSection({ section, sectionId, index = 0 }) {
  
 
             {/* HEADER ROW */}
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[40px] lg:mb-[64px] gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[20px] lg:mb-[40px] gap-6">
               <div className="max-w-[780px]">
                 {heading && (
                   <h2

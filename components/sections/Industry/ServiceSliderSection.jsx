@@ -34,6 +34,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
         const data = await res.json();
         if (!Array.isArray(data)) return;
 
+
         let formatted = data.map((post) => ({
           slug: post.slug,
           heading: post.acf?.heading || post.title?.rendered || "",
@@ -44,7 +45,15 @@ export default function ServiceSliderSection({ section, sectionId }) {
             post.acf.last_block.some(
               (v) => v === "yes" || v.startsWith("yes:")
             ),
+          slider_sequence: parseInt(post.acf?.slider_sequence, 10) || 0,
         }));
+
+        formatted = formatted.sort((a, b) => a.slider_sequence - b.slider_sequence);
+
+        // Mark the last item in sequence as the special card
+        if (formatted.length > 0) {
+          formatted[formatted.length - 1].last_block = true;
+        }
 
         formatted = formatted.sort((a, b) => {
           if (a.last_block !== b.last_block) return a.last_block ? 1 : -1;
@@ -96,7 +105,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
                   lg:leading-[48px]
                   [&_em]:text-[#2655C4]
                   [&_em]:font-bold
-                  mb-4 max-w-[900px]
+                  mb-8 max-w-[900px]
                   ${headingColor}
                 `}
                 dangerouslySetInnerHTML={{ __html: section_title }}
@@ -111,7 +120,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
             )}
 
             {/* SLIDER */}
-            {slides.length > 0 && <DocumentTypeSlider slides={slides} isDark={isDark} />}
+            {slides.length > 0 && <DocumentTypeSlider slides={slides} isDark={isDark} desktopSlides={3} />}
 
           </div>
         </div>

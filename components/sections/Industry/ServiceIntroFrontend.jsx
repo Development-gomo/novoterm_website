@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import ReadMoreContent from "./ReadMoreContent";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
@@ -125,11 +126,10 @@ const getEmbedUrl = (url) => {
               {/* STATIC MAIN CONTENT – 50% */}
               <div className="w-full md:w-1/2">
 
+
+                {/* Read More/Read Less logic for main_content */}
                 {main_content && (
-                  <div
-                    className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline [&_h2]:font-heading [&_h2]:font-semibold [&_h2]:text-[22px] [&_h2]:md:text-[26px] [&_h2]:leading-snug [&_h2]:mb-3 [&_h3]:font-heading [&_h3]:font-semibold [&_h3]:text-[18px] [&_h3]:md:text-[22px] [&_h3]:leading-snug [&_h3]:mb-3 [&_h4]:font-heading [&_h4]:font-semibold [&_h4]:text-[16px] [&_h4]:md:text-[18px] [&_h4]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-semibold [&_br]:block ${textColor}`}
-                    dangerouslySetInnerHTML={{ __html: main_content }}
-                  />
+                  <ReadMoreContent html={main_content} textColor={textColor} />
                 )}
 
                 {/* BUTTON – LEFT / BELOW STATIC */}
@@ -143,10 +143,10 @@ const getEmbedUrl = (url) => {
               {/* MEDIA / DYNAMIC CONTENT – 50% */}
               <div className="w-full md:w-1/2">
 
-                {/* IMAGE */}
+             {/* IMAGE */}
                 {layout_type === "image" && imageUrl && (
                   <div
-                    className="w-full h-[280px] md:h-[420px] rounded-[3px] bg-cover bg-center mb-6"
+                    className="w-full h-[280px] rounded-[3px] bg-cover bg-center mb-6"
                     style={{ backgroundImage: `url("${imageUrl}")` }}
                   />
                 )}

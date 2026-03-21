@@ -30,6 +30,7 @@ export default function IndustrySpecialHeading({ section, sectionId }) {
     section_padding === "no-top"    ? "pt-0 pb-[40px] md:pb-10 lg:pb-[100px]" :
     section_padding === "no-bottom" ? "pt-[40px] md:pt-10 lg:pt-[100px] pb-0" :
     section_padding === "no-both"   ? "py-0" :
+    section_padding === "Add-bottom" ? "lg:pt-[100px] lg:pb-[100px]" :
     "pt-[40px] md:pt-10 lg:pt-[100px]"; // default — keep original top-only
 
   // Section width
