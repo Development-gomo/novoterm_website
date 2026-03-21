@@ -1,5 +1,6 @@
 
 /* ===================== HOMEPAGE ===================== */
+import HomeHeroFinal from "./sections/Homepage/homeherofinal";
 import HeroSection from "./sections/Homepage/HeroSection";
 import AboutSection from "./sections/Homepage/AboutSection";
 import FullWidthExpertsSection from "./sections/Homepage/FullWidthExpertsSection";
@@ -11,6 +12,8 @@ import ServicesSection from "./sections/Homepage/ServicesSection";
 import HomepageFaqSection from "./sections/Homepage/FaqSection";
 import ArticlesSection from "./sections/Homepage/ArticlesSection";
 import FullContentSection from "./sections/Homepage/FullContentSection";
+import NewHomeBanner from "./sections/Homepage/NewBanner";
+import NewHomeBannerText from "./sections/Homepage/newbannertext";
 
 
 /* ===================== SERVICE PAGE ===================== */
@@ -114,6 +117,23 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
           />
         );
 
+      case "new_home_banner":
+        return (
+          <NewHomeBanner
+            key={`new-home-banner-${index}`}
+            block={block}
+            sectionId={`section-${index}`}
+          />
+        );
+      case "hero_section_final":
+  return (
+    <HomeHeroFinal
+      key={`hero-section-final-${index}`}
+      {...(block?.acf || block)} // ✅ handles both cases
+      sectionId={`section-${index}`}
+    />
+  );
+
       case "fullwidth_experts_section":
         return (
           <FullWidthExpertsSection
@@ -216,6 +236,15 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
       case "services_hero":
         return <ServicesHeroSection key={index} {...block} sectionId={`section-${index}`} index={index} />;
 
+
+                case "new_home_banner_text":
+                  return (
+                    <NewHomeBannerText
+                      key={`new-home-banner-text-${index}`}
+                      block={block}
+                      sectionId={`section-${index}`}
+                    />
+                  );
       case "service_intro":
         return <ServiceIntroFrontend key={index} section={block} sectionId={`section-${index}`} index={index} />;
 

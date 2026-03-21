@@ -107,6 +107,7 @@ export default function IconBoxSection({ section, sectionId, index = 0 }) {
                             src={iconUrl}
                             alt={box.title || "icon"}
                             className="w-full h-full object-contain"
+                            style={isDark ? { filter: 'brightness(0) saturate(100%) invert(92%) sepia(7%) saturate(388%) hue-rotate(176deg) brightness(104%) contrast(101%)' } : {}}
                           />
                         </div>
                       )}

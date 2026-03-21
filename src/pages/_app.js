@@ -2,7 +2,14 @@ import "@/styles/globals.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-import { getHeaderData, getMainMenu, getFooterData, DEFAULT_LANG } from "../../lib/api";
+import {
+  getHeaderData,
+  getMainMenu,
+  getFooterData,
+  getHamburgerMenu,
+  DEFAULT_LANG,
+} from "../../lib/api";
+
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
@@ -37,12 +44,19 @@ function buildHeaderData(header, menu) {
   };
 }
 
-export default function MyApp({ Component, pageProps, initialHeader, initialFooter }) {
+export default function MyApp({
+  Component,
+  pageProps,
+  initialHeader,
+  initialFooter,
+  initialHamburgerMenu,
+}) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
 
   const [headerData, setHeaderData] = useState(initialHeader || null);
   const [footerData, setFooterData] = useState(initialFooter || null);
+  const [hamburgerMenuData, setHamburgerMenuData] = useState(initialHamburgerMenu || null);
 
   // Keep <html lang> in sync with the active locale
   useEffect(() => {
@@ -89,9 +103,31 @@ export default function MyApp({ Component, pageProps, initialHeader, initialFoot
     loadFooter();
   }, [lang, initialFooter]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useEffect(() => {
+    if (initialHamburgerMenu) {
+      setHamburgerMenuData(initialHamburgerMenu);
+      return;
+    }
+    async function loadHamburgerMenu() {
+      try {
+        const data = await getHamburgerMenu(lang);
+        setHamburgerMenuData(data);
+      } catch (err) {
+        console.error("HAMBURGER MENU LOAD ERROR:", err);
+      }
+    }
+    loadHamburgerMenu();
+  }, [lang, initialHamburgerMenu]); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
-      {headerData && <Header {...headerData} translations={pageProps.translations || null} />}
+      {headerData && (
+        <Header
+          {...headerData}
+          {...hamburgerMenuData}
+          translations={pageProps.translations || null}
+        />
+      )}
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
     </div>
@@ -101,11 +137,12 @@ export default function MyApp({ Component, pageProps, initialHeader, initialFoot
 MyApp.getInitialProps = async ({ Component, ctx }) => {
   const lang = ctx.locale || DEFAULT_LANG;
 
-  // Fetch header, menu, footer in parallel on the server
-  const [header, menu, footer] = await Promise.all([
+  // Fetch header, menu, footer, hamburger menu in parallel on the server
+  const [header, menu, footer, hamburgerMenu] = await Promise.all([
     getHeaderData(lang).catch(() => null),
     getMainMenu(lang).catch(() => null),
     getFooterData(lang).catch(() => null),
+    getHamburgerMenu(lang).catch(() => null),
   ]);
 
   let pageProps = {};
@@ -117,5 +154,6 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
     pageProps,
     initialHeader: header && menu ? buildHeaderData(header, menu) : null,
     initialFooter: footer,
+    initialHamburgerMenu: hamburgerMenu,
   };
 };

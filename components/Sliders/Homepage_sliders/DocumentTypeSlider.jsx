@@ -95,16 +95,21 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
                   {/* ================= ACTIVE LAST SLIDE ================= */}
                   {isLast ? (
                     <div className="absolute inset-0 bg-[#FEE4CA] p-[32px] pr-[35px] flex flex-col">
-
                       <h3 className="text-[24px] font-semibold text-black mb-4">
                         {slide.heading}
                       </h3>
-
                       <div
                         className="text-[16px] text-black leading-[1.5] max-w-[260px]"
                         dangerouslySetInnerHTML={{ __html: slide.subtext }}
                       />
-
+                      {/* Black arrow for last slide */}
+                      <div className="absolute bottom-8 left-8 z-20">
+                        <div className="w-[48px] h-[48px] rounded-full border border-black flex items-center justify-center text-black">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="13" viewBox="0 0 20 13" fill="none">
+                            <path d="M12.3289 0.212646C12.495 0.0621656 12.7749 0.0622819 12.9412 0.212646L12.9421 0.213623L19.1687 5.90698C19.2522 5.98312 19.2999 6.08763 19.2996 6.19995L19.2908 6.28198C19.2732 6.36214 19.2306 6.43549 19.1677 6.49292L12.9421 12.1863C12.7758 12.3383 12.4938 12.3374 12.3289 12.1863C12.1539 12.0257 12.1548 11.7616 12.3298 11.6013L17.7878 6.60913H0.537842C0.304801 6.60913 0.100382 6.43374 0.100342 6.19995C0.100342 5.96613 0.304777 5.79077 0.537842 5.79077H17.7878L12.3289 0.797607C12.1541 0.637137 12.1541 0.374072 12.3289 0.213623V0.212646Z" fill="black" stroke="black" stroke-width="0.2"/>
+                          </svg>
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <>
