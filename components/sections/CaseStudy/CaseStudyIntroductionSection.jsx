@@ -1,3 +1,5 @@
+
+import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 
 const formatLabel = (layout) => {
@@ -14,11 +16,17 @@ export default function CaseStudyIntroductionSection({
   sectionId,
   index = 0,
 }) {
+
+  const router = typeof window !== "undefined" ? require("next/router").useRouter() : { locale: "en" };
+  const lang = router.locale || "en";
+  const t = (sv, en) => lang === "sv" ? sv : en;
+
   if (!section) return null;
 
   const {
     section_label,
     heading,
+    sub_heading,
     left_title,
     left_content,
     client,
@@ -54,6 +62,7 @@ export default function CaseStudyIntroductionSection({
           {/* MAIN CONTENT */}
           <div className="lg:w-[85%]">
 
+
             {/* HEADING */}
             {heading && (
               <h2
@@ -68,7 +77,7 @@ export default function CaseStudyIntroductionSection({
                   md:leading-[52px]
                   lg:leading-[58px]
                   max-w-[1090px]
-                  mb-8 lg:mb-10
+                  mb-4 lg:mb-6
                   [&_em]:text-[#2655C4]
                   [&_em]:italic
                   [&_em]:font-semibold
@@ -77,8 +86,23 @@ export default function CaseStudyIntroductionSection({
               />
             )}
 
+            {/* SUB HEADING */}
+            {sub_heading && (
+              <div
+                className="
+                  text-[15px] md:text-[16px] leading-[1.5] text-[#000000] space-y-4  leading-relaxed [&_a]:text-[#2655c4] [&_a]:underline
+                          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:marker:text-[#2655c4]
+                          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:marker:text-[#2655c4]
+                          [&_li]:mb-1 [&_p]:mb-2
+                          [&_br]:block [&_br]:content-[''] [&_br]:mb-2
+                          [&_strong]:font-semibold [&_em]:italic
+                "
+                dangerouslySetInnerHTML={{ __html: sub_heading }}
+              />
+            )}
+
             {/* CONTENT + INFO CARD */}
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-[48px] items-start">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-[48px] mt-8 items-start">
 
               {/* LEFT TEXT */}
               <div className="w-full lg:flex-[682px] max-w-full">
@@ -101,28 +125,31 @@ export default function CaseStudyIntroductionSection({
               <div className="w-full lg:flex-[360px] bg-[#061837] text-white rounded-[3px] p-[24px] lg:p-[48px]
 ">
 
+
                 {client && (
                   <div className="mb-8">
                     <p className="text-[14px] uppercase !font-montserrat font-medium tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      Client
+                      {t("KUND", "Client")}
                     </p>
                     <p className="text-[16px] leading-[24px] !font-normal ">{client}</p>
                   </div>
                 )}
 
+
                 {industry && (
-                 <div className="mb-8">
+                  <div className="mb-8">
                     <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      Industry
+                      {t("BRANSCH", "Industry")}
                     </p>
                     <p className="text-[16px] leading-[24px] font-medium">{industry}</p>
                   </div>
                 )}
 
+
                 {services && (
                   <div>
                     <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      Services
+                      {t("TJÄNST", "Services")}
                     </p>
                     <p className="text-[16px] leading-[24px] font-medium">{services}</p>
                   </div>

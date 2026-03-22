@@ -1,7 +1,13 @@
 
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function ContactForm({ sectionTheme = "light", formId }) {
+  const router = typeof window !== "undefined" ? require("next/router").useRouter() : { locale: "en" };
+  const lang = router.locale || "en";
+
+  // Translation dictionary
+  const t = (sv, en) => lang === "sv" ? sv : en;
   const [type, setType] = useState("company");
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
@@ -55,7 +61,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
 
       {/* ================= RADIO QUESTION ================= */}
       <p className="text-[18px] font-montserrat font-medium mb-4">
-        Are you a company or a private individual?
+        {t("Företagskund eller privatperson? Välj nedan:", "Are you a company or a private individual?")}
       </p>
 
       <div className="flex gap-4 mb-8">
@@ -71,7 +77,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             <span className={`w-[6px] h-[6px] rounded-full bg-white ${type === "company" ? "opacity-100" : "opacity-0"}`} />
           </span>
           <span className="text-[13px] uppercase tracking-widest">
-            Company
+            {t("FÖRETAG", "Company")}
           </span>
         </label>
 
@@ -87,13 +93,13 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             <span className={`w-[6px] h-[6px] rounded-full bg-white ${type === "private" ? "opacity-100" : "opacity-0"}`} />
           </span>
           <span className="text-[13px] uppercase tracking-widest">
-            Private individual
+            {t("PRIVATPERSON", "Private individual")}
           </span>
         </label>
       </div>
 
       {/* ================= SECTION TITLE ================= */}
-      <p className="text-[18px] font-montserrat font-medium mb-4">Tell us about you</p>
+      <p className="text-[18px] font-montserrat font-medium mb-4">{t("Berätta om dig själv", "Tell us about you")}</p>
 
       {/* ================= INPUTS ================= */}
       <div className="space-y-4">
@@ -101,7 +107,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
         <input
           type="text"
           name="company_name"
-          placeholder="COMPANY NAME*"
+          placeholder={t("FÖRETAGSNAMN*", "COMPANY NAME*")}
           required
           className={`w-full h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
         />
@@ -110,7 +116,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           <input
             type="text"
             name="full_name"
-            placeholder="FULL NAME*"
+            placeholder={t("FULLSTÄNDIGT NAMN*", "FULL NAME*")}
             required
             className={`h-[48px] px-4 rounded-[3px] border ${borderColor}   ${textColor} text-[14px] outline-none ${placeholderColor}`}
           />
@@ -118,7 +124,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           <input
             type="tel"
             name="phone"
-            placeholder="PHONE NUMBER*"
+            placeholder={t("TELEFONNUMMER*", "PHONE NUMBER*")}
             required
             className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
           />
@@ -128,7 +134,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           <input
             type="email"
             name="email"
-            placeholder="E-MAIL*"
+            placeholder={t("E-POST*", "E-MAIL*")}
             required
             className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
           />
@@ -140,11 +146,11 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
               className={`w-full h-[48px] px-4 pr-10 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none appearance-none`}
             >
               <option value="" className={`text-black bg-white ${textColor}`}>
-                AREA OF INTEREST
+                {t("ÖNSKAD SPRÅKTJÄNST", "AREA OF INTEREST")}
               </option>
-              <option value="Translation" className={`text-black bg-white ${textColor}`}>Translation</option>
-              <option value="Localization" className={`text-black bg-white ${textColor}`}>Localization</option>
-              <option value="Review" className={`text-black bg-white ${textColor}`}>Review</option>
+              <option value="Translation" className={`text-black bg-white ${textColor}`}>{t("Översättning", "Translation")}</option>
+              <option value="Localization" className={`text-black bg-white ${textColor}`}>{t("Lokalisering", "Localization")}</option>
+              <option value="Review" className={`text-black bg-white ${textColor}`}>{t("Granskning", "Review")}</option>
             </select>
 
             <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">
@@ -157,7 +163,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
 
         <textarea
           name="message"
-          placeholder="MESSAGE"
+          placeholder={t("MEDDELANDE", "MESSAGE")}
           className={`w-full min-h-[105px] px-4 py-3 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none resize-none ${placeholderColor}`}
         />
       </div>
@@ -180,7 +186,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
   </svg>
 
   <span className="uppercase tracking-widest truncate max-w-[240px]">
-    {fileName ? fileName : "Upload file"}
+    {fileName ? fileName : t("LADDA UPP FIL", "Upload file")}
   </span>
 </label>
 
@@ -192,7 +198,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           disabled={loading}
           className="btn-primary cursor-pointer disabled:opacity-50"
         >
-          {loading ? "Sending..." : "Send request"}
+          {loading ? (lang === "sv" ? "Skickar..." : "Sending...") : t("SKICKA", "Submit")}
         </button>
 
         {status && (

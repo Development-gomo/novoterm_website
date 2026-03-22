@@ -87,7 +87,7 @@ export default function CaseStudySolutionSection({
                     />
                   </div>
 
-                  <h4 className="text-[16px] sm:text-[17px] font-semibold leading-[1.3] sm:leading-[48px] text-[#061837]">
+                  <h4 className="text-[16px] sm:text-[17px] font-semibold leading-[28px] mb-[16px] text-[#061837]">
                     {item.title}
                   </h4>
 

@@ -9,10 +9,19 @@ const formatLabel = (layout) => {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
+
 export default function CaseStudyResultsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
-  const { section_label, heading, description, results_points = [], highlight } = section;
+  const {
+    section_label,
+    heading,
+    description,
+    results_points = [],
+    highlight,
+    result_column = "image",
+    result_image
+  } = section;
 
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
@@ -53,12 +62,12 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
 
               {description && (
                 <div
-                  className="w-full lg:max-w-[533px] text-[16px] leading-[24px] text-white mb-[40px]"
+                  className="w-full lg:max-w-[600px] text-[16px] leading-[24px] text-white mb-[40px]"
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-[32px] sm:gap-[48px] max-w-full sm:max-w-[560px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-[32px] sm:gap-[48px] max-w-full sm:max-w-[650px]">
                 {results_points.map((item, i) => (
                   <div key={i}>
                     <h4 className="text-[20px] sm:text-[24px] leading-[1.3] sm:leading-[32px] font-semibold text-[#5C83DD] mb-2">
@@ -72,36 +81,41 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
               </div>
             </div>
 
-            {/* RIGHT CARD */}
-            {highlight && (
-              <div className="w-full max-w-full sm:max-w-[360px] bg-[#2655C4] rounded-[3px] p-[24px] sm:p-[32px] text-white">
 
+            {/* RIGHT COLUMN: IMAGE or CARD */}
+            {result_column === "image" && result_image && (
+              <div className="w-full max-w-full sm:max-w-[360px] flex items-center justify-center">
+                <img
+                  src={result_image?.url || result_image}
+                  alt="Result"
+                  className="w-full h-auto rounded-[3px] object-contain"
+                />
+              </div>
+            )}
+
+            {result_column === "card" && highlight && (
+              <div className="w-full max-w-full sm:max-w-[360px] bg-[#2655C4] rounded-[3px] p-[24px] sm:p-[32px] text-white">
                 {highlight.icon && (
                   <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full border border-white mb-[32px]">
                     <img src={highlight.icon?.url || highlight.icon} alt="" className="w-[24px] h-[24px]" />
                   </div>
                 )}
-
                 {highlight.metric && (
                   <h2 className="text-[32px] !font-montserrat sm:text-[40px] font-semibold mb-1">
                     {highlight.metric}
                   </h2>
                 )}
-
                 {highlight.metric_label && (
                   <div className="uppercase text-[14px] !font-montserrat tracking-[0.84px] mb-[24px]">
                     {highlight.metric_label}
                   </div>
                 )}
-
                 <div className="w-full h-px bg-[#FFFFFF4D] my-[24px]" />
-
                 {highlight.title && (
                   <h4 className="text-[20px] sm:text-[24px] leading-[1.3] sm:leading-[32px] font-semibold mb-2">
                     {highlight.title}
                   </h4>
                 )}
-
                 {highlight.content && (
                   <p className="text-[16px] leading-[24px]">
                     {highlight.content}
