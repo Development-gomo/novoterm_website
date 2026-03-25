@@ -43,7 +43,7 @@ export default function ExpertsCTASection({ section }) {
             <div
               className="text-white font-heading font-medium
                          text-[28px] sm:text-[40px] md:text-[60px] lg:text-[80px]
-                         leading-tight max-w-[760px]
+                         leading-tight max-w-[860px]
                          [&_em]:italic
                          [&_strong]:font-semibold"
               dangerouslySetInnerHTML={{ __html: heading }}
