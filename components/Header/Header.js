@@ -40,7 +40,12 @@ export default function Header({
   }));
   const [scrolled, setScrolled] = useState(false);
   const [megaMenuOpen, setMegaMenuOpen] = useState(false);
-  const [activeMegaMenu, setActiveMegaMenu] = useState("Industries");
+  // Set the first menu as default active
+  const [activeMegaMenu, setActiveMegaMenu] = useState(
+    main_menu && main_menu.length > 0
+      ? main_menu[0].field_69bd2ace72d20 || main_menu[0].menu_title
+      : ""
+  );
   const router = useRouter();
 
   // Blog single pages have a light hero, so header needs solid bg from the start
@@ -162,6 +167,7 @@ export default function Header({
                           key={item.menu_title || idx}
                           className={activeMegaMenu === item.menu_title ? "font-bold text-white" : "opacity-20 hover:opacity-100 cursor-pointer"}
                           onMouseEnter={() => setActiveMegaMenu(item.menu_title)}
+                          style={{ pointerEvents: activeMegaMenu === item.menu_title ? 'none' : 'auto' }}
                         >
                           {item.menu_title}
                         </span>
@@ -171,19 +177,44 @@ export default function Header({
                   <div className="w-2/3 pr-24">
                     {mappedMainMenu.map((item, idx) => (
                       activeMegaMenu === item.menu_title && item.submenu_items && item.submenu_items.length > 0 && (
-                        <ul key={item.menu_title || idx} className="flex flex-col gap-1 text-[#b6c2e2] text-lg mt-2">
-                          {item.submenu_items.map((sub, subIdx) => (
-                            <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
-                              {sub.submenu_link ? (
-                                <Link href={sub.submenu_link}>
-                                  • {sub.submenu_title}
-                                </Link>
-                              ) : (
-                                <>• {sub.submenu_title}</>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
+                        <div key={item.menu_title || idx} className="flex flex-row gap-8 mt-2">
+                          {/* Split submenu_items into two columns */}
+                          {(() => {
+                            const half = Math.ceil(item.submenu_items.length / 2);
+                            const col1 = item.submenu_items.slice(0, half);
+                            const col2 = item.submenu_items.slice(half);
+                            return (
+                              <>
+                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-lg w-1/2">
+                                  {col1.map((sub, subIdx) => (
+                                    <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
+                                      {sub.submenu_link ? (
+                                        <Link href={sub.submenu_link}>
+                                          • {sub.submenu_title}
+                                        </Link>
+                                      ) : (
+                                        <>• {sub.submenu_title}</>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-lg w-1/2">
+                                  {col2.map((sub, subIdx) => (
+                                    <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
+                                      {sub.submenu_link ? (
+                                        <Link href={sub.submenu_link}>
+                                          • {sub.submenu_title}
+                                        </Link>
+                                      ) : (
+                                        <>• {sub.submenu_title}</>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </>
+                            );
+                          })()}
+                        </div>
                       )
                     ))}
                   </div>

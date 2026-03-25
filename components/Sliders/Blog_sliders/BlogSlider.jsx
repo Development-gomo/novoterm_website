@@ -5,8 +5,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import { useRef } from "react";
+import { useRouter } from "next/router";
 
 export default function BlogSlider({ slides }) {
+  const router = useRouter();
+  const lang = router.locale || "en";
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -72,8 +75,12 @@ export default function BlogSlider({ slides }) {
                 </p>
 
                 <div className="flex justify-between text-white text-[12px] font-light opacity-50">
-                  <span>{slide.date}</span>
-                  <span>{slide.readTime}</span>
+                  <span>
+                    {lang === "sv" && slide.date_sv ? slide.date_sv : slide.date}
+                  </span>
+                  <span>
+                    {lang === "sv" && slide.readTime_sv ? slide.readTime_sv : slide.readTime}
+                  </span>
                 </div>
               </div>
             </Link>

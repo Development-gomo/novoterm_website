@@ -1,11 +1,22 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../lib/api";
+import { useRouter } from "next/router";
+
 
 export default function Footer({ data }) {
+  const router = useRouter();
+  const lang = router?.locale || "en";
   if (!data) return null;
 
   const { cta, services, quick, resources, contact, branding } = data;
+  const t = {
+    resources: lang === "sv" ? "Resurser" : "RESOURCES",
+    contact: lang === "sv" ? "Kontakt oss" : "CONTACT",
+    services: lang === "sv" ? "TJÄNSTER" : "SERVICES",
+    quickLinks: lang === "sv" ? "SNABBLÄNKAR" : "QUICK LINKS",
+  };
 
   return (
     <footer className="w-full bg-[#061837] text-white pt-10  sm:pt-12 md:pt-16 lg:pt-[80px]">
@@ -49,15 +60,13 @@ export default function Footer({ data }) {
               </div>
             </div>
 
-            <p className="text-white/40 text-[14px] leading-relaxed">
-              <span suppressHydrationWarning={true} dangerouslySetInnerHTML={{ __html: branding?.copyright_text || "" }} />
-            </p>
+            <p className="text-white/40 text-[14px] leading-relaxed" dangerouslySetInnerHTML={{ __html: branding?.copyright_text || '' }} />
           </div>
 
           {/* COLUMN 2 — SERVICES (15%) */}
           <div className="w-full lg:w-[14%]">
             <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
-              SERVICES
+              {t.services}
             </h4>
             <ul className="space-y-2">
               {services?.service_links?.map((item, i) => (
@@ -73,7 +82,7 @@ export default function Footer({ data }) {
           {/* COLUMN 3 — QUICK LINKS (15%) */}
           <div className="w-full lg:w-[14%]">
             <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
-              QUICK LINKS
+              {t.quickLinks}
             </h4>
             <ul className="space-y-2">
               {quick?.quick_links?.map((item, i) => (
@@ -89,7 +98,7 @@ export default function Footer({ data }) {
           {/* COLUMN 4 — RESOURCES (15%) */}
           <div className="w-full lg:w-[12%]">
             <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
-              RESOURCES
+              {t.resources}
             </h4>
             <ul className="space-y-2">
               {resources?.resource_links?.map((item, i) => (
@@ -105,7 +114,7 @@ export default function Footer({ data }) {
           {/* COLUMN 5 — CONTACT (15%) */}
           <div className="w-full lg:w-[16%]">
             <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
-              CONTACT
+              {t.contact}
             </h4>
 
             <div

@@ -275,6 +275,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
             sectionLabel={block.section_label}
             sectionId={`section-${index}`}
             index={index}
+            add_padding_top={block.add_padding_top}
           />
         );
 

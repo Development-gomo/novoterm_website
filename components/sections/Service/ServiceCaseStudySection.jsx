@@ -10,6 +10,7 @@ export default function ServiceCaseStudySection({
   sectionLabel,
   sectionId,
   index = 0,
+  add_padding_top = 'no',
 }) {
   const formatLabel = (layout) => {
     if (!layout) return null;
@@ -52,8 +53,13 @@ export default function ServiceCaseStudySection({
     getData();
   }, [lang]);
 
+  // Determine top padding class
+  const topPaddingClass = add_padding_top === 'yes'
+    ? 'pt-[100px] md:pt-[100px] sm:pt-[60px] xs:pt-[40px]'
+    : 'lg:pt-[0px]';
+
   return (
-    <section id={sectionId} className="w-full bg-[#EAF1FF] py-6 md:py-10 lg:pb-[100px] lg:pt-[0px]">
+    <section id={sectionId} className={`w-full bg-[#EAF1FF] py-6 md:py-10 lg:pb-[100px] ${topPaddingClass}`}>
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 

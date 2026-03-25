@@ -84,7 +84,7 @@ export default function ServiceCaseStudySlider({ slides }) {
                   {/* SERVICE USED */}
                   <div className="w-full md:w-auto">
                     <h5 className="text-[14px] text-[#5C83DD] font-normal tracking-wider mb-2">
-                      SERVICE USED
+                      {lang === 'sv' ? 'Tjänster' : 'Service Used'}
                     </h5>
                     <p className="text-[16px] font-normal">{slide.service_used}</p>
                   </div>

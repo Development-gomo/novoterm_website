@@ -189,7 +189,18 @@ const res = await fetch(
             )}
 
             {published_date && (
-              <span className="text-[#2555C4] text-[18px] font-montserrat font-bold">{published_date}</span>
+              <span className="text-[#2555C4] text-[18px] font-montserrat font-bold">
+                {lang === "sv"
+                  ? (() => {
+                      const dateObj = new Date(published_date);
+                      return dateObj.toLocaleDateString("sv-SE", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      });
+                    })()
+                  : published_date}
+              </span>
             )}
 
             <h1
@@ -207,7 +218,9 @@ const res = await fetch(
             <div className="flex items-center gap-4 mt-4">
               <div className="flex flex-col text-sm text-[#606164] font-montserrat">
                 {/* <span className="font-semibold text-[#061837] font-montserrat">{author}</span> */}
-                <span className="font-montserrat">{reading_time || "5"} {t.minRead}</span>
+                <span className="font-montserrat">
+                  {lang === "sv" && section?.reading_time_sv ? section.reading_time_sv : (reading_time || "5")} {t.minRead}
+                </span>
               </div>
             </div>
           </div>

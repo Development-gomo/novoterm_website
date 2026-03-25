@@ -53,14 +53,14 @@ export default function CaseStudyCardSlider({ slides }) {
               {/* CONTENT */}
               <div className="p-[24px] flex flex-col flex-1 min-h-0">
                 <h3
-                  className="text-white text-[24px] leading-[32px] font-semibold mb-6 overflow-hidden"
-                  style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                  className="text-white text-[24px] leading-[30px] font-semibold mb-6 "
+                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                 >
                   {slide.title}
                 </h3>
 
                 <p className="text-[12px] font-montserrat uppercase tracking-widest font-medium text-white/50 mb-2">
-                  Service provided
+                  {lang === 'sv' ? 'Tjänster tillhandahålls' : 'Service provided'}
                 </p>
 
                 <div className="text-[16px] text-white/90 mb-6">
@@ -68,7 +68,7 @@ export default function CaseStudyCardSlider({ slides }) {
                 </div>
 
                 <Link href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/case-study/${slide.slug}`} className="btn-primary text-sm w-fit mt-auto">
-                  {slide.button_text || "Read full case"}
+                  {slide.button_text || (lang === 'sv' ? 'Läs hela fallet' : 'Read full case')}
                 </Link>
               </div>
             </div>
