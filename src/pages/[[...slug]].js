@@ -30,11 +30,9 @@ export async function getStaticProps({ params, locale }) {
   const lang = resolveLang(locale);
   const slugPath = segments.join("/") || "home";
 
-  // Try requested language first, fall back to the other language
-  let page = await fetchPageBySlug(slugPath, lang);
-  if (!page) {
-    page = await fetchPageBySlug(slugPath, SUPPORTED_LANGS.find((l) => l !== lang) ?? DEFAULT_LANG);
-  }
+  // Only fetch the page in the requested language — a slug that belongs
+  // to another locale (e.g. /en/kontakta-oss) must 404, not fall back.
+  const page = await fetchPageBySlug(slugPath, lang);
 
   if (!page) return { notFound: true };
 
