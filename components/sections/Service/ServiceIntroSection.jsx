@@ -105,7 +105,9 @@ export default function ServiceIntroFrontend({
                             font-body
                             text-[14px] sm:text-[15px] md:text-[16px]
                             leading-[1.6] md:leading-[1.7]
-                            text-[#000000]
+                            text-[#000000] &[_a]:!text-[#061837] &[_a]:underline
+                            [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-2 [&_ul]:marker:text-[#061837]
+                            [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-2 [&_ol]:marker:text-[#061837]
                           "
                           dangerouslySetInnerHTML={{ __html: block.content }}
                         />

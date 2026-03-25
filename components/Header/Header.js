@@ -185,7 +185,7 @@ export default function Header({
                             const col2 = item.submenu_items.slice(half);
                             return (
                               <>
-                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-lg w-1/2">
+                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal  w-1/2">
                                   {col1.map((sub, subIdx) => (
                                     <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
                                       {sub.submenu_link ? (
@@ -198,7 +198,7 @@ export default function Header({
                                     </li>
                                   ))}
                                 </ul>
-                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-lg w-1/2">
+                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal  w-1/2">
                                   {col2.map((sub, subIdx) => (
                                     <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
                                       {sub.submenu_link ? (

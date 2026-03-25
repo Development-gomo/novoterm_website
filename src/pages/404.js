@@ -3,8 +3,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 export default function Custom404() {
-  const { asPath } = useRouter();
-  const isEN = asPath.startsWith('/en');
+  const { locale } = useRouter();
+const isEN = locale === 'en';
 
   return (
     <>
