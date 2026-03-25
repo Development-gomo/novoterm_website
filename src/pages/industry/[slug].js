@@ -9,13 +9,9 @@ export async function getServerSideProps({ params, locale }) {
 
   const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`;
 
-  let res = await fetch(`${base}&lang=${lang}`);
-  let data = await res.json();
-
-  if (!Array.isArray(data) || !data.length) {
-    res = await fetch(base);
-    data = await res.json();
-  }
+  // Only fetch in the requested language — wrong-locale slugs must 404.
+  const res = await fetch(`${base}&lang=${lang}`);
+  const data = await res.json();
 
   if (!Array.isArray(data) || !data.length) {
     return { notFound: true };
