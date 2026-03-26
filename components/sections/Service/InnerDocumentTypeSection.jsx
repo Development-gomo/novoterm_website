@@ -36,7 +36,7 @@ export default function InnerDocumentTypeSection({ section, sectionId, index = 0
           heading: post.acf.heading,
           subtext: post.acf.subtext,
           cs_image: post.acf.cs_image,
-          button_url: post.acf.button_url || "",
+          button_url: post.acf.button_url || "", // always from ACF
           slider_sequence: parseInt(post.acf.slider_sequence, 10) || 0,
         }));
 

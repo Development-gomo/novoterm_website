@@ -54,7 +54,7 @@ export default function CaseStudyCardSlider({ slides }) {
               <div className="p-[24px] flex flex-col flex-1 min-h-0">
                 <h3
                   className="text-white text-[24px] leading-[30px] font-semibold mb-6 "
-                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                  style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
                 >
                   {slide.title}
                 </h3>

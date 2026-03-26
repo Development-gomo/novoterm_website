@@ -103,7 +103,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             )}
 
             {/* SLIDER */}
-            {slides.length > 0 && <InsightsSlider slides={slides} />}
+            {slides.length > 0 && <InsightsSlider slides={slides} lang={lang} />}
 
             {/* BUTTON */}
             {button && (

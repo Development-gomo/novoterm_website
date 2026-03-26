@@ -34,7 +34,7 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
         {/* HEADING */}
         {heading && (
           <h1
-            className="font-heading uppercase font-semibold text-white [&_em]:italic [&_em]:font-serif [&_em]:normal-case
+            className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-serif [&_em]:normal-case
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] tracking-[1px]
               w-full sm:w-[900px] mx-auto sm:mx-0 mb-9"
             dangerouslySetInnerHTML={{ __html: heading }}

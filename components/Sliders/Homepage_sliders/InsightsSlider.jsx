@@ -1,16 +1,27 @@
 
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 
-export default function InsightsSlider({ slides }) {
-  
+export default function InsightsSlider({ slides, lang = "sv" }) {
   if (!slides || !Array.isArray(slides)) return null;
 
   const nextRef = useRef(null);
   const prevRef = useRef(null);
+  const [swiperInstance, setSwiperInstance] = useState(null);
+
+  useEffect(() => {
+    if (swiperInstance && nextRef.current && prevRef.current) {
+      swiperInstance.params.navigation.prevEl = prevRef.current;
+      swiperInstance.params.navigation.nextEl = nextRef.current;
+      swiperInstance.navigation.destroy();
+      swiperInstance.navigation.init();
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance]);
 
   return (
     <div className="relative w-full mt-25 lg:mt-12 min-h-[420px]">
@@ -27,55 +38,70 @@ export default function InsightsSlider({ slides }) {
           768: { slidesPerView: 2 },
           1024: { slidesPerView: 3 },
         }}
-        navigation={{
-          prevEl: prevRef.current,
-          nextEl: nextRef.current,
-        }}
+        navigation={false}
         wrapperProps={{ style: { alignItems: 'stretch' } }}
         style={{ alignItems: 'stretch' }}
-        onBeforeInit={(swiper) => {
-          swiper.params.navigation.prevEl = prevRef.current;
-          swiper.params.navigation.nextEl = nextRef.current;
-        }}
+        onSwiper={setSwiperInstance}
         className="w-full"
       >
-        {slides.map((slide, index) => (
-          <SwiperSlide key={index} className="flex h-full min-h-full">
-            <a
-              href={slide.url}
-              className="block rounded-[3px] overflow-hidden border border-[#D1D9E6] flex flex-col h-full min-h-full transition"
-              style={{ minHeight: 432, height: '100%' }}
-            >
-              {/* IMAGE */}
-              <div
-                className="relative h-[240px] flex-shrink-0"
-                style={{
-                  backgroundImage: `url(${slide.image})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
+        {slides.map((slide, index) => {
+          // Localize date
+          let dateLocale = lang === "en" ? "en-US" : "sv-SE";
+          let formattedDate = "";
+          try {
+            formattedDate = new Date(slide.date).toLocaleDateString(dateLocale, {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            });
+          } catch {
+            formattedDate = slide.date;
+          }
+          // Localize read time
+          let readTimeLabel = lang === "en" ? "MIN READ" : "MIN LÄSNING";
+          let formattedReadTime = slide.readTime;
+          if (slide.readTime && /\d+/.test(slide.readTime)) {
+            let mins = slide.readTime.match(/\d+/)[0];
+            formattedReadTime = `${mins} ${readTimeLabel}`;
+          }
+          return (
+            <SwiperSlide key={index} className="flex h-full min-h-full">
+              <a
+                href={slide.url}
+                className="block rounded-[3px] overflow-hidden border border-[#D1D9E6] flex flex-col h-full min-h-full transition"
+                style={{ minHeight: 462, height: '100%' }}
               >
-                <span className="absolute bottom-4 left-4 bg-[#2655c4] text-white font-montserrat text-xs px-3 py-1 rounded-[4px] uppercase">
-                  {slide.category}
-                </span>
-              </div>
-
-              {/* CONTENT */}
-              <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 justify-between min-h-0">
-                <h3
-                  className="text-[24px] leading-[32px] text-[#E3EDFF] font-semibold mb-14 overflow-hidden"
-                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                {/* IMAGE */}
+                <div
+                  className="relative h-[240px] flex-shrink-0"
+                  style={{
+                    backgroundImage: `url(${slide.image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
                 >
-                  {slide.title}
-                </h3>
-                <div className="flex justify-between text-white/50 text-[14px] font-normal mt-auto">
-                  <span>{slide.date}</span>
-                  <span>{slide.readTime}</span>
+                  <span className="absolute bottom-4 left-4 bg-[#2655c4] text-white font-montserrat text-xs px-3 py-1 rounded-[4px] uppercase">
+                    {slide.category}
+                  </span>
                 </div>
-              </div>
-            </a>
-          </SwiperSlide>
-        ))}
+
+                {/* CONTENT */}
+                <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 justify-between min-h-0">
+                  <h3
+                    className="text-[24px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden"
+                    style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                  >
+                    {slide.title}
+                  </h3>
+                  <div className="flex justify-between text-white/50 text-[14px] font-normal mt-auto">
+                    <span>{formattedDate}</span>
+                    <span>{formattedReadTime}</span>
+                  </div>
+                </div>
+              </a>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
       {/* NAVIGATION BUTTONS INSIDE CONTAINER */}
       <div className="flex gap-3 absolute right-0 top-[-80px] lg:top-[-102px] z-10 pointer-events-auto">

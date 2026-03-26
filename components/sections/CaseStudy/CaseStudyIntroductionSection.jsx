@@ -128,8 +128,7 @@ export default function CaseStudyIntroductionSection({
 
                 {client && (
                   <div className="mb-8">
-                    <p className="text-[14px] uppercase !font-montserrat font-medium tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      {t("KUND", "Client")}
+                    <p className="text-[14px] uppercase !font-montserrat font-medium tracking-[0.84px] text-[#5C83DD] mb-[8px]" dangerouslySetInnerHTML={{ __html: t("KUND", "Client") }}>
                     </p>
                     <p className="text-[16px] leading-[24px] !font-normal ">{client}</p>
                   </div>
@@ -138,8 +137,7 @@ export default function CaseStudyIntroductionSection({
 
                 {industry && (
                   <div className="mb-8">
-                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      {t("BRANSCH", "Industry")}
+                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]" dangerouslySetInnerHTML={{ __html: t("BRANSCH", "Industry") }}>
                     </p>
                     <p className="text-[16px] leading-[24px] font-medium">{industry}</p>
                   </div>
@@ -148,8 +146,7 @@ export default function CaseStudyIntroductionSection({
 
                 {services && (
                   <div>
-                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      {t("TJÄNST", "Services")}
+                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]" dangerouslySetInnerHTML={{ __html: t("TJÄNST", "Services") }}>
                     </p>
                     <p className="text-[16px] leading-[24px] font-medium">{services}</p>
                   </div>

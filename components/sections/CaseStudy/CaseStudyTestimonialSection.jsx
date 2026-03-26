@@ -60,7 +60,7 @@ export default function CaseStudyTestimonialSection({ section, sectionId }) {
         <div className="text-white text-[12px] sm:text-[14px] uppercase font-heading font-medium tracking-widest">
           {author_name}
           {author_title && `  ${author_title}`} |
-          {author_company && ` at ${author_company}`}
+          {author_company && ` ${author_company}`}
         </div>
 
       </div>

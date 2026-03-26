@@ -49,8 +49,8 @@ export default function ReadMoreContent({ html, textColor }) {
 
   // Button text by language
   const btnText = expanded
-    ? (lang === 'sv' ? 'Läs Mindre' : 'Read less')
-    : (lang === 'sv' ? 'Läs Mer' : 'Read more');
+    ? (lang === 'sv' ? 'Läs mindre' : 'Read less')
+    : (lang === 'sv' ? 'Läs mer' : 'Read more');
 
   return (
     <>

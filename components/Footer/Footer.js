@@ -13,7 +13,7 @@ export default function Footer({ data }) {
   const { cta, services, quick, resources, contact, branding } = data;
   const t = {
     resources: lang === "sv" ? "Resurser" : "RESOURCES",
-    contact: lang === "sv" ? "Kontakt oss" : "CONTACT",
+    contact: lang === "sv" ? "Kontakta oss" : "CONTACT",
     services: lang === "sv" ? "TJÄNSTER" : "SERVICES",
     quickLinks: lang === "sv" ? "SNABBLÄNKAR" : "QUICK LINKS",
   };
@@ -112,7 +112,7 @@ export default function Footer({ data }) {
           </div>
 
           {/* COLUMN 5 — CONTACT (15%) */}
-          <div className="w-full lg:w-[16%]">
+          <div className="w-full lg:w-[17%]">
             <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
               {t.contact}
             </h4>

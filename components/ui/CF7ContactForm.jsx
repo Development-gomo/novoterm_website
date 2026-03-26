@@ -77,7 +77,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             <span className={`w-[6px] h-[6px] rounded-full bg-white ${type === "company" ? "opacity-100" : "opacity-0"}`} />
           </span>
           <span className="text-[13px] uppercase tracking-widest">
-            {t("FÖRETAG", "Company")}
+            {t("FÖRETAG", "BUSINESS")}
           </span>
         </label>
 
@@ -93,7 +93,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             <span className={`w-[6px] h-[6px] rounded-full bg-white ${type === "private" ? "opacity-100" : "opacity-0"}`} />
           </span>
           <span className="text-[13px] uppercase tracking-widest">
-            {t("PRIVATPERSON", "Private individual")}
+            {t("PRIVATPERSON", "PRIVATE INDIVIDUAL")}
           </span>
         </label>
       </div>

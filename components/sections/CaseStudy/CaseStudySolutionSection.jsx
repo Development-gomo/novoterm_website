@@ -62,8 +62,7 @@ export default function CaseStudySolutionSection({
                 className="max-w-[520px]
                   text-[14px] sm:text-[16px]
                   leading-[1.5] sm:leading-[1.5]
-                  text-black
-                  mb-[40px]"
+                  text-black space-y-4 mb-[40px]"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}

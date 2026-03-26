@@ -40,6 +40,7 @@ export default function ServiceSliderSection({ section, sectionId }) {
           heading: post.acf?.heading || post.title?.rendered || "",
           subtext: post.acf?.subtext || "",
           cs_image: post.acf?.cs_image || "",
+          button_url: post.acf?.button_url || "", // always from ACF
           last_block:
             Array.isArray(post.acf?.last_block) &&
             post.acf.last_block.some(

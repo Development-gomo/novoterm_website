@@ -12,14 +12,19 @@ function formatPost(post, lang) {
   const image =
     post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
     "/default-blog.jpg";
-  const date = new Date(post.date).toLocaleDateString("en-US", {
+  // Use Swedish or English month names based on lang
+  const dateLocale = lang === "sv" ? "sv-SE" : "en-US";
+  const date = new Date(post.date).toLocaleDateString(dateLocale, {
     month: "long",
     day: "numeric",
     year: "numeric",
   });
   const clean = post.content.rendered.replace(/<[^>]*>/g, "");
   const words = clean.split(/\s+/).length;
-  const readTime = `${Math.max(1, Math.ceil(words / 200))} MIN READ`;
+  let readTimeLabel = "MIN READ";
+  if (lang === "sv") readTimeLabel = "MIN LÄSNING";
+  else if (lang === "en") readTimeLabel = "MIN READ";
+  const readTime = `${Math.max(1, Math.ceil(words / 200))} ${readTimeLabel}`;
 
   return {
     id: post.id,

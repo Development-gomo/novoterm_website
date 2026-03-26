@@ -31,7 +31,7 @@ export default function HeroSection({
         {/* BLOCK 1 – heading from ACF */}
         <div className="text-left">
           <h1 suppressHydrationWarning={true}
-            className="font-heading uppercase font-semibold text-white text-[36px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] tracking-[1px]  [&_em]:font-serif [&_em]:normal-case [&_em]:italic [&_em]:font-normal"
+            className="font-heading font-semibold text-white text-[36px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] tracking-[1px]  [&_em]:font-serif [&_em]:normal-case [&_em]:italic [&_em]:font-normal"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
         </div>

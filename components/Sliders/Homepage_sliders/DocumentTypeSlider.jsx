@@ -83,11 +83,12 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
 
         {slides.map((slide, index) => {
           const isLast = slide.last_block === true;
-
+          // Always use button_url from ACF (already mapped in parent sections)
+          const acfButtonUrl = typeof slide.button_url === 'object' ? slide.button_url?.url : slide.button_url;
           return (
             <SwiperSlide key={index} className="pointer-events-none">
               <Link
-                href={slide.button_url ? wpToPath(slide.button_url) : `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/document-type/${slide.slug}`}
+                href={acfButtonUrl ? wpToPath(acfButtonUrl) : "#"}
                 className="block h-full pointer-events-auto"
               >
                 <div className="relative group h-[400px] overflow-hidden">
