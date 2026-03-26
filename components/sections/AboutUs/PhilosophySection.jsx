@@ -69,13 +69,13 @@ export default function PhilosophySection({
                   max-w-[1150px]" /* ← was fixed width */
               >
                 {left_description && (
-                  <div
+                  <div className="space-y-4"
                     dangerouslySetInnerHTML={{ __html: left_description }}
                   />
                 )}
 
                 {right_description && (
-                  <div
+                  <div className="space-y-4"
                     dangerouslySetInnerHTML={{ __html: right_description }}
                   />
                 )}

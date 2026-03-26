@@ -116,7 +116,7 @@ export default function InnerWhyChooseUsSection({ section, sectionId, index = 0 
                 {/* DESCRIPTION */}
                 {description && (
                   <div
-                    className="text-[15px] md:text-[16px] leading-[24px] font-light mb-8 max-w-[450px]"
+                    className="text-[15px] md:text-[16px] leading-[24px] font-light mb-8 max-w-[450px] space-y-4"
                     dangerouslySetInnerHTML={{ __html: description }}
                   />
                 )}

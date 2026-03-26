@@ -60,7 +60,7 @@ export default function CaseStudyCardSlider({ slides }) {
                 </h3>
 
                 <p className="text-[12px] font-montserrat uppercase tracking-widest font-medium text-white/50 mb-2">
-                  {lang === 'sv' ? 'Tjänster tillhandahålls' : 'Service provided'}
+                  {lang === 'sv' ? 'Tjänst' : 'Service provided'}
                 </p>
 
                 <div className="text-[16px] text-white/90 mb-6">
@@ -68,7 +68,7 @@ export default function CaseStudyCardSlider({ slides }) {
                 </div>
 
                 <Link href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/case-study/${slide.slug}`} className="btn-primary text-sm w-fit mt-auto">
-                  {slide.button_text || (lang === 'sv' ? 'Läs hela fallet' : 'Read full case')}
+                  {slide.button_text || (lang === 'sv' ? 'Läs mer' : 'Read full case')}
                 </Link>
               </div>
             </div>

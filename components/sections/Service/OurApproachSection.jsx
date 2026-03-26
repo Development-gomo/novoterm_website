@@ -89,7 +89,7 @@ export default function OurApproachSection({ section, sectionId, index = 0 }) {
 
             {/* HEADER */}
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[36px] lg:mb-[48px] gap-6">
-              <h2 className="max-w-[577px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15]">
+              <h2 className="max-w-[677px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15]">
                 {heading}
               </h2>
               {ctaText && ctaUrl && (
