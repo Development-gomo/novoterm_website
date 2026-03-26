@@ -116,7 +116,15 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
                     </span>
 
                     <span className="flex-shrink-0 w-[32px] h-[32px] rounded-full bg-[#2655C4] text-white flex items-center justify-center text-[18px]">
-                      {isOpen ? "−" : "+"}
+                      {isOpen ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path fillRule="evenodd" clipRule="evenodd" d="M0.532143 7C-0.177381 7 -0.177381 8.07798 0.532143 8.07798H13.4679C14.1774 8.07798 14.1774 7 13.4679 7H0.532143Z" fill="white"/>
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                            <path fillRule="evenodd" clipRule="evenodd" d="M6.46101 13.4679C6.46101 14.1774 7.53899 14.1774 7.53899 13.4679V7.53899H13.4679C14.1774 7.53899 14.1774 6.46101 13.4679 6.46101H7.53899V0.532143C7.53899 -0.177382 6.46101 -0.177382 6.46101 0.532143V6.46101H0.532143C-0.177381 6.46101 -0.177381 7.53899 0.532143 7.53899H6.46101V13.4679Z" fill="white"/>
+                          </svg>
+                        )}
                     </span>
                   </button>
 
