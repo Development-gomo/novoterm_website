@@ -5,7 +5,7 @@ import Link from "next/link";
 import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, localePath } from "../../../lib/api";
 
 
 export default function CaseStudySection({
@@ -112,7 +112,7 @@ export default function CaseStudySection({
                     {slide.service_used}
                   </div>
                   <Link
-                    href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/case-study/${slide.slug}`}
+                    href={localePath("caseStudy", slide.slug, lang)}
                     className="btn-primary text-sm w-fit mt-auto"
                   >
                     {slide.button_text || "Read full case"}

@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { wpToPath } from "../../lib/api";
+import { useRouter } from "next/router";
+import { wpToPath, DEFAULT_LANG } from "../../lib/api";
 
 export default function Dropdown({ item }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [open, setOpen] = useState(false);
   const timeoutRef = useRef(null);
   const containerRef = useRef(null);
@@ -106,7 +109,7 @@ export default function Dropdown({ item }) {
                     {col.map((sub) => (
                       <Link
                         key={sub.ID || sub.id || sub.title}
-                        href={wpToPath(sub.url)}
+                        href={wpToPath(sub.url, lang)}
                         className="flex items-center gap-2 py-2 font-montserrat text-[14px] px-2 text-gray-800 hover:text-[#2655c4] border-b border-gray-200 last:border-b-0 transition-colors duration-150"
                         role="menuitem"
                       >
@@ -123,7 +126,7 @@ export default function Dropdown({ item }) {
               {childArray.map((sub) => (
                 <Link
                   key={sub.ID || sub.id || sub.title}
-                  href={wpToPath(sub.url)}
+                  href={wpToPath(sub.url, lang)}
                   className="flex items-center gap-2 py-2 font-montserrat text-[14px] px-2 text-gray-800 hover:text-[#2655c4] border-b border-gray-200 last:border-b-0 transition-colors duration-150"
                   role="menuitem"
                 >

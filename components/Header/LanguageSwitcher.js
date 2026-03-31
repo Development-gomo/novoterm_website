@@ -33,7 +33,7 @@ export default function LanguageSwitcher({ languages = [], translations = null }
 
   // On home pages, always switch to locale root (e.g. / -> /en)
   if (!isHomePath && translationWpUrl) {
-    const raw = wpToPath(translationWpUrl);
+    const raw = wpToPath(translationWpUrl, otherLocale);
     const normalized = raw.replace(new RegExp(`^/${otherLocale}(?=/|$)`), "") || "/";
     const withoutTrailingSlash = normalized.replace(/\/+$/, "") || "/";
     href = withoutTrailingSlash === "/home" ? "/" : withoutTrailingSlash;
