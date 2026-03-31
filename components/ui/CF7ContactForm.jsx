@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 export default function ContactForm({ sectionTheme = "light", formId }) {
-  const router = typeof window !== "undefined" ? require("next/router").useRouter() : { locale: "en" };
-  const lang = router.locale || "en";
+  const router = useRouter();
+  const lang = router.locale || "sv";
 
   // Translation dictionary
   const t = (sv, en) => lang === "sv" ? sv : en;
