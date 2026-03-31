@@ -38,6 +38,8 @@ import CaseStudySolutionSection from "./sections/CaseStudy/CaseStudySolutionSect
 import CaseStudyResultsSection from "./sections/CaseStudy/CaseStudyResultsSection";
 import CaseStudyTestimonialSection from "./sections/CaseStudy/CaseStudyTestimonialSection";
 import CaseStudyRelatedSection from "./sections/CaseStudy/CaseStudyRelatedSection";
+import CaseStudyExampleSection from "./sections/CaseStudy/CaseStudyExampleSection";
+import CaseStudyAboutSection from "./sections/CaseStudy/CaseStudyAboutSection";
 
 /* ===================== ABOUT US PAGE ===================== */
 import InnerHeroSection from "./sections/AboutUs/InnerHeroSection";
@@ -333,6 +335,26 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
 
           case "casestudy_testimonial":
           return <CaseStudyTestimonialSection key={`cs-testimonial-${index}`} section={block} sectionId={`section-${index}`} index={index} />;
+
+          case "case_study_about":
+          return (
+            <CaseStudyAboutSection
+              key={`cs-about-${index}`}
+              section={block}
+              sectionId={`section-${index}`}
+              index={index}
+            />
+          );
+
+          case "case_study_example":
+          return (
+            <CaseStudyExampleSection
+              key={`cs-example-${index}`}
+              section={block}
+              sectionId={`section-${index}`}
+              index={index}
+            />
+          );
 
           case "casestudy_related":
         return (

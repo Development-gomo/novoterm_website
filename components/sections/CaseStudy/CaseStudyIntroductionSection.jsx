@@ -18,7 +18,7 @@ export default function CaseStudyIntroductionSection({
   index = 0,
 }) {
 
-  const router = typeof window !== "undefined" ? require("next/router").useRouter() : { locale: "en" };
+  const router = useRouter();
   const lang = router.locale || "en";
   const t = (sv, en) => lang === "sv" ? sv : en;
 
@@ -148,16 +148,18 @@ export default function CaseStudyIntroductionSection({
 
                 {client && (
                   <div className="mb-8">
-                    <p className="text-[14px] uppercase !font-montserrat font-medium tracking-[0.84px] text-[#5C83DD] mb-[8px]" dangerouslySetInnerHTML={{ __html: t("KUND", "Client") }}>
+                    <p suppressHydrationWarning className="text-[14px] uppercase !font-montserrat font-medium tracking-[0.84px] text-[#5C83DD] mb-[8px]">
+                      {t("KUND", "Client")}
                     </p>
-                    <p className="text-[16px] leading-[24px] !font-normal ">{client}</p>
+                    <p className="text-[16px] leading-[24px] !font-normal">{client}</p>
                   </div>
                 )}
 
 
                 {industry && (
                   <div className="mb-8">
-                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]" dangerouslySetInnerHTML={{ __html: t("BRANSCH", "Industry") }}>
+                    <p suppressHydrationWarning className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
+                      {t("BRANSCH", "Industry")}
                     </p>
                     <p className="text-[16px] leading-[24px] font-medium">{industry}</p>
                   </div>
@@ -166,7 +168,8 @@ export default function CaseStudyIntroductionSection({
 
                 {services && (
                   <div>
-                    <p className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]" dangerouslySetInnerHTML={{ __html: t("TJÄNST", "Services") }}>
+                    <p suppressHydrationWarning className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
+                      {t("TJÄNST", "Services")}
                     </p>
                     <p className="text-[16px] leading-[24px] font-medium">{services}</p>
                   </div>
