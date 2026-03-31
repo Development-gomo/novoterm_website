@@ -122,7 +122,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
             }}
           >
             {/* ===== HEADER ===== */}
-            <div
+            <div className="sticky-box"
               style={{
                 position: stickyEnabled ? "sticky" : "relative",
                 top: stickyEnabled ? `${headerTop}px` : "auto",
