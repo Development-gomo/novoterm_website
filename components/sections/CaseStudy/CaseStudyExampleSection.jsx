@@ -15,7 +15,7 @@ export default function CaseStudyExampleSection({ section, sectionId, index = 0 
   return (
     <section
       id={sectionId}
-      className="w-full bg-white py-6 md:py-8 lg:py-[100px]"
+      className="w-full bg-[#E3EDFF] py-6 md:py-8 lg:py-[100px]"
     >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col md:flex-row gap-6 md:gap-0">
@@ -53,46 +53,37 @@ export default function CaseStudyExampleSection({ section, sectionId, index = 0 
             {/* EXAMPLE CARDS */}
             <div className="flex flex-col gap-[24px]">
               {solution_cards.map((example, i) => (
-                <div
-                  key={i}
-                  className="border border-[#D3DEF3] rounded-[3px] overflow-hidden"
-                >
-                  {/* Example title row */}
+                <div key={i}>
+
+                  {/* Example title */}
                   {example.example_title && (
-                    <div className="px-[20px] sm:px-[24px] py-[14px] sm:py-[16px] border-b border-[#D3DEF3] bg-white">
-                      <h3 className="text-[15px] sm:text-[17px] font-semibold text-[#061837]">
-                        {example.example_title}
-                      </h3>
-                    </div>
+                    <h3 className="font-montserrat text-[24px] font-semibold text-[#061837] mb-[16px]">
+                      {example.example_title}
+                    </h3>
                   )}
 
-                  {/* Column cards */}
-                  <div className="flex flex-col sm:flex-row">
+                  {/* Column cards — gap 15px, no borders */}
+                  <div className="flex flex-col sm:flex-row gap-[15px]">
                     {(example.example_card || []).map((card, j) => {
                       const isLast = j === (example.example_card.length - 1);
                       return (
                         <div
                           key={j}
-                          className={[
-                            "flex-1 p-[20px] sm:p-[24px]",
-                            isLast
-                              ? "bg-[#061837] text-white"
-                              : "bg-white text-[#061837] border-b sm:border-b-0 sm:border-r border-[#D3DEF3]",
-                          ].join(" ")}
+                          className={`flex-1 p-[24px] rounded-[3px] ${
+                            isLast ? "bg-[#061837]" : "bg-[#D3DEF3]"
+                          }`}
                         >
                           {card.card_heading && (
-                            <h4
-                              className={`text-[13px] sm:text-[14px] font-semibold mb-[10px] sm:mb-[12px] ${
-                                isLast ? "text-white" : "text-[#061837]"
-                              }`}
-                            >
+                            <h4 className={`text-[14px] font-semibold mb-[10px] ${
+                              isLast ? "text-[#5C83DD]" : "text-[#061837]"
+                            }`}>
                               {card.card_heading}
                             </h4>
                           )}
                           {card.card_description && (
                             <div
-                              className={`text-[13px] sm:text-[14px] leading-[1.7] ${
-                                isLast ? "text-white/90" : "text-[#333]"
+                              className={`text-[14px] leading-[1.7] ${
+                                isLast ? "text-white" : "text-[#000000]"
                               }`}
                               dangerouslySetInnerHTML={{ __html: card.card_description }}
                             />
@@ -101,6 +92,7 @@ export default function CaseStudyExampleSection({ section, sectionId, index = 0 
                       );
                     })}
                   </div>
+
                 </div>
               ))}
             </div>
