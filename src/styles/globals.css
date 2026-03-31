@@ -177,3 +177,7 @@ font-family: Merriweather;
     margin-top: 50px;
     margin-bottom: 50px;
 }
+
+.author-bio{
+display:none;
+}

@@ -1,4 +1,6 @@
 
+import { useState } from "react";
+
 export default function NumberDocumentsSection({ section, sectionId }) {
   if (!section) return null;
 
@@ -8,7 +10,12 @@ export default function NumberDocumentsSection({ section, sectionId }) {
     select_theme = "light",
     document_lists = [],
     padding_top = "0px",
+    display_button = false,
+    read_more_button,
+    read_less_button,
   } = section;
+
+  const [showAll, setShowAll] = useState(false);
 
   // Theme-based classes
   const isDark = select_theme === "dark";
@@ -19,20 +26,13 @@ export default function NumberDocumentsSection({ section, sectionId }) {
   const numberBg     = isDark ? "bg-[#2655C4]"   : "bg-[#2655C4]";
   const itemText     = isDark ? "text-white"      : "text-[#061837]";
 
-  // Split into 3 columns
-  // ≤6 items  → distribute evenly across 3 columns (2 per col max)
-  // ≤9 items  → 3 items per column
-  // >9 items  → 4 items per column
-  const total = document_lists.length;
-  const perCol = total <= 6 ? Math.ceil(total / 3) : total > 9 ? 4 : 3;
+  // If display_button is enabled, cap visible items at 9 until expanded
+  const hasMore = display_button && document_lists.length > 9;
+  const visibleItems = hasMore && !showAll
+    ? document_lists.slice(0, 9)
+    : document_lists;
 
-  const col1 = document_lists.slice(0, perCol);
-  const col2 = document_lists.slice(perCol, perCol * 2);
-  const col3 = document_lists.slice(perCol * 2, perCol * 3);
-  const columns = [col1, col2, col3].filter((c) => c.length > 0);
-
-  // Global running index so numbers are continuous across columns
-  let counter = 0;
+  // No column pre-splitting needed — CSS grid handles horizontal flow
 
   return (
     <section
@@ -81,31 +81,31 @@ export default function NumberDocumentsSection({ section, sectionId }) {
               />
             )}
 
-            {/* 3-COLUMN LIST */}
-            {document_lists.length > 0 && (
+            {/* HORIZONTAL LIST — items flow left-to-right across 3 columns */}
+            {visibleItems.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 lg:gap-x-16">
-                {columns.map((col, colIdx) => (
-                  <div key={colIdx} className="flex flex-col">
-                    <hr className={`border-t ${dividerColor}`} />
-                    {col.map((item) => {
-                      counter += 1;
-                      const num = counter;
-                      return (
-                        <div key={num} className="flex flex-col">
-                          <div className="flex items-center gap-4 py-[14px] md:py-[18px]">
-                            <div className={`w-[24px] h-[24px] shrink-0 rounded-full ${numberBg} flex items-center justify-center text-white text-[11px] font-semibold`}>
-                              {num}
-                            </div>
-                            <span className={`text-[14px] sm:text-[15px] md:text-[16px] font-medium leading-snug ${itemText}`}>
-                              {item.document_name}
-                            </span>
-                          </div>
-                          <hr className={`border-t ${dividerColor}`} />
-                        </div>
-                      );
-                    })}
+                {visibleItems.map((item, i) => (
+                  <div key={i} className={`flex items-center gap-4 py-[14px] md:py-[18px] border-t ${dividerColor}`}>
+                    <div className={`w-[28px] h-[28px] shrink-0 rounded-full ${numberBg} flex items-center justify-center text-white text-[11px] font-semibold`}>
+                      {i + 1}
+                    </div>
+                    <span className={`text-[14px] sm:text-[15px] md:text-[16px] font-medium leading-snug ${itemText}`}>
+                      {item.document_name}
+                    </span>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* VIEW ALL / READ LESS BUTTON */}
+            {hasMore && (
+              <div className="mt-[40px] flex justify-center">
+                <button
+                  onClick={() => setShowAll((prev) => !prev)}
+                  className="btn-primary inline-flex items-center gap-2"
+                >
+                  {showAll ? read_less_button : read_more_button}
+                </button>
               </div>
             )}
 
