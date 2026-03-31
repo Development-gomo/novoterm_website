@@ -4,19 +4,18 @@ import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredDa
 import { resolveLang } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
-  const { slug } = params;
   const lang = resolveLang(locale);
 
-  // Swedish visitors should use /kundcase/:slug instead
-  if (lang === "sv") {
+  // This route is only for Swedish — send English visitors to /en/case-study/:slug
+  if (lang !== "sv") {
     return {
-      redirect: { destination: `/kundcase/${slug}`, permanent: true },
+      redirect: { destination: `/en/case-study/${params.slug}`, permanent: true },
     };
   }
 
+  const { slug } = params;
   const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?slug=${slug}&acf_format=standard`;
 
-  // Only fetch in the requested language — wrong-locale slugs must 404.
   const res = await fetch(`${base}&lang=${lang}`);
   const data = await res.json();
 

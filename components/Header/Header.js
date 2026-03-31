@@ -5,7 +5,7 @@ import MobileMenu from "./MobileMenu";
 import MegaMenu from "./MegaMenu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { wpToPath } from "../../lib/api";
+import { wpToPath, DEFAULT_LANG } from "../../lib/api";
 
 export default function Header({
   logo,
@@ -51,6 +51,7 @@ export default function Header({
       : ""
   );
   const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
 
   // Blog single pages have a light hero, so header needs solid bg from the start
   const isBlogSingle = /^\/blog\/.+/.test(router.asPath);
@@ -118,7 +119,7 @@ export default function Header({
           {cta?.url && (
             <>
               <Link
-                href={wpToPath(cta.url)}
+                href={wpToPath(cta.url, lang)}
                 className="btn-primary !hidden lg:!inline-flex"
               >
                 {cta.text || "Get in touch"}

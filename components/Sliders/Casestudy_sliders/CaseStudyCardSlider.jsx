@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, localePath } from "../../../lib/api";
 
 export default function CaseStudyCardSlider({ slides }) {
   const router = useRouter();
@@ -67,7 +67,7 @@ export default function CaseStudyCardSlider({ slides }) {
                   {slide.service_used}
                 </div>
 
-                <Link href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/case-study/${slide.slug}`} className="btn-primary text-sm w-fit mt-auto">
+                <Link href={localePath("caseStudy", slide.slug, lang)} className="btn-primary text-sm w-fit mt-auto">
                   {slide.button_text || (lang === 'sv' ? 'Läs mer' : 'Read full case')}
                 </Link>
               </div>

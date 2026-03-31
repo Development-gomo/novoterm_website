@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, localePath } from "../../../lib/api";
 import { Navigation, Pagination } from "swiper/modules";
 
 import "swiper/css";
@@ -115,7 +115,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
             >
               {industries.map((item) => (
                 <SwiperSlide key={item.id}>
-                  <Link href={`${lang !== DEFAULT_LANG ? `/${lang}` : ""}/industry/${item.slug}`} className="relative h-[420px] rounded-[3px] overflow-hidden group block">
+                  <Link href={localePath("industry", item.slug, lang)} className="relative h-[420px] rounded-[3px] overflow-hidden group block">
                     <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, rgba(6, 24, 55, 0.25) 0%, rgba(6, 24, 55, 0.90) 100%), url(${item.image}) center / cover no-repeat` }} />
                     <div className="absolute top-6 left-6 right-6 z-10">
                       <h3 

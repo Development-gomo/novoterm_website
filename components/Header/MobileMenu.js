@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { wpToPath } from "../../lib/api";
+import { useRouter } from "next/router";
+import { wpToPath, DEFAULT_LANG } from "../../lib/api";
 
 export default function MobileMenu({ menu = [], logo }) {
+  const router = useRouter();
+  const lang = router.locale || DEFAULT_LANG;
   const [open, setOpen] = useState(false);
   const [openItems, setOpenItems] = useState({});
 
@@ -73,7 +76,7 @@ export default function MobileMenu({ menu = [], logo }) {
                 <div key={item.ID} className="border-b border-white/10">
                   <div className="flex items-center justify-between py-3">
                     <Link
-                      href={wpToPath(item.url)}
+                      href={wpToPath(item.url, lang)}
                       onClick={() => setOpen(false)}
                       className="text-white font-medium hover:opacity-80 transition"
                     >
@@ -95,7 +98,7 @@ export default function MobileMenu({ menu = [], logo }) {
                       {subItems.map((sub) => (
                         <li key={sub.ID}>
                           <Link
-                            href={wpToPath(sub.url)}
+                            href={wpToPath(sub.url, lang)}
                             onClick={() => setOpen(false)}
                             className="flex items-center gap-2 text-white/75 hover:text-white transition text-sm"
                           >

@@ -33,7 +33,7 @@ export default function Footer({ data }) {
 
             {/* CTA BUTTON + SOCIAL */}
             <div className="flex items-center gap-4 mb-8">
-              <Link href={wpToPath(cta?.cta_button_link)} className="btn-primary">
+              <Link href={wpToPath(cta?.cta_button_link, lang)} className="btn-primary">
                 {cta?.cta_button_text}
               </Link>
 
@@ -71,7 +71,7 @@ export default function Footer({ data }) {
             <ul className="space-y-2">
               {services?.service_links?.map((item, i) => (
                 <li key={i}>
-                  <Link href={wpToPath(item.url)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
+                  <Link href={wpToPath(item.url, lang)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
                     {item.title}
                   </Link>
                 </li>
@@ -87,7 +87,7 @@ export default function Footer({ data }) {
             <ul className="space-y-2">
               {quick?.quick_links?.map((item, i) => (
                 <li key={i}>
-                  <Link href={wpToPath(item.url)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
+                  <Link href={wpToPath(item.url, lang)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
                     {item.title}
                   </Link>
                 </li>
@@ -103,7 +103,7 @@ export default function Footer({ data }) {
             <ul className="space-y-2">
               {resources?.resource_links?.map((item, i) => (
                 <li key={i}>
-                  <Link href={wpToPath(item.url)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
+                  <Link href={wpToPath(item.url, lang)} className="text-white hover:text-[#5C83DD] text-[16px] font-normal">
                     {item.title}
                   </Link>
                 </li>

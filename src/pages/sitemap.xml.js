@@ -6,13 +6,13 @@ if (!SITE_URL || !WP_API) {
   console.error("Missing environment variables for sitemap");
 }
 
-// CPTs to include: [wp rest endpoint, front-end path prefix]
+// CPTs to include: [wp rest endpoint, { sv: prefix, en: prefix }]
 const POST_TYPES = [
-  ["pages",       ""],
-  ["posts",       "/blog"],
-  ["service",     "/services"],
-  ["industry",    "/industry"],
-  ["case_study",  "/case-study"],
+  ["pages",       { sv: "",           en: "" }],
+  ["posts",       { sv: "/blog",      en: "/blog" }],
+  ["service",     { sv: "/tjanster",  en: "/services" }],
+  ["industry",    { sv: "/branscher", en: "/industry" }],
+  ["case_study",  { sv: "/kundcase",  en: "/case-study" }],
 ];
 
 async function fetchAllPosts(endpoint, lang) {
@@ -42,7 +42,8 @@ export async function getServerSideProps({ res }) {
   for (const lang of SUPPORTED_LANGS) {
     const langPrefix = lang === DEFAULT_LANG ? "" : `/${lang}`;
 
-    for (const [endpoint, pathPrefix] of POST_TYPES) {
+    for (const [endpoint, prefixes] of POST_TYPES) {
+      const pathPrefix = prefixes[lang] ?? prefixes.en;
       const posts = await fetchAllPosts(endpoint, lang);
       if (!Array.isArray(posts)) continue;
 
