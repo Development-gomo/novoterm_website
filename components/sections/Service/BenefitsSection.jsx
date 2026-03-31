@@ -80,11 +80,12 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
 
                     {/* IMAGE BACKGROUND */}
                     {isImageCard && (
-                    <div
-  className="absolute inset-0 "
+                    <div className="absolute inset-0"
   style={{
-    background: `linear-gradient(180deg, rgba(0, 0, 0, 0.00) -14.94%, #000 100%), url(${bgUrl})  lightgray -20.739px 0px / 126.954% 100% no-repeat`,
+    background: `linear-gradient(180deg, rgba(0, 0, 0, 0.00) -14.94%, #000 100%), url(${bgUrl})  lightgray -40.739px 0px / 126.954% 100% no-repeat`,
+    backgroundSize: 'cover',
   }}
+
 />
 
                     )}

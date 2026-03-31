@@ -4,24 +4,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 
 export default function InsightsSlider({ slides, lang = "sv" }) {
-  if (!slides || !Array.isArray(slides)) return null;
-
-  const nextRef = useRef(null);
   const prevRef = useRef(null);
-  const [swiperInstance, setSwiperInstance] = useState(null);
+  const nextRef = useRef(null);
 
-  useEffect(() => {
-    if (swiperInstance && nextRef.current && prevRef.current) {
-      swiperInstance.params.navigation.prevEl = prevRef.current;
-      swiperInstance.params.navigation.nextEl = nextRef.current;
-      swiperInstance.navigation.destroy();
-      swiperInstance.navigation.init();
-      swiperInstance.navigation.update();
-    }
-  }, [swiperInstance]);
+  if (!slides || !Array.isArray(slides)) return null;
 
   return (
     <div className="relative w-full mt-25 lg:mt-12 min-h-[420px]">
@@ -38,10 +27,16 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
           768: { slidesPerView: 2 },
           1024: { slidesPerView: 3 },
         }}
-        navigation={false}
+        navigation={{
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        }}
+        onBeforeInit={(swiper) => {
+          swiper.params.navigation.prevEl = prevRef.current;
+          swiper.params.navigation.nextEl = nextRef.current;
+        }}
         wrapperProps={{ style: { alignItems: 'stretch' } }}
         style={{ alignItems: 'stretch' }}
-        onSwiper={setSwiperInstance}
         className="w-full"
       >
         {slides.map((slide, index) => {
