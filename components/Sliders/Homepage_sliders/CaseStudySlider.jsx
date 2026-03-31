@@ -85,7 +85,7 @@ export default function CaseStudySlider({ slides }) {
 
                   <div>
                     <h5 suppressHydrationWarning className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2">
-                      {lang === "sv" ? "TJÄNST" : "SERVICE USED"}
+                     {slide.service_text}
                     </h5>
                     <p className="text-[16px]">{slide.service_used}</p>
                   </div>
