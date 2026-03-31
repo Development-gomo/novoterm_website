@@ -78,13 +78,12 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
                   <span className="absolute bottom-4 left-4 bg-[#2655c4] text-white font-montserrat text-xs px-3 py-1 rounded-[4px] uppercase">
                     {slide.category}
                   </span>
-                </div>
+                </div>  
 
                 {/* CONTENT */}
-                <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 justify-between min-h-0">
+                <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 min-h-0">
                   <h3
-                    className="text-[22px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden"
-                    
+                    className="text-[22px] leading-[32px] text-[#E3EDFF] font-semibold overflow-hidden"
                   >
                     {slide.title}
                   </h3>

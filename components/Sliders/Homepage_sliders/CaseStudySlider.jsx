@@ -75,7 +75,7 @@ export default function CaseStudySlider({ slides }) {
 
                 <div className="flex items-start gap-10">
                   <div className="w-[220px]">
-                    <h4 className="text-[32px] font-semibold text-[#5c83dd] mb-2">
+                    <h4 className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2 uppercase">
                       {slide.time_text}
                     </h4>
                     <p className="text-[16px]">{slide.subtext}</p>
@@ -84,8 +84,8 @@ export default function CaseStudySlider({ slides }) {
                   <div className="w-[1px] h-[100px] bg-white opacity-25" />
 
                   <div>
-                    <h5 className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2">
-                      SERVICE USED
+                    <h5 suppressHydrationWarning className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2">
+                      {lang === "sv" ? "TJÄNST" : "SERVICE USED"}
                     </h5>
                     <p className="text-[16px]">{slide.service_used}</p>
                   </div>
