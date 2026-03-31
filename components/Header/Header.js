@@ -24,9 +24,11 @@ export default function Header({
   // Map ACF keys to expected names
   const mappedMainMenu = main_menu.map((item) => ({
     menu_title: item.field_69bd2ace72d20 || item.menu_title,
+    layout_type: item.field_69cb6356ff3e5 || item.layout_type || 'one_column',
     submenu_items: (item.field_69bd2ae972d21 || item.submenu_items || []).map((sub) => ({
       submenu_title: sub.field_69bd2b0b72d22 || sub.submenu_title,
       submenu_link: sub.field_69bd2b1972d23?.url || sub.submenu_link,
+      set_hierarchy: sub.field_69cb65b05e68a || sub.set_hierarchy || 'normal',
       highlight: false // Add highlight logic if needed
     }))
   }));
@@ -177,42 +179,76 @@ export default function Header({
                     {mappedMainMenu.map((item, idx) => (
                       activeMegaMenu === item.menu_title && item.submenu_items && item.submenu_items.length > 0 && (
                         <div key={item.menu_title || idx} className="flex flex-row gap-8 mt-2">
-                          {/* Split submenu_items into two columns */}
-                          {(() => {
-                            const half = Math.ceil(item.submenu_items.length / 2);
-                            const col1 = item.submenu_items.slice(0, half);
-                            const col2 = item.submenu_items.slice(half);
-                            return (
-                              <>
-                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal  w-1/2">
-                                  {col1.map((sub, subIdx) => (
-                                    <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
-                                      {sub.submenu_link ? (
-                                        <Link href={sub.submenu_link}>
-                                          • {sub.submenu_title}
-                                        </Link>
-                                      ) : (
-                                        <>• {sub.submenu_title}</>
-                                      )}
-                                    </li>
-                                  ))}
-                                </ul>
-                                <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal  w-1/2">
-                                  {col2.map((sub, subIdx) => (
-                                    <li key={sub.submenu_title || subIdx} style={{ marginBottom: '0.15rem' }}>
-                                      {sub.submenu_link ? (
-                                        <Link href={sub.submenu_link}>
-                                          • {sub.submenu_title}
-                                        </Link>
-                                      ) : (
-                                        <>• {sub.submenu_title}</>
-                                      )}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </>
-                            );
-                          })()}
+                          {(item.layout_type === 'two_column' || item.submenu_items.length > 10) ? (
+                            // Two column layout
+                            (() => {
+                              const col1 = item.submenu_items.slice(0, 7);
+                              const col2 = item.submenu_items.slice(7);
+                              return (
+                                <>
+                                  <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal  w-1/2">
+                                    {col1.map((sub, subIdx) => (
+                                      <li
+                                        key={sub.submenu_title || subIdx}
+                                        style={{
+                                          marginBottom: '0.15rem',
+                                          ...(sub.set_hierarchy === 'child_menu' ? { marginLeft: '1rem', fontStyle: 'italic' } : {}),
+                                        }}
+                                      >
+                                        {sub.submenu_link ? (
+                                          <Link href={sub.submenu_link}>
+                                            {sub.set_hierarchy === 'parent_menu' ? '' : '• '}{sub.submenu_title}
+                                          </Link>
+                                        ) : (
+                                          <>{sub.set_hierarchy === 'parent_menu' ? '' : '• '}{sub.submenu_title}</>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                  <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal  w-1/2">
+                                    {col2.map((sub, subIdx) => (
+                                      <li
+                                        key={sub.submenu_title || subIdx}
+                                        style={{
+                                          marginBottom: '0.15rem',
+                                          ...(sub.set_hierarchy === 'child_menu' ? { marginLeft: '1rem', fontStyle: 'italic' } : {}),
+                                        }}
+                                      >
+                                        {sub.submenu_link ? (
+                                          <Link href={sub.submenu_link}>
+                                            {sub.set_hierarchy === 'parent_menu' ? '' : '• '}{sub.submenu_title}
+                                          </Link>
+                                        ) : (
+                                          <>{sub.set_hierarchy === 'parent_menu' ? '' : '• '}{sub.submenu_title}</>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              );
+                            })()
+                          ) : (
+                            // One column layout
+                            <ul className="flex flex-col gap-1 text-[#b6c2e2] text-[18px] font-normal w-full">
+                              {item.submenu_items.map((sub, subIdx) => (
+                                <li
+                                  key={sub.submenu_title || subIdx}
+                                  style={{
+                                    marginBottom: '0.15rem',
+                                    ...(sub.set_hierarchy === 'child_menu' ? { marginLeft: '1rem', fontStyle: 'italic' } : {}),
+                                  }}
+                                >
+                                  {sub.submenu_link ? (
+                                    <Link href={sub.submenu_link}>
+                                      {sub.set_hierarchy === 'parent_menu' ? '' : '• '}{sub.submenu_title}
+                                    </Link>
+                                  ) : (
+                                    <>{sub.set_hierarchy === 'parent_menu' ? '' : '• '}{sub.submenu_title}</>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
                       )
                     ))}

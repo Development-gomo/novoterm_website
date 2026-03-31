@@ -38,7 +38,6 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
       if (!label && section.acf_fc_layout === 'inner_why_choose_us') {
         label = section.right_column?.section_label;
       }
-      label = label || formatLabel(section.acf_fc_layout);
       return {
         label,
         acf_fc_layout: section.acf_fc_layout,
