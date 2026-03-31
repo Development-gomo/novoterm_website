@@ -275,7 +275,7 @@ export default function ArticlesSection({
 
               {/* Right — Content Panel */}
               <div className="bg-[#081B33] text-white p-8 md:p-12 flex flex-col justify-center">
-                <span className="uppercase text-[12px] font-montserrat font-semibold tracking-wider text-[#2655c4] mb-4">
+                <span className="uppercase text-[12px] font-montserrat font-semibold tracking-wider text-white mb-4">
                   {featuredPost.category}
                 </span>
                 <h3
@@ -322,17 +322,12 @@ export default function ArticlesSection({
                 {/* CONTENT */}
                 <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 justify-between min-h-0">
                   <h3
-                    className="text-[24px] leading-[32px] text-[#E3EDFF] font-semibold mb-14 overflow-hidden"
-                    style={{
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
+                    className="text-[22px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden"
+            
                   >
                     {post.title}
                   </h3>
-                  <div className="flex justify-between text-white/50 text-[14px] font-normal mt-auto">
+                  <div className="flex justify-between text-white/50 text-[14px] font-normal">
                     <span>{post.date}</span>
                     <span>{post.readTime}</span>
                   </div>
