@@ -8,101 +8,100 @@ import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
 
-export default function ServiceCaseStudySlider({ slides }) {
+export default function CaseStudySlider({ slides }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const nextRef = useRef(null);
   const prevRef = useRef(null);
+  const nextRef = useRef(null);
 
   return (
-    <div className="relative w-full mt-10 sm:mt-0">
+    <div className="w-full">
 
-      {/* Custom Navigation Buttons */}
-      <div className="flex gap-3 absolute right-0 top-[-24] lg:top-[-54px] z-10 pointer-events-auto">
-        <button ref={prevRef} className="swiper-prev w-[48px] h-[48px] rounded-full bg-[#BBC8E1] flex items-center justify-center text-[#1B3A6F] hover:bg-[#2655c4] cursor-pointer hover:text-white transition">
-         <svg xmlns="http://www.w3.org/2000/svg" width="23" height="15" viewBox="0 0 23 15" fill="none">
-  <path d="M8.14526 14.1729C7.98211 14.3215 7.7207 14.3399 7.53296 14.2285L7.45679 14.1729L7.45679 14.1719L0.246826 7.5293L0.184326 7.45899C0.129799 7.38393 0.100073 7.29453 0.100341 7.2002L0.110107 7.1084C0.129634 7.01842 0.177351 6.93598 0.247802 6.8711L7.45679 0.228517C7.64346 0.0570564 7.96037 0.0578416 8.14526 0.228517C8.34077 0.409054 8.34036 0.705293 8.14526 0.885743L8.14429 0.885743L1.79272 6.73926L21.8093 6.73926C22.0724 6.73932 22.2995 6.93869 22.2996 7.2002C22.2996 7.46174 22.0725 7.66107 21.8093 7.66113L1.79175 7.66113L8.14624 13.5146C8.34135 13.6951 8.34121 13.9913 8.14624 14.1719L8.14526 14.1729Z" fill="#E3EDFF" stroke="#E3EDFF" stroke-width="0.2"/>
-</svg>
+      {/* NAVIGATION */}
+      <div className="lg:flex gap-6 justify-end mt-[-50px] mb-[40px]">
+        <button
+          ref={prevRef}
+          className="w-[48px] h-[48px] rounded-full bg-[#BBC8E1] flex items-center justify-center hover:bg-[#2655C4] transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
+            <path d="M0 6.85713C0 6.69011 0.10663 6.46832 0.214822 6.3607L6.30999 0.225284C6.59457 -0.0534402 7.0556 -0.085742 7.38736 0.197133C7.68397 0.450016 7.69136 0.943219 7.41707 1.21783L2.52429 6.13518H15.2381C15.6589 6.13518 16 6.45833 16 6.85698C16 7.25563 15.6589 7.57883 15.2381 7.57883H2.52429L7.41707 12.4962C7.69132 12.7707 7.67186 13.2518 7.38736 13.5168C7.08699 13.7966 6.59023 13.7717 6.30999 13.4887L0.214822 7.35328C0.0357313 7.18687 0.0030098 7.02661 0 6.85713Z" fill="#E3EDFF"/>
+          </svg>
         </button>
-
-        <button ref={nextRef} className="swiper-next w-[48px] h-[48px] rounded-full cursor-pointer bg-[#2655c4] flex items-center justify-center text-white hover:bg-[#1B3A6F] transition">
-          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="15" viewBox="0 0 23 15" fill="none">
-  <path d="M14.2546 0.227539C14.4178 0.0788897 14.6792 0.060445 14.8669 0.171875L14.9431 0.227539V0.228516L22.1531 6.87109L22.2156 6.94141C22.2701 7.01646 22.2998 7.10586 22.2996 7.2002L22.2898 7.29199C22.2703 7.38197 22.2226 7.46442 22.1521 7.5293L14.9431 14.1719C14.7564 14.3433 14.4395 14.3426 14.2546 14.1719C14.0591 13.9913 14.0595 13.6951 14.2546 13.5146H14.2556L20.6072 7.66113H0.590576C0.327467 7.66107 0.100389 7.4617 0.100342 7.2002C0.100342 6.93865 0.327439 6.73932 0.590576 6.73926H20.6082L14.2537 0.885742C14.0586 0.705249 14.0587 0.409081 14.2537 0.228516L14.2546 0.227539Z" fill="white" stroke="white" stroke-width="0.2"/>
-</svg>
+        <button
+          ref={nextRef}
+          className="w-[48px] h-[48px] rounded-full bg-[#2655C4] text-white flex items-center justify-center transition"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
+            <path d="M14 6.85713C14 6.69011 13.8934 6.46832 13.7852 6.3607L7.69001 0.225284C7.40543 -0.0534402 6.9444 -0.085742 6.61264 0.197133C6.31603 0.450016 6.30864 0.943219 6.58293 1.21783L11.4757 6.13518H0.761905C0.341172 6.13518 0 6.45833 0 6.85698C0 7.25563 0.341172 7.57883 0.761905 7.57883H11.4757L6.58293 12.4962C6.30868 12.7707 6.32814 13.2518 6.61264 13.5168C6.91301 13.7966 7.40977 13.7717 7.69001 13.4887L13.7852 7.35328C13.9643 7.18687 13.997 7.02661 14 6.85713Z" fill="currentColor"/>
+          </svg>
         </button>
       </div>
 
       <Swiper
         modules={[Navigation]}
-        navigation={{ prevEl: prevRef.current, nextEl: nextRef.current }}
+        navigation={{
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        }}
         onBeforeInit={(swiper) => {
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
         }}
-        onInit={(swiper) => {
-          swiper.navigation.init();
-          swiper.navigation.update();
-        }}
-        loop={true}
+        loop
         slidesPerView={1}
         spaceBetween={40}
         className="case-study-swiper"
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
-            <div className="w-full mt-12 bg-[#071937] text-white rounded-[3px] overflow-hidden grid grid-cols-1 md:grid-cols-[60%_40%] max-w-full sm:max-w-full">
+            <div className="w-full bg-[#071937] text-white rounded-[3px] overflow-hidden grid grid-cols-1 md:grid-cols-[60%_40%]">
 
-              {/* LEFT SIDE — TEXT */}
+              {/* LEFT */}
               <div className="p-10 md:p-12 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-[24px] font-semibold leading-8 mb-8 max-w-[550px] line-clamp-2" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  <h3 className="text-[24px] font-semibold leading-8 mb-8 max-w-[550px]">
                     {slide.review_heading}
                   </h3>
 
                   {slide.button_text && (
-                   <Link
-  href={localePath("caseStudy", slide.slug, lang)}
-  className="btn-primary mb-8">
-  {slide.button_text}
-</Link>
-
+                    <Link
+                      href={localePath("caseStudy", slide.slug, lang)}
+                      className="btn-primary mb-8"
+                    >
+                      {slide.button_text}
+                    </Link>
                   )}
                 </div>
 
-                <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10">
-                  {/* TIME */}
-                  <div className="w-full md:w-[220px]">
+                <div className="flex items-start gap-10">
+                  <div className="w-[220px]">
                     <h4 className="text-[32px] font-semibold text-[#5c83dd] mb-2">
                       {slide.time_text}
                     </h4>
-                    <p className="text-[16px] font-normal">{slide.subtext}</p>
+                    <p className="text-[16px]">{slide.subtext}</p>
                   </div>
 
-                  {/* Separator Line (hidden on mobile) */}
-                  <div className="hidden md:block w-[1px] h-[90px] bg-white opacity-25 self-start"></div>
+                  <div className="w-[1px] h-[100px] bg-white opacity-25" />
 
-                  {/* SERVICE USED */}
-                  <div className="w-full md:w-auto">
-                    <h5 className="text-[14px] text-[#5C83DD] font-normal tracking-wider mb-2">
-                      {lang === 'sv' ? 'Tjänst' : 'Service used'}
+                  <div>
+                    <h5 className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2">
+                      SERVICE USED
                     </h5>
-                    <p className="text-[16px] font-normal">{slide.service_used}</p>
+                    <p className="text-[16px]">{slide.service_used}</p>
                   </div>
-
                 </div>
               </div>
 
-            {/* RIGHT SIDE — IMAGE (368x368 + 16px padding) */}
-{/* RIGHT SIDE — IMAGE (368x368 + 16px padding, aligned right) */}
-<div className="flex items-center justify-end p-4">
-  <div className="w-[370px] h-[370px] overflow-hidden rounded-[3px] bg-white">
-    <img
-      src={slide.cs_image}
-      alt={slide.review_heading}
-      className="w-full h-full object-cover"
-    />
-  </div>
-</div>
+              {/* RIGHT IMAGE */}
+              <div className="flex items-center justify-end p-4">
+                <div className="w-[370px] h-[370px] overflow-hidden rounded-[3px] bg-white">
+                  <img
+                    src={slide.cs_image}
+                    alt={slide.review_heading}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
 
             </div>
           </SwiperSlide>

@@ -4,12 +4,16 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 
 export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+
   return (
     <div className="relative w-full mt-25 md:mt-0 lg:mt-0">
 
@@ -26,8 +30,7 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
               z-[50]
               pointer-events-auto
               ">
-        <button className="
-          swiper-prev-doc 
+        <button ref={prevRef} className="
           w-[48px] h-[48px] 
           bg-[#BBC8E1] 
           text-[#1B3A6F] 
@@ -41,8 +44,7 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
 </svg>
         </button>
 
-        <button className="
-          swiper-next-doc 
+        <button ref={nextRef} className="
           w-[48px] h-[48px] 
           bg-[#2655c4] 
           text-white 
@@ -61,8 +63,12 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
         <Swiper
           modules={[Navigation]}
           navigation={{
-            nextEl: ".swiper-next-doc",
-            prevEl: ".swiper-prev-doc",
+            prevEl: prevRef.current,
+            nextEl: nextRef.current,
+          }}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
           }}
           watchOverflow={false}   // ✅ keeps arrows visible
           slidesPerView={1}       // default (mobile)

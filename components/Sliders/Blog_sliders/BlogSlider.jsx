@@ -33,11 +33,13 @@ export default function BlogSlider({ slides }) {
 
       <Swiper
         modules={[Navigation]}
-        onInit={(swiper) => {
+        navigation={{
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        }}
+        onBeforeInit={(swiper) => {
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
-          swiper.navigation.init();
-          swiper.navigation.update();
         }}
         spaceBetween={20}
         slidesPerView={1}

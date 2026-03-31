@@ -6,10 +6,10 @@ import { resolveLang } from "../../../lib/api";
 export async function getServerSideProps({ params, locale }) {
   const lang = resolveLang(locale);
 
-  // This route is only for Swedish — send English visitors to /en/case-study/:slug
+  // This route is only for Swedish — send English visitors to /en/client-case/:slug
   if (lang !== "sv") {
     return {
-      redirect: { destination: `/en/case-study/${params.slug}`, permanent: true },
+      redirect: { destination: `/en/client-case/${params.slug}`, permanent: true },
     };
   }
 

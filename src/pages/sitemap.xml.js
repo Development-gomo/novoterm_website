@@ -12,7 +12,7 @@ const POST_TYPES = [
   ["posts",       { sv: "/blog",      en: "/blog" }],
   ["service",     { sv: "/tjanster",  en: "/services" }],
   ["industry",    { sv: "/branscher", en: "/industry" }],
-  ["case_study",  { sv: "/kundcase",  en: "/case-study" }],
+  ["case_study",  { sv: "/kundcase",  en: "/client-case" }],
 ];
 
 async function fetchAllPosts(endpoint, lang) {
