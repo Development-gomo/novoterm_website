@@ -6,10 +6,11 @@ import "swiper/css/navigation";
 import Link from "next/link";
 import { useRef } from "react";
 import { useRouter } from "next/router";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 export default function BlogSlider({ slides }) {
   const router = useRouter();
-  const lang = router.locale || "en";
+  const lang = router.locale || DEFAULT_LANG;
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 

@@ -1,12 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
-import { wpToPath } from "../../../lib/api";
+import { wpToPath, DEFAULT_LANG } from "../../../lib/api";
 import { useRouter } from "next/router";
 
 export default function InnerWhyChooseUsSection({data, section, sectionId, index = 0 }) {
   const router = useRouter();
-  const lang = router.locale || "en";
+  const lang = router.locale || DEFAULT_LANG;
   const { left_column, right_column } = section || {};
   const { why_items, left_image } = left_column || {};
   const {

@@ -1,13 +1,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { wpToPath } from "../../lib/api";
+import { wpToPath, DEFAULT_LANG } from "../../lib/api";
 import { useRouter } from "next/router";
 
 
 export default function Footer({ data }) {
   const router = useRouter();
-  const lang = router?.locale || "en";
+  const lang = router?.locale || DEFAULT_LANG;
   if (!data) return null;
 
   const { cta, services, quick, resources, contact, branding } = data;
