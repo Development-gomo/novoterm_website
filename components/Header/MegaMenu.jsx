@@ -210,7 +210,7 @@ export default function MegaMenu({ menuData }) {
                                 <li key={lIdx} className="border-b border-dashed border-[#D0D5DD] last:border-none">
                                   {url !== "#" ? (
                                     <Link href={url} onClick={closeNow} className="group flex items-center justify-between py-4 transition">
-                                      <div className="flex items-center overflow-hidden">
+                                      <div className="flex items-center">
                                         <span className="block w-0 h-2 rounded-full bg-[#2655C4] flex-shrink-0 overflow-hidden transition-all duration-200 group-hover:w-2 group-hover:mr-2" />
                                         <span
                                           className="transition-colors duration-200 group-hover:!text-[#2655C4]"

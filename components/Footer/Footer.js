@@ -12,7 +12,7 @@ export default function Footer({ data }) {
 
   const { cta, services, quick, resources, contact, branding } = data;
   const t = {
-    resources: lang === "sv" ? "Resurser" : "RESOURCES",
+    resources: lang === "sv" ? "Utforska" : "Explore",
     contact: lang === "sv" ? "Kontakta oss" : "CONTACT",
     services: lang === "sv" ? "TJÄNSTER" : "SERVICES",
     quickLinks: lang === "sv" ? "SNABBLÄNKAR" : "QUICK LINKS",
