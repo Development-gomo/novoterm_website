@@ -41,7 +41,7 @@ export default function ServicesHeroSection({
             className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-merriweather
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
-              w-full sm:w-[750px] mx-auto sm:mx-0 mb-10"
+              w-full mx-auto sm:mx-0 mb-10"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
         )}

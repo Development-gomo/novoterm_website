@@ -5,7 +5,7 @@ import MobileMenu from "./MobileMenu";
 import MegaMenu from "./MegaMenu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { wpToPath, DEFAULT_LANG } from "../../lib/api";
+import { wpToPath } from "../../lib/api";
 
 export default function Header({
   logo,
@@ -51,7 +51,6 @@ export default function Header({
       : ""
   );
   const router = useRouter();
-  const lang = router.locale || DEFAULT_LANG;
 
   // Blog single pages have a light hero, so header needs solid bg from the start
   const isBlogSingle = /^\/blog\/.+/.test(router.asPath);
@@ -119,13 +118,13 @@ export default function Header({
           {cta?.url && (
             <>
               <Link
-                href={wpToPath(cta.url, lang)}
+                href={wpToPath(cta.url)}
                 className="btn-primary !hidden lg:!inline-flex"
               >
                 {cta.text || "Get in touch"}
               </Link>
               {/* Hamburger menu for desktop */}
-              <button
+              {/* <button
                 className="hidden lg:flex items-center justify-center ml-2 p-2 bg-transparent border-none cursor-pointer"
                 aria-label="Open Mega Menu"
                 onClick={() => setMegaMenuOpen(true)}
@@ -135,7 +134,7 @@ export default function Header({
                   <line x1="0.5" y1="11.9286" x2="10.9286" y2="11.9286" stroke="white" strokeLinecap="round" />
                   <line x1="0.5" y1="0.5" x2="23.5" y2="0.5" stroke="white" strokeLinecap="round" />
                 </svg>
-              </button>
+              </button> */}
             </>
           )}
 
