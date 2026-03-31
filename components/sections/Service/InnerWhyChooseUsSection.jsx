@@ -4,7 +4,7 @@ import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
 import { useRouter } from "next/router";
 
-export default function InnerWhyChooseUsSection({ section, sectionId, index = 0 }) {
+export default function InnerWhyChooseUsSection({data, section, sectionId, index = 0 }) {
   const router = useRouter();
   const lang = router.locale || "en";
   const { left_column, right_column } = section || {};

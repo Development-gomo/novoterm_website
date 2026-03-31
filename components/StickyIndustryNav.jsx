@@ -31,13 +31,20 @@ export default function StickyIndustryNav({ sections = [], heroLayout = null }) 
   const [isVisible, setIsVisible] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
-  // Build nav items — exclude hero sections, use section_label or auto-generate from layout name
+  // Build nav items — extract section_label from right_column for inner_why_choose_us if needed
   const navItems = sections
-    .map((section, index) => ({
-      label: section.section_label || formatLabel(section.acf_fc_layout),
-      acf_fc_layout: section.acf_fc_layout,
-      index,
-    }))
+    .map((section, index) => {
+      let label = section.section_label;
+      if (!label && section.acf_fc_layout === 'inner_why_choose_us') {
+        label = section.right_column?.section_label;
+      }
+      label = label || formatLabel(section.acf_fc_layout);
+      return {
+        label,
+        acf_fc_layout: section.acf_fc_layout,
+        index,
+      };
+    })
     .filter((item) => item.label && !isHeroSection(item.acf_fc_layout) && !EXCLUDED_FROM_NAV.includes(item.acf_fc_layout));
 
   useEffect(() => {

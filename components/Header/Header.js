@@ -2,6 +2,7 @@ import Link from "next/link";
 import Dropdown from "./Dropdown";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MobileMenu from "./MobileMenu";
+import MegaMenu from "./MegaMenu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { wpToPath } from "../../lib/api";
@@ -17,7 +18,8 @@ export default function Header({
   who_we_are_links = [],
   section_3_label = "Impact",
   impact_links = [],
-  section_4_label = "Language"
+  section_4_label = "Language",
+  megaMenuData = [],
 }) {
   // Map ACF keys to expected names
   const mappedMainMenu = main_menu.map((item) => ({
@@ -57,6 +59,13 @@ export default function Header({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mega menu on any route change
+  useEffect(() => {
+    const handleRouteChange = () => setMegaMenuOpen(false);
+    router.events.on("routeChangeStart", handleRouteChange);
+    return () => router.events.off("routeChangeStart", handleRouteChange);
+  }, [router.events]);
+
   // Disable scroll when mega menu is open
   useEffect(() => {
     if (megaMenuOpen) {
@@ -94,20 +103,9 @@ export default function Header({
           />
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden menu-font lg:flex items-center  gap-10">
-          {cleanMenu.map((item) =>
-            Array.isArray(item.children) && item.children.length > 0 ? (
-              <Dropdown key={item.ID} item={item} />
-            ) : (
-              <Link
-                key={item.ID}
-                href={wpToPath(item.url)}
-                className="text-white hover:opacity-75 text-[14px] font-normal font-montserrat">
-                {item.title}
-              </Link>
-            )
-          )}
+        {/* Desktop MegaMenu Navigation */}
+          <nav className="hidden menu-font lg:flex items-center  gap-10">
+          <MegaMenu menuData={megaMenuData} />
         </nav>
         <div className="flex items-center gap-4">
 

@@ -7,6 +7,7 @@ import {
   getMainMenu,
   getFooterData,
   getHamburgerMenu,
+  getMegaMenu,
   DEFAULT_LANG,
 } from "../../lib/api";
 
@@ -50,6 +51,7 @@ export default function MyApp({
   initialHeader,
   initialFooter,
   initialHamburgerMenu,
+  initialMegaMenu,
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
@@ -57,6 +59,22 @@ export default function MyApp({
   const [headerData, setHeaderData] = useState(initialHeader || null);
   const [footerData, setFooterData] = useState(initialFooter || null);
   const [hamburgerMenuData, setHamburgerMenuData] = useState(initialHamburgerMenu || null);
+  const [megaMenuData, setMegaMenuData] = useState(initialMegaMenu || null);
+  useEffect(() => {
+    if (initialMegaMenu) {
+      setMegaMenuData(initialMegaMenu);
+      return;
+    }
+    async function loadMegaMenu() {
+      try {
+        const data = await getMegaMenu(lang);
+        setMegaMenuData(data?.items || []);
+      } catch (err) {
+        console.error("MEGA MENU LOAD ERROR:", err);
+      }
+    }
+    loadMegaMenu();
+  }, [lang, initialMegaMenu]);
 
   // Keep <html lang> in sync with the active locale
   useEffect(() => {
@@ -125,6 +143,7 @@ export default function MyApp({
         <Header
           {...headerData}
           {...hamburgerMenuData}
+          megaMenuData={megaMenuData}
           translations={pageProps.translations || null}
         />
       )}
@@ -137,12 +156,13 @@ export default function MyApp({
 MyApp.getInitialProps = async ({ Component, ctx }) => {
   const lang = ctx.locale || DEFAULT_LANG;
 
-  // Fetch header, menu, footer, hamburger menu in parallel on the server
-  const [header, menu, footer, hamburgerMenu] = await Promise.all([
+  // Fetch header, menu, footer, hamburger menu, mega menu in parallel on the server
+  const [header, menu, footer, hamburgerMenu, megaMenu] = await Promise.all([
     getHeaderData(lang).catch(() => null),
     getMainMenu(lang).catch(() => null),
     getFooterData(lang).catch(() => null),
     getHamburgerMenu(lang).catch(() => null),
+    getMegaMenu(lang).catch(() => null),
   ]);
 
   let pageProps = {};
@@ -155,5 +175,6 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
     initialHeader: header && menu ? buildHeaderData(header, menu) : null,
     initialFooter: footer,
     initialHamburgerMenu: hamburgerMenu,
+    initialMegaMenu: megaMenu?.items || [],
   };
 };

@@ -98,8 +98,8 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
                     className="
                       rounded-[3px]
                       w-[520px]
-                      h-[610px]
-                      object-cover
+                      h-[630px]
+                      object-cover object-top
                     "
                   />
                 </div>

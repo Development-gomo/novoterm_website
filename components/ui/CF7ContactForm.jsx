@@ -61,7 +61,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
 
       {/* ================= RADIO QUESTION ================= */}
       <p className="text-[18px] font-montserrat font-medium mb-4">
-        {t("Företagskund eller privatperson? Välj nedan:", "Are you a company or a private individual?")}
+        {t("Företagskund eller privatperson? Välj nedan:", "Business client or private individual? Select below:")}
       </p>
 
       <div className="flex gap-4 mb-8">
@@ -149,8 +149,8 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
                 {t("ÖNSKAD SPRÅKTJÄNST", "AREA OF INTEREST")}
               </option>
               <option value="Translation" className={`text-black bg-white ${textColor}`}>{t("Översättning", "Translation")}</option>
-              <option value="Localization" className={`text-black bg-white ${textColor}`}>{t("Lokalisering", "Localization")}</option>
-              <option value="Review" className={`text-black bg-white ${textColor}`}>{t("Granskning", "Review")}</option>
+              <option value="Localization" className={`text-black bg-white ${textColor}`}>{t("Granskning", "Review")}</option>
+              <option value="Review" className={`text-black bg-white ${textColor}`}>{t("Annat", "Other ")}</option>
             </select>
 
             <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2">

@@ -34,11 +34,18 @@ export default function StickyServiceNav({ sections = [], heroLayout = null }) {
 
   // Build nav items — exclude hero, use section_label or auto-generate from layout name
   const navItems = sections
-    .map((section, index) => ({
-      label: section.section_label || formatLabel(section.acf_fc_layout),
-      acf_fc_layout: section.acf_fc_layout,
-      index,
-    }))
+    .map((section, index) => {
+      let label = section.section_label;
+      if (!label && section.acf_fc_layout === 'inner_why_choose_us') {
+        label = section.right_column?.section_label;
+      }
+      label = label || formatLabel(section.acf_fc_layout);
+      return {
+        label,
+        acf_fc_layout: section.acf_fc_layout,
+        index,
+      };
+    })
     .filter((item) => item.label && !isHeroSection(item.acf_fc_layout));
 
   useEffect(() => {

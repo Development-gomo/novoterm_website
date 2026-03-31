@@ -1,4 +1,5 @@
 
+import Image from "next/image";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 
@@ -27,6 +28,7 @@ export default function CaseStudyIntroductionSection({
     section_label,
     heading,
     sub_heading,
+    company_logo,
     left_title,
     left_content,
     client,
@@ -101,6 +103,7 @@ export default function CaseStudyIntroductionSection({
               />
             )}
 
+
             {/* CONTENT + INFO CARD */}
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-[48px] mt-8 items-start">
 
@@ -119,6 +122,23 @@ export default function CaseStudyIntroductionSection({
                     dangerouslySetInnerHTML={{ __html: left_content }}
                   />
                 )}
+
+                
+            {/* COMPANY LOGO */}
+            {company_logo && (() => {
+              const logoUrl = typeof company_logo === "string" ? company_logo : company_logo?.url;
+              return logoUrl ? (
+                <div className="mt-6">
+                  <Image
+                    src={logoUrl}
+                    alt={company_logo?.alt || "Company logo"}
+                    width={company_logo?.width || 200}
+                    height={company_logo?.height || 80}
+                    className="object-contain h-[80px] w-auto max-w-[400px]"
+                  />
+                </div>
+              ) : null;
+            })()}
               </div>
 
               {/* RIGHT INFO CARD */}

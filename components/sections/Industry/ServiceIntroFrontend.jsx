@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import ReadMoreContent from "./ReadMoreContent";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
@@ -49,7 +48,6 @@ export default function IndustryIntro({
         "";
 
   const isMediaRight = media_position === "right";
-  const [videoAccepted, setVideoAccepted] = useState(false);
 const getEmbedUrl = (url) => {
   if (!url) return null;
 
@@ -62,11 +60,17 @@ const getEmbedUrl = (url) => {
 
     // Short youtu.be URL
     if (url.includes("youtu.be")) {
-      const videoId = url.split("youtu.be/")[1];
+      const videoId = url.split("youtu.be/")[1]?.split("?")[0];
       return `https://www.youtube.com/embed/${videoId}`;
     }
 
-    // Already embed format
+    // Already an embed/iframe URL (e.g. youtube.com/embed/..., vimeo, etc.)
+    if (url.includes("youtube.com/embed") || url.includes("vimeo.com") || url.startsWith("http")) {
+      // Local video files — let <video> tag handle them
+      if (/\.(mp4|webm|ogg|mov)(\?|$)/i.test(url)) return null;
+      return url;
+    }
+
     return url;
   } catch (err) {
     return url;
@@ -154,26 +158,19 @@ const getEmbedUrl = (url) => {
                 {/* VIDEO */}
                 {layout_type === "video" && video_url && (
                   <div className="aspect-video w-full mb-6 relative rounded-[3px] overflow-hidden">
-                    {!videoAccepted ? (
-                      /* CONSENT OVERLAY */
-                      <div className="absolute inset-0 bg-black flex flex-col items-center justify-center gap-6 z-10">
-                        <p className="text-white text-[15px] md:text-[16px] text-center px-4">
-                          This video requires marketing consent.
-                        </p>
-                        <button
-                          onClick={() => setVideoAccepted(true)}
-                          className="btn-primary cursor-pointer"
-                        >
-                          Accept &amp; Play
-                        </button>
-                      </div>
-                    ) : (
+                    {getEmbedUrl(video_url) ? (
                       <iframe
                         src={getEmbedUrl(video_url)}
                         title="Video"
                         className="w-full h-full"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        src={video_url}
+                        controls
+                        className="w-full h-full object-cover"
                       />
                     )}
                   </div>
