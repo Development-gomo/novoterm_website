@@ -4,19 +4,18 @@ import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredDa
 import { resolveLang } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
-  const { slug } = params;
   const lang = resolveLang(locale);
 
-  // Swedish visitors should use /branscher/:slug instead
-  if (lang === "sv") {
+  // This route is only for Swedish — send English visitors to /en/industry/:slug
+  if (lang !== "sv") {
     return {
-      redirect: { destination: `/branscher/${slug}`, permanent: true },
+      redirect: { destination: `/en/industry/${params.slug}`, permanent: true },
     };
   }
 
+  const { slug } = params;
   const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`;
 
-  // Only fetch in the requested language — wrong-locale slugs must 404.
   const res = await fetch(`${base}&lang=${lang}`);
   const data = await res.json();
 
@@ -24,7 +23,13 @@ export async function getServerSideProps({ params, locale }) {
     return { notFound: true };
   }
 
-  return { props: { industry: data[0], translations: data[0].translations || null, yoastHead: data[0].yoast_head || null } };
+  return {
+    props: {
+      industry: data[0],
+      translations: data[0].translations || null,
+      yoastHead: data[0].yoast_head || null,
+    },
+  };
 }
 
 export default function SingleIndustry({ industry, yoastHead }) {

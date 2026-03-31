@@ -4,19 +4,18 @@ import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredDa
 import { resolveLang } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
-  const { slug } = params;
   const lang = resolveLang(locale);
 
-  // Swedish visitors should use /tjanster/:slug instead
-  if (lang === "sv") {
+  // This route is only for Swedish — send English visitors to /en/services/:slug
+  if (lang !== "sv") {
     return {
-      redirect: { destination: `/tjanster/${slug}`, permanent: true },
+      redirect: { destination: `/en/services/${params.slug}`, permanent: true },
     };
   }
 
+  const { slug } = params;
   const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`;
 
-  // Only fetch in the requested language — wrong-locale slugs must 404.
   const res = await fetch(`${base}&lang=${lang}`);
   const data = await res.json();
 
@@ -32,6 +31,7 @@ export async function getServerSideProps({ params, locale }) {
     },
   };
 }
+
 export default function SingleService({ service, yoastHead }) {
   const sections = service.acf?.sections || [];
   const title = service.title?.rendered || "";
@@ -47,12 +47,10 @@ export default function SingleService({ service, yoastHead }) {
           <SectionRenderer sections={sections} />
         </>
       ) : (
-        // fallback if no flexible content added
         <div className="max-w-5xl mx-auto p-10">
           <h1 className="text-4xl font-bold mb-4">
             {service.acf.heading}
           </h1>
-
           <div
             dangerouslySetInnerHTML={{
               __html: service.acf.description_text,
