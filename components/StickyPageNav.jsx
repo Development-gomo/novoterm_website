@@ -31,13 +31,18 @@ export default function StickyPageNav({ sections = [] }) {
 
   // Build nav items — exclude hero, use section_label or auto-generate from layout name
   const navItems = sections
-    .map((section, index) => ({
-      label:
-        section.section_label ||
-        section.section_title || null,
-      acf_fc_layout: section.acf_fc_layout,
-      index,
-    }))
+    .map((section, index) => {
+      let label = section.section_label || section.section_title;
+      if (!label && section.acf_fc_layout === 'inner_why_choose_us') {
+        label = section.right_column?.section_label;
+      }
+      label = label || null;
+      return {
+        label,
+        acf_fc_layout: section.acf_fc_layout,
+        index,
+      };
+    })
     .filter((item) => item.label && !isHeroSection(item.acf_fc_layout));
 
   useEffect(() => {

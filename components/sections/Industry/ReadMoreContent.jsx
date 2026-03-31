@@ -9,7 +9,7 @@ function getLang() {
 }
 
 // Max height for collapsed content (in px)
-const COLLAPSED_HEIGHT = 300;
+const COLLAPSED_HEIGHT = 320;
 const SCROLL_DURATION = 2000; // ms
 
 export default function ReadMoreContent({ html, textColor }) {
