@@ -1,11 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
+import { DEFAULT_LANG } from "../../../lib/api";
 
-// Helper to get language from <html lang="..."> or default to 'en'
+// Helper to get language from <html lang="..."> or default
 function getLang() {
   if (typeof document !== 'undefined') {
-    return document.documentElement.lang?.toLowerCase() || 'en';
+    return document.documentElement.lang?.toLowerCase() || DEFAULT_LANG;
   }
-  return 'en';
+  return DEFAULT_LANG;
 }
 
 // Max height for collapsed content (in px)
@@ -16,7 +17,7 @@ export default function ReadMoreContent({ html, textColor }) {
   const contentRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [showButton, setShowButton] = useState(false);
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState(DEFAULT_LANG);
 
   useEffect(() => {
     setLang(getLang());

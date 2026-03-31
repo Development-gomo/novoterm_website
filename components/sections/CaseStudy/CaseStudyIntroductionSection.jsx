@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
+import { DEFAULT_LANG } from "../../../lib/api";
 
 const formatLabel = (layout) => {
   if (!layout) return null;
@@ -19,7 +20,7 @@ export default function CaseStudyIntroductionSection({
 }) {
 
   const router = useRouter();
-  const lang = router.locale || "en";
+  const lang = router.locale || DEFAULT_LANG;
   const t = (sv, en) => lang === "sv" ? sv : en;
 
   if (!section) return null;
