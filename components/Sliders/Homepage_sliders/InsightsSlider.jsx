@@ -83,12 +83,12 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
                 {/* CONTENT */}
                 <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 justify-between min-h-0">
                   <h3
-                    className="text-[24px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden"
-                    style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                    className="text-[22px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden"
+                    
                   >
                     {slide.title}
                   </h3>
-                  <div className="flex justify-between text-white/50 text-[14px] font-normal mt-auto">
+                  <div className="flex justify-between text-white/50 text-[14px] font-normal">
                     <span>{formattedDate}</span>
                     <span>{formattedReadTime}</span>
                   </div>
