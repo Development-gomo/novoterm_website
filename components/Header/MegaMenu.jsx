@@ -18,6 +18,11 @@ export default function MegaMenu({ menuData }) {
     if (closeTimer.current) clearTimeout(closeTimer.current);
   };
 
+  const closeNow = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setActiveIdx(null);
+  };
+
   if (!menuData || !menuData.length) return null;
 
   // 🔥 LINK NORMALIZER (final)
@@ -174,6 +179,7 @@ export default function MegaMenu({ menuData }) {
                                 return url !== "#" && (
                                   <Link
                                     href={url}
+                                    onClick={closeNow}
                                     className="inline-flex items-center justify-center w-8 h-8 bg-[#2655C4] text-white rounded-[3px] transition self-start mt-[14px]"
                                   >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="11" viewBox="0 0 12 11" fill="none">
@@ -203,7 +209,7 @@ export default function MegaMenu({ menuData }) {
                               return (
                                 <li key={lIdx} className="border-b border-dashed border-[#D0D5DD] last:border-none">
                                   {url !== "#" ? (
-                                    <Link href={url} className="group flex items-center justify-between py-4 transition">
+                                    <Link href={url} onClick={closeNow} className="group flex items-center justify-between py-4 transition">
                                       <div className="flex items-center overflow-hidden">
                                         <span className="block w-0 h-2 rounded-full bg-[#2655C4] flex-shrink-0 overflow-hidden transition-all duration-200 group-hover:w-2 group-hover:mr-2" />
                                         <span
