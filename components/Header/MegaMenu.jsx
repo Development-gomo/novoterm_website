@@ -130,7 +130,7 @@ export default function MegaMenu({ menuData }) {
               const isOne   = menu.layout_type === 'one_column';
 
               // Total panel width
-              const panelWidth = isThree ? 900 : isTwo ? 600 : 300;
+              const panelWidth = isThree ? 930 : isTwo ? 630 : 330;
               // Links area width (panel minus image when image exists)
               const hasImage = !!menu.side_image;
               const imageWidth = 300;

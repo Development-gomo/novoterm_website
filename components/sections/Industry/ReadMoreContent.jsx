@@ -1,27 +1,21 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { DEFAULT_LANG } from "../../../lib/api";
-
-// Helper to get language from <html lang="..."> or default
-function getLang() {
-  if (typeof document !== 'undefined') {
-    return document.documentElement.lang?.toLowerCase() || DEFAULT_LANG;
-  }
-  return DEFAULT_LANG;
-}
 
 // Max height for collapsed content (in px)
 const COLLAPSED_HEIGHT = 320;
 const SCROLL_DURATION = 2000; // ms
 
-export default function ReadMoreContent({ html, textColor }) {
+export default function ReadMoreContent({ html, textColor, isDark = false }) {
+  const router = useRouter();
   const contentRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   const [showButton, setShowButton] = useState(false);
-  const [lang, setLang] = useState(DEFAULT_LANG);
+  const [lang, setLang] = useState(router.locale || DEFAULT_LANG);
 
   useEffect(() => {
-    setLang(getLang());
-  }, []);
+    setLang(router.locale || DEFAULT_LANG);
+  }, [router.locale]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -64,13 +58,14 @@ export default function ReadMoreContent({ html, textColor }) {
         />
         {!expanded && showButton && (
           <div
-            className="pointer-events-none absolute bottom-0 left-0 w-full h-24"
-            style={{ background: "linear-gradient(to bottom, transparent, #e3edff)" }}
+            className="pointer-events-none absolute bottom-0 left-0 w-full h-14"
+            style={{ background: `linear-gradient(to bottom, transparent, ${isDark ? '#061837' : '#e3edff'})` }}
           />
         )}
       </div>
       {showButton && (
         <button
+          suppressHydrationWarning
           className="btn-primary mb-2 focus:outline-none"
           onClick={handleToggle}
           type="button"

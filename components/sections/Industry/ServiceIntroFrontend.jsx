@@ -133,7 +133,7 @@ const getEmbedUrl = (url) => {
 
                 {/* Read More/Read Less logic for main_content */}
                 {main_content && (
-                  <ReadMoreContent html={main_content} textColor={textColor} />
+                  <ReadMoreContent html={main_content} textColor={textColor} isDark={isDark} />
                 )}
 
                 {/* BUTTON – LEFT / BELOW STATIC */}

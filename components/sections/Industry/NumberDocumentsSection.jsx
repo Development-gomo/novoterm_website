@@ -27,7 +27,7 @@ export default function NumberDocumentsSection({ section, sectionId }) {
   const itemText     = isDark ? "text-white"      : "text-[#061837]";
 
   // If display_button is enabled, cap visible items at 9 until expanded
-  const hasMore = display_button && document_lists.length > 9;
+  const hasMore = display_button && document_lists.length > 20;
   const visibleItems = hasMore && !showAll
     ? document_lists.slice(0, 9)
     : document_lists;
