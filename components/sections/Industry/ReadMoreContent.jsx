@@ -55,12 +55,20 @@ export default function ReadMoreContent({ html, textColor }) {
 
   return (
     <>
-      <div
-        ref={contentRef}
-        className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline [&_h2]:font-heading [&_h2]:font-semibold [&_h2]:text-[22px] [&_h2]:md:text-[26px] [&_h2]:leading-snug [&_h2]:mb-3 [&_h3]:font-heading [&_h3]:font-semibold [&_h3]:text-[18px] [&_h3]:md:text-[22px] [&_h3]:leading-snug [&_h3]:mb-3 [&_h4]:font-heading [&_h4]:font-semibold [&_h4]:text-[16px] [&_h4]:md:text-[18px] [&_h4]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-semibold [&_br]:block ${textColor} ${!expanded && showButton ? "max-h-[220px] overflow-hidden relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-12 " : ""}`}
-        style={{ position: "relative", transition: `max-height ${SCROLL_DURATION}ms` }}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <div className="relative">
+        <div
+          ref={contentRef}
+          className={`font-body text-[14px] sm:text-[15px] md:text-[16px] leading-[1.6] md:leading-[1.7] mb-6 [&_em]:text-[#2655C4] [&_a]:text-[#2655C4] [&_a]:underline [&_h2]:font-heading [&_h2]:font-semibold [&_h2]:text-[22px] [&_h2]:md:text-[26px] [&_h2]:leading-snug [&_h2]:mb-3 [&_h3]:font-heading [&_h3]:font-semibold [&_h3]:text-[18px] [&_h3]:md:text-[22px] [&_h3]:leading-snug [&_h3]:mb-3 [&_h4]:font-heading [&_h4]:font-semibold [&_h4]:text-[16px] [&_h4]:md:text-[18px] [&_h4]:mb-2 [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-semibold [&_br]:block ${textColor} ${!expanded && showButton ? "max-h-[220px] overflow-hidden" : ""}`}
+          style={{ position: "relative", transition: `max-height ${SCROLL_DURATION}ms` }}
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+        {!expanded && showButton && (
+          <div
+            className="pointer-events-none absolute bottom-0 left-0 w-full h-24"
+            style={{ background: "linear-gradient(to bottom, transparent, #e3edff)" }}
+          />
+        )}
+      </div>
       {showButton && (
         <button
           className="btn-primary mb-2 focus:outline-none"

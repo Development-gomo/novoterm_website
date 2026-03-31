@@ -47,6 +47,7 @@ export default function CaseStudyPage({ caseStudy, currentSlug, yoastHead }) {
           <SectionRenderer
             sections={caseStudy.acf.sections}
             currentSlug={currentSlug}
+            postAcf={caseStudy.acf}
           />
         </>
       )}

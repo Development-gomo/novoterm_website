@@ -74,7 +74,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
           <div className="w-full lg:w-[85%]">
 
             {/* HEADER */}
-            <div className="flex flex-col lg:flex-row lg:items-start max-w-[578px] lg:justify-between mb-8 lg:mb-10 gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-start max-w-[678px] lg:justify-between mb-8 lg:mb-10 gap-6">
               <div>
                 {section_title && (
                   <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-[#061837] mb-4">

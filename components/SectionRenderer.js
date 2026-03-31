@@ -77,7 +77,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], currentSlug, pageType }) {
+export default function SectionRenderer({ sections = [], currentSlug, pageType, postAcf }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -307,6 +307,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType }
               section={block}
               sectionId={`section-${index}`}
               index={index}
+              postAcf={postAcf}
             />
           ); 
 

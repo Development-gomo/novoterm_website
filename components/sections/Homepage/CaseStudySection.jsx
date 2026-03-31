@@ -35,6 +35,7 @@ export default function CaseStudySection({
           button_link: post.acf.button_link,
           time_text: post.acf.time_text,
           subtext: post.acf.subtext,
+          service_title: post.acf.service_title,
           service_used: post.acf.service_used,
           image: post.acf.cs_image,
           cs_image: post.acf.cs_image,

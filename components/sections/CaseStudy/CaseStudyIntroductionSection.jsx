@@ -17,6 +17,7 @@ export default function CaseStudyIntroductionSection({
   section,
   sectionId,
   index = 0,
+  postAcf,
 }) {
 
   const router = useRouter();
@@ -36,6 +37,11 @@ export default function CaseStudyIntroductionSection({
     industry,
     services,
   } = section;
+
+  const time_text = postAcf?.time_text;
+  const subtext = postAcf?.subtext;
+  const service_title = postAcf?.service_title;
+  const service_used = postAcf?.service_used;
 
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
@@ -157,22 +163,22 @@ export default function CaseStudyIntroductionSection({
                 )}
 
 
-                {industry && (
+                {time_text && (
                   <div className="mb-8">
                     <p suppressHydrationWarning className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      {t("BRANSCH", "Industry")}
+                      {time_text}
                     </p>
-                    <p className="text-[16px] leading-[24px] font-medium">{industry}</p>
+                    <p className="text-[16px] leading-[24px] font-medium">{subtext}</p>
                   </div>
                 )}
 
 
-                {services && (
+                {service_title && (
                   <div>
                     <p suppressHydrationWarning className="text-[14px] uppercase font-normal tracking-[0.84px] text-[#5C83DD] mb-[8px]">
-                      {t("TJÄNST", "Services")}
+                      {service_title}
                     </p>
-                    <p className="text-[16px] leading-[24px] font-medium">{services}</p>
+                    <p className="text-[16px] leading-[24px] font-medium">{service_used}</p>
                   </div>
                 )}
 

@@ -84,8 +84,8 @@ export default function CaseStudySlider({ slides }) {
                   <div className="w-[1px] h-[100px] bg-white opacity-25" />
 
                   <div>
-                    <h5 suppressHydrationWarning className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2">
-                     {slide.service_text}
+                    <h5 suppressHydrationWarning className="text-[14px] text-[#5C83DD] font-medium tracking-wider mb-2 uppercase">
+                     {slide.service_title}
                     </h5>
                     <p className="text-[16px]">{slide.service_used}</p>
                   </div>

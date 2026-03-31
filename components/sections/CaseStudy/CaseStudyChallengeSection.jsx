@@ -75,7 +75,7 @@ export default function CaseStudyChallengeSection({
             {/* DESCRIPTION */}
             {description && (
               <div
-                className="max-w-[533px] text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] text-white mb-[40px]"
+                className="max-w-[533px] text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] text-white mb-[40px] space-y-4"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}

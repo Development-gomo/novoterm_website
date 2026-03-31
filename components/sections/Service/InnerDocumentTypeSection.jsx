@@ -81,7 +81,7 @@ export default function InnerDocumentTypeSection({ section, sectionId, index = 0
             {/* HEADING */}
             {heading && (
               <div
-                className="text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-heading mb-4 md:mb-6 max-w-[577px]"
+                className="text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-heading mb-4 md:mb-6 max-w-[677px]"
                 dangerouslySetInnerHTML={{ __html: heading }}
               />
             )}

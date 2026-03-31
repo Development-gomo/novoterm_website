@@ -62,23 +62,25 @@ export default function CaseStudyCardSlider({ slides }) {
               </div>
 
               {/* CONTENT */}
-              <div className="p-[24px] flex flex-col flex-1 min-h-0">
-                <h3
-                  className="text-white text-[24px] leading-[30px] font-semibold mb-6 "
-                  style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-                >
-                  {slide.title}
-                </h3>
+              <div className="p-[24px] flex flex-col justify-between flex-1 min-h-0">
+                <div>
+                  <h3
+                    className="text-white text-[24px] leading-[30px] font-semibold mb-6"
+                    style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+                  >
+                    {slide.title}
+                  </h3>
 
-                <p className="text-[12px] font-montserrat uppercase tracking-widest font-medium text-white/50 mb-2">
-                  {lang === 'sv' ? 'Tjänst' : 'Service provided'}
-                </p>
+                  {/* <p className="text-[12px] font-montserrat uppercase tracking-widest font-medium text-white/50 mb-2">
+                    {lang === 'sv' ? 'Tjänst' : 'Service provided'}
+                  </p>
 
-                <div className="text-[16px] text-white/90 mb-6">
-                  {slide.service_used}
+                  <div className="text-[16px] text-white/90 mb-6">
+                    {slide.service_used}
+                  </div> */}
                 </div>
 
-                <Link href={localePath("caseStudy", slide.slug, lang)} className="btn-primary text-sm w-fit mt-auto">
+                <Link href={localePath("caseStudy", slide.slug, lang)} className="btn-primary text-sm w-fit">
                   {slide.button_text || (lang === 'sv' ? 'Läs mer' : 'Read full case')}
                 </Link>
               </div>
