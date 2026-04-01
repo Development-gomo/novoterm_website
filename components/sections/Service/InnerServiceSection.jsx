@@ -125,7 +125,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
             <div className="sticky-box"
               style={{
                 position: stickyEnabled ? "sticky" : "relative",
-                top: stickyEnabled ? `${headerTop}px` : "auto",
+                top: stickyEnabled ? `${headerTop}px` : "0px !important",
                 height: `${SERVICE_HEADER_HEIGHT}px`,
                 background: "#D3DEF3",
                 zIndex: stickyEnabled ? 2000 + slot : 10,
@@ -158,7 +158,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
                   inset: 0,
                   backgroundImage: `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%), url(${bgUrl})`,
                   backgroundSize: "cover",
-                  backgroundPosition: "center",
+                  backgroundPosition: "top center",
                   zIndex: 1,
                 }}
               />
