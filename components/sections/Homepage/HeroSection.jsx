@@ -22,7 +22,7 @@ export default function HeroSection({
       style={{
         backgroundImage: `linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%), url(${bgUrl})`,
         backgroundSize: "cover",
-        backgroundPosition: "center", 
+        backgroundPosition: "center center", 
       }}
     >
       {/* CONTENT WRAPPER */}

@@ -37,7 +37,7 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
           swiper.params.navigation.nextEl = nextRef.current;
         }}
         onSwiper={setSwiperInstance}
-        className="w-full !items-stretch"
+        className="w-full [&>.swiper-wrapper]:items-stretch"
       >
         {slides.map((slide, index) => {
           // Localize date
@@ -63,7 +63,7 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
             <SwiperSlide key={index} style={{ height: 'auto' }} className="flex">
               <a
                 href={slide.url}
-                className="flex flex-col w-full rounded-[3px] overflow-hidden border border-[#D1D9E6] transition"
+                className="flex flex-col w-full h-full rounded-[3px] overflow-hidden border border-[#D1D9E6] transition"
               >
                 {/* IMAGE */}
                 <div
@@ -82,8 +82,7 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
                 {/* CONTENT */}
                <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1 justify-between min-h-0">
                   <h3
-                    className="text-[22px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden"
-            
+                    className="text-[22px] leading-[32px] text-[#E3EDFF] font-semibold mb-10 overflow-hidden line-clamp-3"
                   >
                     {slide.title}
                   </h3>

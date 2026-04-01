@@ -30,7 +30,7 @@ export default function InnerHeroSection({ section, sectionId }) {
           ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
           : `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)`,
         backgroundColor: "lightgray",
-        backgroundPosition: "bottom  center",
+        backgroundPosition: "center  center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
       }}

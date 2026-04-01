@@ -61,6 +61,12 @@ export default function CaseStudyExampleSection({ section, sectionId, index = 0 
                       {example.example_title}
                     </h3>
                   )}
+                        {example.example_description && (
+              <div
+                className="max-w-[520px] text-[14px] sm:text-[16px] leading-[1.5] text-black space-y-4 mb-[24px]"
+                dangerouslySetInnerHTML={{ __html: example.example_description }}
+              />
+            )}
 
                   {/* Column cards — gap 15px, no borders */}
                   <div className="flex flex-col sm:flex-row gap-[15px]">
