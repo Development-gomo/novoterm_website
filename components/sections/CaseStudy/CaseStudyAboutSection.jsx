@@ -10,7 +10,9 @@ const formatLabel = (layout) => {
 export default function CaseStudyAboutSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
-  const { section_label, heading, subheading, image, description, select_theme = "dark" } = section;
+  const { section_label, heading, subheading, image, text_below_image, description, select_theme = "dark", image_position = "left" } = section;
+
+  const isImageRight = image_position === "right";
 
   const isDark = select_theme === "dark";
   const sectionBg     = isDark ? "bg-[#061837]"     : "bg-[#E3EDFF]";
@@ -53,7 +55,7 @@ export default function CaseStudyAboutSection({ section, sectionId, index = 0 })
             <div className=" lg:mb-[50px] mb-3 ">
             {/* HEADING */}
             {heading && (
-              <h2 className={`max-w-[760px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] ${headingColor} mb-[14px]`}>
+              <h2 className={`w-full font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] ${headingColor} mb-[14px]`}>
                 {heading}
               </h2>
             )}
@@ -66,16 +68,25 @@ export default function CaseStudyAboutSection({ section, sectionId, index = 0 })
             )}
             </div>
             {/* IMAGE + DESCRIPTION */}
-            <div className="flex flex-col lg:flex-row gap-10 lg:gap-[48px] items-start">
+            <div className={`flex flex-col ${isImageRight ? "lg:flex-row-reverse" : "lg:flex-row"} gap-10 lg:gap-[48px] items-start`}>
 
               {/* IMAGE */}
               {imageUrl && (
+                <div className="w-full max-w-[380px] lg:max-w-[400px] flex-shrink-0">
+                  <img
+                    src={imageUrl}
+                    alt={heading || ""}
+                    className="w-full h-auto rounded-[3px] block"
+                  />
+
+                      {/* Text below image */}
+              {text_below_image && (
                 <div
-                  className="w-full max-w-[380px] lg:max-w-[400px] flex-shrink-0
-                    h-[300px] sm:h-[380px] lg:h-[460px]
-                    rounded-[3px] bg-cover bg-center"
-                  style={{ backgroundImage: `url(${imageUrl})` }}
+                  className={`mt-4 text-center italic font-medium text-[14px] sm:text-[16px] leading-[1.7] ${bodyColor} space-y-4`}
+                  dangerouslySetInnerHTML={{ __html: text_below_image }}
                 />
+              )}
+                </div>
               )}
 
               {/* DESCRIPTION */}
