@@ -102,10 +102,12 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
       </div>
 
       {/* ================= SECTION TITLE ================= */}
+      {type === "company" && (
       <p className="text-[18px] font-montserrat font-medium mb-4">{t("Berätta om dig själv", "Tell us about you")}</p>
+      )}
 
       {/* ================= INPUTS ================= */}
-      <div className="space-y-4">
+      {type === "company" && <div className="space-y-4">
 
         <input
           type="text"
@@ -139,7 +141,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             name="email"
             placeholder={t("E-POST*", "E-MAIL*")}
             required
-            className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor} font-montserrat`}
+            className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
           />
 
           <div className="relative w-full">
@@ -169,9 +171,10 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           placeholder={t("MEDDELANDE", "MESSAGE")}
           className={`w-full min-h-[105px] px-4 py-3 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none resize-none ${placeholderColor}`}
         />
-      </div>
+      </div>}
 
       {/* ================= UPLOAD ================= */}
+      {type === "company" && (
     <label className={`inline-flex items-center gap-3 h-[56px] px-[24px] mt-4 border border-dashed  border-${borderColor} ${textColor}  rounded-[3px] text-[13px] cursor-pointer  bg-white/[0.05] ${placeholderColor}`}>
   <input
     type="file"
@@ -192,17 +195,27 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
     {fileName ? fileName : t("LADDA UPP FIL", "Upload file")}
   </span>
 </label>
-
+      )}
 
       {/* ================= SUBMIT ================= */}
       <div className="mt-8">
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-primary cursor-pointer disabled:opacity-50"
-        >
-          {loading ? (lang === "sv" ? "Skickar..." : "Sending...") : t("SKICKA", "Submit")}
-        </button>
+        {type === "company" ? (
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary cursor-pointer disabled:opacity-50"
+          >
+            {loading ? (lang === "sv" ? "Skickar..." : "Sending...") : t("SKICKA", "Submit")}
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={() => router.push(lang === "en" ? "/en/thankyou-private" : "/thank-you-private/")}
+            className="btn-primary cursor-pointer"
+          >
+            {t("SKICKA", "Submit")}
+          </button>
+        )}
 
         {status && (
           <p className="mt-4 text-[14px] text-white">{status}</p>

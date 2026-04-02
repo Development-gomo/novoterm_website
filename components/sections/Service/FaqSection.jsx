@@ -142,9 +142,9 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
                           text-[#061837]
                           leading-snug
                           pr-4 font-montserrat
-                        "
+                        " suppressHydrationWarning={true}  dangerouslySetInnerHTML={{ __html: title }}
                       >
-                        {title}
+            
                       </span>
 
                       <span
