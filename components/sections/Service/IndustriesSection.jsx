@@ -33,8 +33,12 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
         const res = await fetch(`/wp-api/wp/v2/industry?_embed&per_page=20&lang=${lang}`);
         const json = await res.json();
 
+        const HIDDEN_SLUGS = ["vara-huvudomraden", "main-areas"];
+
         const formatted = Array.isArray(json)
-          ? json.map((item) => ({
+          ? json
+              .filter((item) => !HIDDEN_SLUGS.includes(item.slug))
+              .map((item) => ({
               id: item.id,
               title: item.title?.rendered,
               slug: item.slug,

@@ -41,11 +41,11 @@ const isEN = locale === 'en';
               </button>
             </Link>
             
-            <Link href={isEN ? "/en/contact-us" : "/kontakta-oss"}>
+            {/* <Link href={isEN ? "/en/contact-us" : "/kontakta-oss"}>
               <button className="btn-primary lg:mt-[6px] w-fit">
                 {isEN ? "Contact us" : "Kontakta oss"}
               </button>
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
