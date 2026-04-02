@@ -33,9 +33,11 @@ export default function Footer({ data }) {
 
             {/* CTA BUTTON + SOCIAL */}
             <div className="flex items-center gap-4 mb-8">
-              <Link href={wpToPath(cta?.cta_button_link, lang)} className="btn-primary">
-                {cta?.cta_button_text}
-              </Link>
+              {cta?.cta_button_link && cta?.cta_button_text && (
+                <Link href={wpToPath(cta.cta_button_link, lang)} className="btn-primary">
+                  {cta.cta_button_text}
+                </Link>
+              )}
 
               <div className="flex items-center gap-3">
                 {cta?.social_links?.map((item, i) => (

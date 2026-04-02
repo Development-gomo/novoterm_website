@@ -93,7 +93,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
               </div>
 
             </div>
- <div className="lg:mt-0 mt-25">
+ <div className="lg:mt-0 mt-30">
               <div className="flex gap-3 justify-end  mt-[-92px] mb-[40px]">
                 <button className="industry-prev w-[48px] h-[48px] rounded-full bg-[#BBC8E1] flex items-center justify-center hover:bg-[#2655C4] hover:text-white transition">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
