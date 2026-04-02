@@ -33,9 +33,12 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
       const result = await res.json();
 
       if (result.success) {
-        setStatus("Thank you! Your request has been sent.");
-        e.target.reset();
-        setType("company");
+        const thankYouPage = type === "company"
+          ? (lang === "en" ? "thank-you-company" : "thank-you-company")
+          : (lang === "en" ? "thankyou-private" : "thank-you-private");
+        const redirectPath = lang === "en" ? `/en/${thankYouPage}` : `/${thankYouPage}/`;
+        router.push(redirectPath);
+        return;
       } else {
         setStatus(result.message || "Something went wrong.");
       }
@@ -136,7 +139,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             name="email"
             placeholder={t("E-POST*", "E-MAIL*")}
             required
-            className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor} font-montserrat`}
           />
 
           <div className="relative w-full">

@@ -121,7 +121,7 @@ export default function Header({
                 href={wpToPath(cta.url)}
                 className="btn-primary !hidden lg:!inline-flex"
               >
-                {cta.text || "Get in touch"}
+                {cta.text}
               </Link>
               {/* Hamburger menu for desktop */}
               {/* <button
