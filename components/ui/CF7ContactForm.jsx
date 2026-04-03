@@ -12,13 +12,58 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState("");
   const [fileName, setFileName] = useState("");
+  const [errors, setErrors] = useState({});
+
+  const errorMsg = {
+    company_name:  t("Företagsnamn får inte innehålla siffror.", "Company name must not contain numbers."),
+    full_name:     t("Namnet får inte innehålla siffror.", "Name must not contain numbers."),
+    phone_invalid: t("Telefonnummer får endast innehålla siffror och + - ( ).", "Phone number may only contain digits and + - ( )."),
+    phone_min:     t("Telefonnummer måste ha minst 7 siffror.", "Phone number must have at least 7 digits."),
+    phone_max:     t("Telefonnummer får ha max 15 siffror.", "Phone number must have at most 15 digits."),
+    email:         t("Ange en giltig e-postadress.", "Please enter a valid email address."),
+  };
+
+  function validateFields(formData) {
+    const newErrors = {};
+    const companyName = formData.get("company_name") || "";
+    const fullName    = formData.get("full_name") || "";
+    const phone       = formData.get("phone") || "";
+    const email       = formData.get("email") || "";
+
+    if (/\d/.test(companyName)) newErrors.company_name = errorMsg.company_name;
+    if (/\d/.test(fullName))    newErrors.full_name    = errorMsg.full_name;
+
+    // Strict email: local@domain.tld where tld is 2–6 chars
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,6}$/;
+    if (email && !emailRegex.test(email)) newErrors.email = errorMsg.email;
+
+    if (phone) {
+      if (/[a-zA-Z]/.test(phone))          newErrors.phone = errorMsg.phone_invalid;
+      else if (!/^[+\d\s\-()\s]+$/.test(phone)) newErrors.phone = errorMsg.phone_invalid;
+      else {
+        const digits = phone.replace(/\D/g, "");
+        if (digits.length < 7)       newErrors.phone = errorMsg.phone_min;
+        else if (digits.length > 15) newErrors.phone = errorMsg.phone_max;
+      }
+    }
+
+    return newErrors;
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setLoading(true);
     setStatus("");
 
     const formData = new FormData(e.target);
+    const validationErrors = validateFields(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
     formData.append("user_type", type);
 
     try {
@@ -103,7 +148,10 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
 
       {/* ================= SECTION TITLE ================= */}
       {type === "company" && (
-      <p className="text-[18px] font-montserrat font-medium mb-4">{t("Berätta om dig själv", "Tell us about you")}</p>
+        <div className="mb-4">
+          <p className="text-[18px] font-montserrat font-medium">{t("Berätta om dig själv", "Tell us about you")}</p>
+          <p className="text-[12px] opacity-60 mt-1">* {t("Obligatoriskt fält", "Mandatory field")}</p>
+        </div>
       )}
 
       {/* ================= INPUTS ================= */}
@@ -114,7 +162,9 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           name="company_name"
           placeholder={t("FÖRETAGSNAMN*", "COMPANY NAME*")}
           required
-          className={`w-full h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+          className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.company_name ? "border-red-500" : borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+          onKeyDown={(e) => { if (/^\d$/.test(e.key)) e.preventDefault(); }}
+          onChange={() => setErrors((prev) => ({ ...prev, company_name: undefined }))}
         />
 
         <div className="grid grid-cols-2 gap-4">
@@ -123,7 +173,9 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             name="full_name"
             placeholder={t("FULLSTÄNDIGT NAMN*", "FULL NAME*")}
             required
-            className={`h-[48px] px-4 rounded-[3px] border ${borderColor}   ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            className={`h-[48px] px-4 rounded-[3px] border ${errors.full_name ? "border-red-500" : borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            onKeyDown={(e) => { if (/^\d$/.test(e.key)) e.preventDefault(); }}
+            onChange={() => setErrors((prev) => ({ ...prev, full_name: undefined }))}
           />
 
           <input
@@ -131,7 +183,12 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             name="phone"
             placeholder={t("TELEFONNUMMER*", "PHONE NUMBER*")}
             required
-            className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            className={`h-[48px] px-4 rounded-[3px] border ${errors.phone ? "border-red-500" : borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            onKeyDown={(e) => {
+              const controlKeys = ["Backspace","Delete","Tab","ArrowLeft","ArrowRight","Home","End"];
+              if (!controlKeys.includes(e.key) && !/^[\d+\-() ]$/.test(e.key)) e.preventDefault();
+            }}
+            onChange={() => setErrors((prev) => ({ ...prev, phone: undefined }))}
           />
         </div>
 
@@ -141,7 +198,8 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             name="email"
             placeholder={t("E-POST*", "E-MAIL*")}
             required
-            className={`h-[48px] px-4 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            className={`h-[48px] px-4 rounded-[3px] border ${errors.email ? "border-red-500" : borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
           />
 
           <div className="relative w-full">
@@ -151,7 +209,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
               className={`w-full h-[48px] px-4 pr-10 rounded-[3px] border ${borderColor} ${textColor} text-[14px] outline-none appearance-none`}
             >
               <option value="" className={`text-black bg-white ${textColor}`}>
-                {t("ÖNSKAD SPRÅKTJÄNST", "AREA OF INTEREST")}
+                {t("ÖNSKAD SPRÅKTJÄNST*", "AREA OF INTEREST*")}
               </option>
               <option value="Translation" className={`text-black bg-white ${textColor}`}>{t("Översättning", "Translation")}</option>
               <option value="Localization" className={`text-black bg-white ${textColor}`}>{t("Granskning", "Review")}</option>
@@ -198,7 +256,10 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
       )}
 
       {/* ================= SUBMIT ================= */}
-      <div className="mt-8">
+      <div className="mt-4">
+        {Object.keys(errors).length > 0 && (
+          <p className="text-red-500 text-[13px] mb-3">{Object.values(errors).find(Boolean)}</p>
+        )}
         {type === "company" ? (
           <button
             type="submit"
@@ -218,7 +279,7 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
         )}
 
         {status && (
-          <p className="mt-4 text-[14px] text-white">{status}</p>
+          <p className="mt-2 text-[12px] text-white">{status}</p>
         )}
       </div>
     </form>
