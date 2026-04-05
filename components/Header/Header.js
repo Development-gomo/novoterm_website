@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Dropdown from "./Dropdown";
 import LanguageSwitcher from "./LanguageSwitcher";
-import MobileMenu from "./MobileMenu";
 import MegaMenu from "./MegaMenu";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -139,7 +138,7 @@ export default function Header({
           )}
 
           <div className="lg:hidden flex">
-            <MobileMenu menu={cleanMenu} logo={logo} />
+            <MegaMenu menuData={megaMenuData} logo={logo} mobileMode />
           </div>
 
           {/* Fullscreen Mega Menu */}

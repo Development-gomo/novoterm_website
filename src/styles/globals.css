@@ -52,6 +52,9 @@ select,
 textarea {
   font-family: var(--font-cabin);
 }
+.font-cabin {
+  font-family: var(--font-cabin) !important;
+}
 
 /* Optional: Make h1-h3 bold automatically */
 /* h1 { font-size: 2.5rem; font-weight: 700; }

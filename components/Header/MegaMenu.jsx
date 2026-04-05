@@ -1,9 +1,20 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
-export default function MegaMenu({ menuData }) {
+export default function MegaMenu({ menuData, logo, mobileMode = false }) {
   const [activeIdx, setActiveIdx] = useState(null);
   const closeTimer = useRef(null);
+
+  // Mobile state
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpandedIdx, setMobileExpandedIdx] = useState(null);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (!mobileMode) return;
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen, mobileMode]);
 
   const openMenu = (idx) => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -21,6 +32,11 @@ export default function MegaMenu({ menuData }) {
   const closeNow = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
     setActiveIdx(null);
+  };
+
+  const closeMobile = () => {
+    setMobileOpen(false);
+    setMobileExpandedIdx(null);
   };
 
   if (!menuData || !menuData.length) return null;
@@ -58,6 +74,225 @@ export default function MegaMenu({ menuData }) {
     };
   };
 
+  // ===== MOBILE MODE =====
+  if (mobileMode) {
+    return (
+      <>
+        {/* Hamburger button */}
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="text-white w-10 h-10 flex items-center justify-center"
+          aria-label="Open menu"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 18" fill="none">
+            <line x1="0" y1="1" x2="24" y2="1" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="0" y1="9" x2="18" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+            <line x1="0" y1="17" x2="12" y2="17" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </button>
+
+        {/* Overlay */}
+        {mobileOpen && (
+          <div
+            className="fixed inset-0 bg-black/60 z-[10001]"
+            onClick={closeMobile}
+          />
+        )}
+
+        {/* Drawer */}
+        {mobileOpen && (
+          <aside className="fixed top-0 right-0 h-screen w-[320px] max-w-[85vw] bg-[#0B2347] text-white z-[10002] flex flex-col overflow-hidden">
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 flex-shrink-0">
+              {logo ? (
+                <img src={logo} alt="Logo" className="h-7" />
+              ) : (
+                <span className="text-xl font-semibold">Menu</span>
+              )}
+              <button
+                onClick={closeMobile}
+                className="text-3xl leading-none text-white/70 hover:text-white transition"
+                aria-label="Close menu"
+              >
+                &times;
+              </button>
+            </div>
+
+            {/* Menu items */}
+            <nav className="flex-1 overflow-y-auto">
+              {menuData.map((menu, idx) => {
+                const isExpanded = mobileExpandedIdx === idx;
+                const hasDropdown =
+                  menu.layout_type !== "no_column" &&
+                  menu.columns &&
+                  menu.columns.length > 0;
+
+                return (
+                  <div key={idx} className="border-b border-white/10">
+                    {/* Top-level item row */}
+                    <div className="flex items-center justify-between px-6 py-4">
+                      {menu.layout_type === "no_column" && menu.menu_title_link?.url ? (
+                        <a
+                          href={menu.menu_title_link.url}
+                          target={menu.menu_title_link.target || "_self"}
+                          rel={menu.menu_title_link.target === "_blank" ? "noopener noreferrer" : undefined}
+                          onClick={closeMobile}
+                          style={{ fontFamily: "Montserrat, sans-serif", fontSize: "15px", fontWeight: 500, color: "#FFF" }}
+                        >
+                          {menu.menu_title}
+                        </a>
+                      ) : menu.menu_title_link?.url ? (
+                        <a
+                          href={menu.menu_title_link.url}
+                          target={menu.menu_title_link.target || "_self"}
+                          rel={menu.menu_title_link.target === "_blank" ? "noopener noreferrer" : undefined}
+                          style={{ fontFamily: "Montserrat, sans-serif", fontSize: "15px", fontWeight: 500, color: "#FFF" }}
+                        >
+                          {menu.menu_title}
+                        </a>
+                      ) : (
+                        <span style={{ fontFamily: "Montserrat, sans-serif", fontSize: "15px", fontWeight: 500, color: "#FFF" }}>
+                          {menu.menu_title}
+                        </span>
+                      )}
+
+                      {hasDropdown && (
+                        <button
+                          onClick={() => setMobileExpandedIdx(isExpanded ? null : idx)}
+                          className="text-white/60 hover:text-white px-2 py-1 transition flex-shrink-0"
+                          aria-label="Toggle submenu"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="6"
+                            viewBox="0 0 12 6"
+                            fill="none"
+                            style={{ transition: "transform 0.2s", transform: isExpanded ? "rotate(0deg)" : "rotate(180deg)" }}
+                          >
+                            <path d="M5.625 0C5.525 0 5.4375 0.0375004 5.3625 0.1125L0.1125 5.3625C-0.0375 5.5125 -0.0375 5.75 0.1125 5.8875C0.2625 6.0375 0.5 6.0375 0.6375 5.8875L5.625 0.9L10.6125 5.8875C10.7625 6.0375 11 6.0375 11.1375 5.8875C11.2875 5.7375 11.2875 5.5 11.1375 5.3625L5.8875 0.1125C5.8125 0.0375004 5.725 0 5.625 0Z" fill="white"/>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Expanded dropdown content */}
+                    {hasDropdown && isExpanded && (
+                      <div className="bg-[#061837] border-t border-white/10">
+                        {/* Cards row */}
+                        {menu.columns.some(
+                          (col) => col.card && (col.card.title || col.card.description || col.card.button_link)
+                        ) && (
+                          <div className="px-4 pt-4 flex flex-col gap-3">
+                            {menu.columns.map((col, cIdx) =>
+                              col.card && (col.card.title || col.card.description || col.card.button_link) ? (
+                                <div
+                                  key={cIdx}
+                                  className="bg-[#D0D5DD33] rounded-[3px] p-4 flex flex-col"
+                                >
+                                  <h4 className="text-[14px] font-semibold text-white mb-1">{col.card.title}</h4>
+                                  <div
+                                    className="text-[12px] text-white/75 leading-[18px]"
+                                    dangerouslySetInnerHTML={{ __html: col.card.description }}
+                                  />
+                                  {col.card.button_link &&
+                                    (() => {
+                                      const { url } = getLinkData(col.card.button_link);
+                                      return (
+                                        url !== "#" && (
+                                          <Link
+                                            href={url}
+                                            onClick={closeMobile}
+                                            className="inline-flex items-center justify-center w-7 h-7 bg-[#2655C4] text-white rounded-[3px] transition self-start mt-3"
+                                          >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="9" viewBox="0 0 12 11" fill="none">
+                                              <path d="M12 5.14285C12 5.01758 11.92 4.85124 11.8389 4.77052L7.2675 0.168963C7.05407 -0.0400802 6.7083 -0.0643065 6.45948 0.147849C6.23702 0.337512 6.23148 0.707414 6.43719 0.913372L10.1068 4.60138H0.571433C0.255831 4.60138 0 4.84375 0 5.14273C0 5.44172 0.255831 5.68412 0.571433 5.68412H10.1068L6.43719 9.37213C6.23151 9.57806 6.24611 9.93888 6.45948 10.1376C6.68476 10.3475 7.05733 10.3288 7.2675 10.1165L11.8389 5.51496C11.9732 5.39015 11.9977 5.26996 12 5.14285Z" fill="white"/>
+                                            </svg>
+                                          </Link>
+                                        )
+                                      );
+                                    })()}
+                                </div>
+                              ) : null
+                            )}
+                          </div>
+                        )}
+
+                        {/* Links — all columns stacked vertically */}
+                        <div className="px-4 pb-4">
+                          {menu.columns.map((col, cIdx) => {
+                            const hasCard = !!(
+                              col.card &&
+                              (col.card.title || col.card.description || col.card.button_link)
+                            );
+                            const linkFontStyle = hasCard ? "italic" : "normal";
+                            return (
+                              <ul key={cIdx} className={cIdx > 0 ? "mt-2" : "mt-4"}>
+                                {col.links &&
+                                  col.links.map((link, lIdx) => {
+                                    const { url, title } = getLinkData(link);
+                                    return (
+                                      <li
+                                        key={lIdx}
+                                        className="border-b border-dashed border-white/20 last:border-none"
+                                      >
+                                        {url !== "#" ? (
+                                          <Link
+                                            href={url}
+                                            onClick={closeMobile}
+                                            className="group flex items-center justify-between py-3 transition"
+                                          >
+                                            <div className="flex items-center">
+                                              <span className="block w-0 h-2 rounded-full bg-[#2655C4] flex-shrink-0 overflow-hidden transition-all duration-200 group-hover:w-2 group-hover:mr-2" />
+                                              <span
+                                                className="text-white/80 group-hover:text-white transition-colors"
+                                                style={{
+                                                  fontFamily: "Cabin, sans-serif",
+                                                  fontSize: "14px",
+                                                  fontStyle: linkFontStyle,
+                                                }}
+                                              >
+                                                {title}
+                                              </span>
+                                            </div>
+                                            <span className="flex-shrink-0 ml-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                                              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="9" viewBox="0 0 12 11" fill="none">
+                                                <path d="M12 5.14285C12 5.01758 11.92 4.85124 11.8389 4.77052L7.2675 0.168963C7.05407 -0.0400802 6.7083 -0.0643065 6.45948 0.147849C6.23702 0.337512 6.23148 0.707414 6.43719 0.913372L10.1068 4.60138H0.571433C0.255831 4.60138 0 4.84375 0 5.14273C0 5.44172 0.255831 5.68412 0.571433 5.68412H10.1068L6.43719 9.37213C6.23151 9.57806 6.24611 9.93888 6.45948 10.1376C6.68476 10.3475 7.05733 10.3288 7.2675 10.1165L11.8389 5.51496C11.9732 5.39015 11.9977 5.26996 12 5.14285Z" fill="white"/>
+                                              </svg>
+                                            </span>
+                                          </Link>
+                                        ) : (
+                                          <span
+                                            className="py-3 block text-white/50"
+                                            style={{
+                                              fontFamily: "Cabin, sans-serif",
+                                              fontSize: "14px",
+                                              fontStyle: linkFontStyle,
+                                            }}
+                                          >
+                                            {title}
+                                          </span>
+                                        )}
+                                      </li>
+                                    );
+                                  })}
+                              </ul>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
+          </aside>
+        )}
+      </>
+    );
+  }
+
+  // ===== DESKTOP MODE =====
   return (
     <div className="w-full">
       <nav className="flex gap-4 items-center">

@@ -43,14 +43,14 @@ export default function ContactHeroSection({ section }) {
             className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-merriweather
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
-              w-full sm:w-[600px] mx-auto sm:mx-0 mb-10"
+              w-full sm:w-[600px] mx-auto sm:mx-0 mb-1"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
         )}
 
         {/* DESCRIPTION + CTA */}
         <div
-          className="max-w-full sm:max-w-[411px] mt-6 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left
+          className="max-w-full sm:max-w-[411px] mt-1 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left
                      sm:!justify-self-end"
         >
           {sub_heading && (

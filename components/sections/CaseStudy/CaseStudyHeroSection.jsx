@@ -36,7 +36,7 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
           <h1
             className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-serif [&_em]:normal-case
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] tracking-[1px]
-              w-full sm:w-[900px] mx-auto sm:mx-0 mb-9"
+              w-full sm:w-[900px] mx-auto sm:mx-0 mb-1"
             dangerouslySetInnerHTML={{ __html: heading }}
           />
         )}
@@ -44,7 +44,7 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
         {/* DESCRIPTION + CTA */}
         <div
           className="max-w-full sm:max-w-[411px]
-                     mt-6 sm:mt-8 lg:mt-0
+                     mt-1 sm:mt-8 lg:mt-0
                      mx-auto sm:mx-0
                       sm:text-left
                      sm:!justify-self-end"

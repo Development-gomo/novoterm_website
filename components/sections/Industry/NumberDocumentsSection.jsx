@@ -89,7 +89,7 @@ export default function NumberDocumentsSection({ section, sectionId }) {
                     <div className={`w-[28px] h-[28px] shrink-0 rounded-full ${numberBg} flex items-center justify-center text-white text-[11px] font-semibold`}>
                       {i + 1}
                     </div>
-                    <span className={`text-[14px] sm:text-[15px] md:text-[16px] font-medium leading-snug ${itemText}`}>
+                    <span className={`text-[14px] font-cabin  sm:text-[15px] md:text-[16px] font-medium leading-snug ${itemText}`}>
                       {item.document_name}
                     </span>
                   </div>

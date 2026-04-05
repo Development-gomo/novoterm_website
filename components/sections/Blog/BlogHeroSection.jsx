@@ -35,14 +35,14 @@ export default function BlogHeroSection({ section }) {
           className="font-heading  font-semibold text-white 
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
-              w-full  mx-auto sm:mx-0 mb-10"
+              w-full  mx-auto sm:mx-0 mb-1"
         >
           Varför är tekniska  <i className=" italic  font-merriweather">översättningar viktiga?</i>
         </h1>
 
 
         {/* DESCRIPTION */}
-        <div className="max-w-full sm:max-w-[611px] mt-6 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left sm:!justify-self-end">
+        <div className="max-w-full sm:max-w-[611px] mt-1 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left sm:!justify-self-end">
           <p className="font-body text-white/90
             text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
             leading-[24px]">
