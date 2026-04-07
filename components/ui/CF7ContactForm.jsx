@@ -121,8 +121,8 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             onChange={() => setType("company")}
             className="hidden"
           />
-          <span className="flex w-[16px] h-[16px] rounded-full bg-[#2655C4] items-center justify-center">
-            <span className={`w-[6px] h-[6px] rounded-full bg-white ${type === "company" ? "opacity-100" : "opacity-0"}`} />
+          <span className="flex w-[18px] h-[18px] rounded-full bg-[#2655C4] items-center justify-center">
+            <span className={`w-[10px] h-[10px] rounded-full bg-white ${type === "company" ? "opacity-100" : "opacity-0"}`} />
           </span>
           <span className="text-[13px] uppercase tracking-widest">
             {t("FÖRETAG", "BUSINESS")}
@@ -137,8 +137,8 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             onChange={() => setType("private")}
             className="hidden"
           />
-          <span className="flex w-[16px] h-[16px] rounded-full bg-[#2655C4] items-center justify-center">
-            <span className={`w-[6px] h-[6px] rounded-full bg-white ${type === "private" ? "opacity-100" : "opacity-0"}`} />
+          <span className="flex w-[18px] h-[18px] rounded-full bg-[#2655C4] items-center justify-center">
+            <span className={`w-[10px] h-[10px] rounded-full bg-white ${type === "private" ? "opacity-100" : "opacity-0"}`} />
           </span>
           <span className="text-[13px] uppercase tracking-widest">
             {t("PRIVATPERSON", "PRIVATE INDIVIDUAL")}

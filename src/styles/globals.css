@@ -181,7 +181,7 @@ font-family: Merriweather;
     margin-bottom: 50px;
 }
 
-.sticky-box {
+.sticky-box[style*="sticky"] {
   top: 80px !important;
 }
 .author-bio{

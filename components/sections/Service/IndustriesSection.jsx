@@ -94,13 +94,13 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
 
             </div>
  <div className="lg:mt-0 mt-30">
-              <div className="flex gap-3 justify-end  mt-[-92px] mb-[40px]">
-                <button className="industry-prev w-[48px] h-[48px] rounded-full bg-[#BBC8E1] flex items-center justify-center hover:bg-[#2655C4] hover:text-white transition">
+              <div className="flex gap-3 justify-end  mt-[-92px] mb-[40px] ">
+                <button className="industry-prev w-[48px] h-[48px] rounded-full cursor-pointer bg-[#BBC8E1] flex items-center justify-center hover:bg-[#2655C4] hover:text-white transition">
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
   <path d="M0 6.85713C0 6.69011 0.10663 6.46832 0.214822 6.3607L6.30999 0.225284C6.59457 -0.0534402 7.0556 -0.085742 7.38736 0.197133C7.68397 0.450016 7.69136 0.943219 7.41707 1.21783L2.52429 6.13518H15.2381C15.6589 6.13518 16 6.45833 16 6.85698C16 7.25563 15.6589 7.57883 15.2381 7.57883H2.52429L7.41707 12.4962C7.69132 12.7707 7.67186 13.2518 7.38736 13.5168C7.08699 13.7966 6.59023 13.7717 6.30999 13.4887L0.214822 7.35328C0.0357313 7.18687 0.0030098 7.02661 0 6.85713Z" fill="#E3EDFF"/>
 </svg>
                 </button>
-                <button className="industry-next w-[48px] h-[48px] rounded-full bg-[#2655C4] text-white flex items-center justify-center hover:bg-[#2655C4] transition">
+                <button className="industry-next w-[48px] h-[48px] rounded-full cursor-pointer bg-[#2655C4] text-white flex items-center justify-center hover:bg-[#2655C4] transition">
 
                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
   <rect width="48" height="48" rx="24" />

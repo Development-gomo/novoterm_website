@@ -125,7 +125,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
             <div className="sticky-box"
               style={{
                 position: stickyEnabled ? "sticky" : "relative",
-                top: stickyEnabled ? `${headerTop}px` : "0px !important",
+                ...(stickyEnabled ? { top: `${headerTop}px` } : {}),
                 height: `${SERVICE_HEADER_HEIGHT}px`,
                 background: "#D3DEF3",
                 zIndex: stickyEnabled ? 2000 + slot : 10,
