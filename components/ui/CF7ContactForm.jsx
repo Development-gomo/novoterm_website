@@ -121,8 +121,8 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             onChange={() => setType("company")}
             className="hidden"
           />
-          <span className="flex w-[18px] h-[18px] rounded-full bg-[#2655C4] items-center justify-center">
-            <span className={`w-[10px] h-[10px] rounded-full bg-white ${type === "company" ? "opacity-100" : "opacity-0"}`} />
+          <span className={`flex w-[18px] h-[18px] rounded-full flex-shrink-0 items-center justify-center ${type === "company" ? "bg-[#2655C4]" : "border-2 border-gray-400"}`}>
+            {type === "company" && <span className="w-[8px] h-[8px] rounded-full bg-white" />}
           </span>
           <span className="text-[13px] uppercase tracking-widest">
             {t("FÖRETAG", "BUSINESS")}
@@ -134,11 +134,14 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
           <input
             type="radio"
             checked={type === "private"}
-            onChange={() => setType("private")}
+            onChange={() => {
+              setType("private");
+              router.push(lang === "en" ? "/en/thankyou-private" : "/thank-you-private/");
+            }}
             className="hidden"
           />
-          <span className="flex w-[18px] h-[18px] rounded-full bg-[#2655C4] items-center justify-center">
-            <span className={`w-[10px] h-[10px] rounded-full bg-white ${type === "private" ? "opacity-100" : "opacity-0"}`} />
+          <span className={`flex w-[18px] h-[18px] rounded-full flex-shrink-0 items-center justify-center ${type === "private" ? "bg-[#2655C4]" : "border-2 border-gray-400"}`}>
+            {type === "private" && <span className="w-[8px] h-[8px] rounded-full bg-white" />}
           </span>
           <span className="text-[13px] uppercase tracking-widest">
             {t("PRIVATPERSON", "PRIVATE INDIVIDUAL")}
@@ -260,21 +263,13 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
         {Object.keys(errors).length > 0 && (
           <p className="text-red-500 text-[13px] mb-3">{Object.values(errors).find(Boolean)}</p>
         )}
-        {type === "company" ? (
+        {type === "company" && (
           <button
             type="submit"
             disabled={loading}
             className="btn-primary cursor-pointer disabled:opacity-50"
           >
             {loading ? (lang === "sv" ? "Skickar..." : "Sending...") : t("SKICKA", "Submit")}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => router.push(lang === "en" ? "/en/thankyou-private" : "/thank-you-private/")}
-            className="btn-primary cursor-pointer"
-          >
-            {t("SKICKA", "Submit")}
           </button>
         )}
 

@@ -60,7 +60,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
 
   return (
     <section id={sectionId} className="relative w-full overflow-clip bg-[#E3EDFF]">
-      <div className="web-width mx-auto px-6 md:px-0">
+      <div className="web-width mx-auto py-6 px-6 md:px-0 md:py-0">
         {/* ================= 15 / 85 WRAPPER ================= */}
         <div className="flex flex-col lg:flex-row">
 
@@ -115,9 +115,9 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
         return (
           <section
             key={i}
-            className="relative"
+            className="relative pb-0 md:pb-25"
             style={{
-              minHeight: isMobile ? "auto" : "80vh",
+              minHeight: isMobile ? "auto" : "",
               width: isLg ? 'calc(100% + max(0px, (100vw - 1280px) / 2))' : undefined,
             }}
           >
@@ -157,7 +157,9 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  backgroundImage: `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%), url(${bgUrl})`,
+                  backgroundImage: isMobile
+                    ? `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.59) 60%, rgba(6,24,55,0.57) 100%), url(${bgUrl})`
+                    : `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%), url(${bgUrl})`,
                   backgroundSize: "cover",
                   backgroundPosition: "top center",
                   zIndex: 1,
