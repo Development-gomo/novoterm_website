@@ -58,7 +58,7 @@ export default function InnerHeroSection({ section, sectionId }) {
             <div
               className="font-body text-white/90
                 text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
-                leading-[24px] mb-[20px] sm:mb-[24px]"
+                leading-[24px] my-[10px] md:my-[24px]"
               dangerouslySetInnerHTML={{ __html: sub_heading }}
             />
           )}

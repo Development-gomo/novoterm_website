@@ -11,6 +11,7 @@ import {
   DEFAULT_LANG,
 } from "../../lib/api";
 
+import Script from "next/script";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
@@ -145,6 +146,20 @@ export default function MyApp({
   }, [lang, initialHamburgerMenu]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
+    <>
+      <Script
+        id="gtm-script"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: `
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PMXNC6T');
+          `,
+        }}
+      />
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} ${archivo.variable}`}>
       {headerData && (
         <Header
@@ -157,6 +172,7 @@ export default function MyApp({
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
     </div>
+    </>
   );
 }
 

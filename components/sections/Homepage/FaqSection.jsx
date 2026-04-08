@@ -115,7 +115,7 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
                       {title}
                     </span>
 
-                    <span className="flex-shrink-0 w-[32px] h-[32px] rounded-full bg-[#2655C4] text-white flex items-center justify-center text-[18px]">
+                    <span className="flex-shrink-0 w-[32px] h-[32px] cursor-pointer rounded-full bg-[#2655C4] text-white flex items-center justify-center text-[18px]">
                       {isOpen ? (
                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
                             <path fillRule="evenodd" clipRule="evenodd" d="M0.532143 7C-0.177381 7 -0.177381 8.07798 0.532143 8.07798H13.4679C14.1774 8.07798 14.1774 7 13.4679 7H0.532143Z" fill="white"/>

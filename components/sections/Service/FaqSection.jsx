@@ -153,7 +153,7 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
                           w-[32px] h-[32px]
                           sm:w-[32px] sm:h-[32px]
                           rounded-full
-                          bg-[#2655C4]
+                          bg-[#2655C4] cursor-pointer
                           flex items-center justify-center
                         "
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

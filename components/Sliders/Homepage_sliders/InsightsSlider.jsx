@@ -13,6 +13,8 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
 
   if (!slides || !Array.isArray(slides)) return null;
 
+  const limitedSlides = slides.slice(0, 6);
+
   return (
     <div className="relative w-full mt-25 lg:mt-12 min-h-[420px]">
       <Swiper
@@ -39,7 +41,7 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
         onSwiper={setSwiperInstance}
         className="w-full [&>.swiper-wrapper]:items-stretch"
       >
-        {slides.map((slide, index) => {
+        {limitedSlides.map((slide, index) => {
           // Localize date
           let dateLocale = lang === "en" ? "en-US" : "sv-SE";
           let formattedDate = "";

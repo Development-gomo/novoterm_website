@@ -1,68 +1,69 @@
 
-/* ===================== HOMEPAGE ===================== */
-import HomeHeroFinal from "./sections/Homepage/homeherofinal";
-import HeroSection from "./sections/Homepage/HeroSection";
-import AboutSection from "./sections/Homepage/AboutSection";
-import FullWidthExpertsSection from "./sections/Homepage/FullWidthExpertsSection";
-import CaseStudySection from "./sections/Homepage/CaseStudySection";
-import DocumentTypeSection from "./sections/Homepage/DocumentTypeSection";
-import WhyChooseUsSection from "./sections/Homepage/WhyChooseUsSection";
-import InsightsSection from "./sections/Homepage/InsightsSection";
-import ServicesSection from "./sections/Homepage/ServicesSection";
-import HomepageFaqSection from "./sections/Homepage/FaqSection";
-import ArticlesSection from "./sections/Homepage/ArticlesSection";
-import FullContentSection from "./sections/Homepage/FullContentSection";
-import NewHomeBanner from "./sections/Homepage/NewBanner";
-import NewHomeBannerText from "./sections/Homepage/newbannertext";
+import dynamic from "next/dynamic";
 
+/* ===================== HOMEPAGE ===================== */
+const HomeHeroFinal = dynamic(() => import("./sections/Homepage/homeherofinal"));
+const HeroSection = dynamic(() => import("./sections/Homepage/HeroSection"));
+const AboutSection = dynamic(() => import("./sections/Homepage/AboutSection"));
+const FullWidthExpertsSection = dynamic(() => import("./sections/Homepage/FullWidthExpertsSection"));
+const CaseStudySection = dynamic(() => import("./sections/Homepage/CaseStudySection"));
+const DocumentTypeSection = dynamic(() => import("./sections/Homepage/DocumentTypeSection"));
+const WhyChooseUsSection = dynamic(() => import("./sections/Homepage/WhyChooseUsSection"));
+const InsightsSection = dynamic(() => import("./sections/Homepage/InsightsSection"));
+const ServicesSection = dynamic(() => import("./sections/Homepage/ServicesSection"));
+const HomepageFaqSection = dynamic(() => import("./sections/Homepage/FaqSection"));
+const ArticlesSection = dynamic(() => import("./sections/Homepage/ArticlesSection"));
+const FullContentSection = dynamic(() => import("./sections/Homepage/FullContentSection"));
+const NewHomeBanner = dynamic(() => import("./sections/Homepage/NewBanner"));
+const NewHomeBannerText = dynamic(() => import("./sections/Homepage/newbannertext"));
 
 /* ===================== SERVICE PAGE ===================== */
-import ServicesHeroSection from "./sections/Service/ServicesHeroSection";
-import ServiceIntroFrontend from "./sections/Service/ServiceIntroSection";
-import TranslationMethodsSection from "./sections/Service/TranslationMethodsSection";
-import BenefitsSection from "./sections/Service/BenefitsSection";
-import OurApproachSection from "./sections/Service/OurApproachSection";
-import ContactSection from "./sections/Service/ContactSection";
-import FaqSection from "./sections/Service/FaqSection";
-import IndustriesSection from "./sections/Service/IndustriesSection";
-import ServiceCaseStudySection from "./sections/Service/ServiceCaseStudySection";
-import InnerDocumentTypeSection from "./sections/Service/InnerDocumentTypeSection";
-import InnerServiceSection from "./sections/Service/InnerServiceSection";
-import InnerWhyChooseUsSection from "./sections/Service/InnerWhyChooseUsSection";
+const ServicesHeroSection = dynamic(() => import("./sections/Service/ServicesHeroSection"));
+const ServiceIntroFrontend = dynamic(() => import("./sections/Service/ServiceIntroSection"));
+const TranslationMethodsSection = dynamic(() => import("./sections/Service/TranslationMethodsSection"));
+const BenefitsSection = dynamic(() => import("./sections/Service/BenefitsSection"));
+const OurApproachSection = dynamic(() => import("./sections/Service/OurApproachSection"));
+const ContactSection = dynamic(() => import("./sections/Service/ContactSection"));
+const FaqSection = dynamic(() => import("./sections/Service/FaqSection"));
+const IndustriesSection = dynamic(() => import("./sections/Service/IndustriesSection"));
+const ServiceCaseStudySection = dynamic(() => import("./sections/Service/ServiceCaseStudySection"));
+const InnerDocumentTypeSection = dynamic(() => import("./sections/Service/InnerDocumentTypeSection"));
+const InnerServiceSection = dynamic(() => import("./sections/Service/InnerServiceSection"));
+const InnerWhyChooseUsSection = dynamic(() => import("./sections/Service/InnerWhyChooseUsSection"));
 
 /* ===================== CASE STUDY PAGE ===================== */
-import CaseStudyHeroSection from "./sections/CaseStudy/CaseStudyHeroSection";
-import CaseStudyIntroductionSection from "./sections/CaseStudy/CaseStudyIntroductionSection";
-import CaseStudyChallengeSection from "./sections/CaseStudy/CaseStudyChallengeSection";
-import CaseStudySolutionSection from "./sections/CaseStudy/CaseStudySolutionSection";
-import CaseStudyResultsSection from "./sections/CaseStudy/CaseStudyResultsSection";
-import CaseStudyTestimonialSection from "./sections/CaseStudy/CaseStudyTestimonialSection";
-import CaseStudyRelatedSection from "./sections/CaseStudy/CaseStudyRelatedSection";
-import CaseStudyExampleSection from "./sections/CaseStudy/CaseStudyExampleSection";
-import CaseStudyAboutSection from "./sections/CaseStudy/CaseStudyAboutSection";
+const CaseStudyHeroSection = dynamic(() => import("./sections/CaseStudy/CaseStudyHeroSection"));
+const CaseStudyIntroductionSection = dynamic(() => import("./sections/CaseStudy/CaseStudyIntroductionSection"));
+const CaseStudyChallengeSection = dynamic(() => import("./sections/CaseStudy/CaseStudyChallengeSection"));
+const CaseStudySolutionSection = dynamic(() => import("./sections/CaseStudy/CaseStudySolutionSection"));
+const CaseStudyResultsSection = dynamic(() => import("./sections/CaseStudy/CaseStudyResultsSection"));
+const CaseStudyTestimonialSection = dynamic(() => import("./sections/CaseStudy/CaseStudyTestimonialSection"));
+const CaseStudyRelatedSection = dynamic(() => import("./sections/CaseStudy/CaseStudyRelatedSection"));
+const CaseStudyExampleSection = dynamic(() => import("./sections/CaseStudy/CaseStudyExampleSection"));
+const CaseStudyAboutSection = dynamic(() => import("./sections/CaseStudy/CaseStudyAboutSection"));
 
 /* ===================== ABOUT US PAGE ===================== */
-import InnerHeroSection from "./sections/AboutUs/InnerHeroSection";
-import TeamSection from "./sections/AboutUs/TeamSection";
-import PhilosophySection from "./sections/AboutUs/PhilosophySection";
-import LeadershipMessageSection from "./sections/AboutUs/LeadershipMessageSection";
-import HistorySection from "./sections/AboutUs/HistorySection";
-import ExpertsCTASection from "./sections/AboutUs/ExpertsCTASection";
+const InnerHeroSection = dynamic(() => import("./sections/AboutUs/InnerHeroSection"));
+const TeamSection = dynamic(() => import("./sections/AboutUs/TeamSection"));
+const PhilosophySection = dynamic(() => import("./sections/AboutUs/PhilosophySection"));
+const LeadershipMessageSection = dynamic(() => import("./sections/AboutUs/LeadershipMessageSection"));
+const HistorySection = dynamic(() => import("./sections/AboutUs/HistorySection"));
+const ExpertsCTASection = dynamic(() => import("./sections/AboutUs/ExpertsCTASection"));
 
 /* ===================== BLOG PAGE ===================== */
-import BlogContentSection from "./sections/Blog/BlogContentSection";
+const BlogContentSection = dynamic(() => import("./sections/Blog/BlogContentSection"));
 
 /* ===================== CONTACT PAGE ===================== */
-import ContactHeroSection from "./sections/Contact/ContactHeroSection";
+const ContactHeroSection = dynamic(() => import("./sections/Contact/ContactHeroSection"));
 
 /* ===================== INDUSTRY PAGE ===================== */
-import IndustryHeroSection from "./sections/Industry/IndustryHeroSection";
-import IndustryIntroSection from "./sections/Industry/ServiceIntroFrontend";
-import IndustrySpecialHeading from "./sections/Industry/IndustrySpecialHeading";
-import IconBoxSection from "./sections/Industry/IconBoxSection";
-import NumberDocumentsSection from "./sections/Industry/NumberDocumentsSection";
-import ServiceSliderSection from "./sections/Industry/ServiceSliderSection";
-import IndustryInsightsSection from "./sections/Industry/IndustryInsightsSection";
+const IndustryHeroSection = dynamic(() => import("./sections/Industry/IndustryHeroSection"));
+const IndustryIntroSection = dynamic(() => import("./sections/Industry/ServiceIntroFrontend"));
+const IndustrySpecialHeading = dynamic(() => import("./sections/Industry/IndustrySpecialHeading"));
+const IconBoxSection = dynamic(() => import("./sections/Industry/IconBoxSection"));
+const NumberDocumentsSection = dynamic(() => import("./sections/Industry/NumberDocumentsSection"));
+const ServiceSliderSection = dynamic(() => import("./sections/Industry/ServiceSliderSection"));
+const IndustryInsightsSection = dynamic(() => import("./sections/Industry/IndustryInsightsSection"));
 
 
 

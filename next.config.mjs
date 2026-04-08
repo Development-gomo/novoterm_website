@@ -4,6 +4,10 @@ const WP_URL = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, '') || '';
 const nextConfig = {
   reactStrictMode: true,
 
+  experimental: {
+    optimizePackageImports: ["swiper", "gsap", "framer-motion"],
+  },
+
   // Add the i18n (internationalization) configuration for multilingual support
   i18n: {
     locales: ['sv', 'en'],
