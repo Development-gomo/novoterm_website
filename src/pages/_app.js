@@ -15,6 +15,7 @@ import Script from "next/script";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
 
@@ -173,6 +174,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
       <SpeedInsights />
+      <Analytics />
     </div>
     </>
   );
