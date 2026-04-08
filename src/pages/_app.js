@@ -29,6 +29,7 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-montserrat",
+  display: "swap",
 });
 
 const merriweather = Merriweather({
@@ -43,6 +44,7 @@ const cabin = Cabin({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-cabin",
+  display: "swap",
 });
 
 function buildHeaderData(header, menu) {

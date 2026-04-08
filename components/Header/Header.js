@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Dropdown from "./Dropdown";
 import LanguageSwitcher from "./LanguageSwitcher";
 import MegaMenu from "./MegaMenu";
@@ -98,10 +99,16 @@ export default function Header({
 
         {/* Logo */}
         <Link href="/" className="shrink-0">
-          <img
-            src={logo}  className="h-7 md:h-[30px] lg:h-8"
-            alt="Novoterm Logo"
-          />
+          {logo && (
+            <Image
+              src={logo}
+              alt="Novoterm Logo"
+              width={186}
+              height={32}
+              className="h-7 md:h-[30px] lg:h-8 w-auto"
+              priority
+            />
+          )}
         </Link>
 
         {/* Desktop MegaMenu Navigation */}
