@@ -12,7 +12,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ["novoterm.se"],
+    domains: ["backend.novoterm.se"],
   },
 
   async rewrites() {
