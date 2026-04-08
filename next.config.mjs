@@ -12,7 +12,7 @@ const nextConfig = {
   },
 
   images: {
-    domains: ["gomostaging.com"],
+    domains: ["novoterm.se"],
   },
 
   async rewrites() {
