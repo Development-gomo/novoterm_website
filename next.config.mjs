@@ -16,7 +16,13 @@ const nextConfig = {
   },
 
   images: {
-    domains: ["backend.novoterm.se"],
+    formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "backend.novoterm.se",
+      },
+    ],
   },
 
   async rewrites() {

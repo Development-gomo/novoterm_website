@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
 
@@ -102,13 +103,15 @@ export default function AboutSection({
             {/* RIGHT SIDE IMAGE */}
             <div className="md:w-[80%]">
               {imgUrl && (
-                <img
-                  src={imgUrl}
-                  alt={image?.alt || "About image"}
-                  className="
-                    rounded-[3px] w-full h-auto object-cover lg:h-[424px]"
-                  style={{ aspectRatio: "3 / 2" }}
-                />
+                <div className="relative w-full rounded-[3px] overflow-hidden" style={{ aspectRatio: "3 / 2" }}>
+                  <Image
+                    src={imgUrl}
+                    alt={image?.alt || "About image"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    className="object-cover"
+                  />
+                </div>
               )}
             </div>
           </div>
