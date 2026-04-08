@@ -25,7 +25,7 @@ export default function CF7ContactForm({ formId: propFormId }) {
   // Optionally fetch form structure if your API supports it
   // useEffect(() => {
   //   async function fetchFields() {
-  //     const res = await fetch(`https://gomostaging.com/novoterm-headless//wp-json/custom-cf7/v1/forms/${formId}`);
+  //     const res = await fetch(`${process.env.NEXT_PUBLIC_WP_URL}/wp-json/custom-cf7/v1/forms/${formId}`);
   //     const data = await res.json();
   //     setFields(data.fields || []);
   //   }
@@ -51,7 +51,7 @@ export default function CF7ContactForm({ formId: propFormId }) {
     setResult(null);
     setError(null);
     try {
-      const res = await fetch(`https://gomostaging.com/novoterm-headless//wp-json/custom-cf7/v1/forms/${formId}/submit`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_WP_URL}/wp-json/custom-cf7/v1/forms/${formId}/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

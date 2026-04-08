@@ -14,7 +14,14 @@ import {
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 
-import { Montserrat, Cabin, Merriweather } from "next/font/google";
+import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
+
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-archivo",
+  display: "swap",
+});
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -138,7 +145,7 @@ export default function MyApp({
   }, [lang, initialHamburgerMenu]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
+    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} ${archivo.variable}`}>
       {headerData && (
         <Header
           {...headerData}
