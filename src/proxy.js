@@ -71,66 +71,66 @@ function matchRedirect(redirects, pathname) {
 
 // ─── Proxy (Next.js 16 convention, replaces middleware) ──────────────────────
 export async function proxy(request) {
-  const url = request.nextUrl;
-  const { pathname, origin } = url;
+  try {
+    const url = request.nextUrl;
+    const { origin } = url;
 
-  // Next.js i18n strips locale from pathname and sets it on nextUrl.locale
-  // e.g. /en/old-page → pathname="/old-page", locale="en"
-  const rawPath = new URL(request.url).pathname;
-  const firstSegment = rawPath.split("/")[1] || "";
-  const lang = url.locale
-    || (SUPPORTED_LANGS.includes(firstSegment) ? firstSegment : DEFAULT_LANG);
-  const isNonDefaultLocale = lang !== DEFAULT_LANG;
+    // In Next.js 16, nextUrl.locale may not exist.
+    // Detect locale from the raw URL path instead.
+    const rawPath = new URL(request.url).pathname;
+    const firstSegment = rawPath.split("/")[1] || "";
+    const lang = SUPPORTED_LANGS.includes(firstSegment)
+      ? firstSegment
+      : DEFAULT_LANG;
+    const isNonDefaultLocale = lang !== DEFAULT_LANG;
 
-  // Build paths to try matching against:
-  // 1. Base path (no locale prefix): /about
-  // 2. Locale-prefixed path: /en/about  (only for non-default locale)
-  // 3. Raw URL path (in case Next.js didn't strip locale)
-  const basePath = pathname;
-  const localePrefixedPath = isNonDefaultLocale
-    ? `/${lang}${basePath === "/" ? "" : basePath}`
-    : null;
-      
+    // Next.js i18n strips the locale prefix from nextUrl.pathname
+    // So for /en/about: nextUrl.pathname = "/about", rawPath = "/en/about"
+    // For /hallbarhet: nextUrl.pathname = "/hallbarhet", rawPath = "/hallbarhet"
+    const strippedPath = isNonDefaultLocale
+      ? rawPath.replace(new RegExp(`^/${lang}`), "") || "/"
+      : rawPath;
 
-  // 1. Check WordPress redirects
-  const redirects = await getRedirects(origin);
+    // 1. Check WordPress redirects
+    const redirects = await getRedirects(origin);
 
-  // Try base path first, then locale-prefixed, then raw path
-  let hit = matchRedirect(redirects, basePath);
-  if (!hit && localePrefixedPath) {
-    hit = matchRedirect(redirects, localePrefixedPath);
-  }
-  if (!hit && rawPath !== basePath && rawPath !== localePrefixedPath) {
-    hit = matchRedirect(redirects, rawPath);
-  }
-
-  if (hit) {
-    let dest;
-
-    if (hit.destination.startsWith("http")) {
-      // Absolute URL — redirect as-is
-      dest = new URL(hit.destination);
-    } else {
-      // Check if destination already includes the locale prefix
-      const destHasLocale = isNonDefaultLocale
-        && hit.destination.startsWith(`/${lang}/`);
-
-      if (isNonDefaultLocale && !destHasLocale) {
-        // Relative destination without locale — prepend locale prefix
-        const localeDest = `/${lang}${hit.destination.startsWith("/") ? "" : "/"}${hit.destination}`;
-        dest = new URL(localeDest, origin);
-      } else {
-        dest = new URL(hit.destination, origin);
-      }
+    // WP stores some rules with locale prefix (/en/about) and some without (/hallbarhet)
+    // Try both: stripped path first, then full raw path
+    let hit = matchRedirect(redirects, strippedPath);
+    if (!hit && isNonDefaultLocale) {
+      hit = matchRedirect(redirects, rawPath);
     }
 
-    return NextResponse.redirect(dest, { status: hit.code });
-  }
+    if (hit) {
+      let dest;
 
-  // 2. Pass through — set x-lang header for root layout
-  const response = NextResponse.next();
-  response.headers.set("x-lang", lang);
-  return response;
+      if (hit.destination.startsWith("http")) {
+        dest = new URL(hit.destination);
+      } else {
+        // Check if destination already has the locale prefix
+        const destHasLocale =
+          isNonDefaultLocale && hit.destination.startsWith(`/${lang}/`);
+
+        if (isNonDefaultLocale && !destHasLocale) {
+          const localeDest = `/${lang}${hit.destination.startsWith("/") ? "" : "/"}${hit.destination}`;
+          dest = new URL(localeDest, origin);
+        } else {
+          dest = new URL(hit.destination, origin);
+        }
+      }
+
+      return NextResponse.redirect(dest, { status: hit.code });
+    }
+
+    // 2. Pass through — set x-lang header for root layout
+    const response = NextResponse.next();
+    response.headers.set("x-lang", lang);
+    return response;
+  } catch (err) {
+    // Never crash the proxy — let the request through on error
+    console.error("[proxy] Error:", err.message);
+    return NextResponse.next();
+  }
 }
 
 export const config = {
