@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { wpToPath, DEFAULT_LANG } from "../../lib/api";
 
@@ -47,7 +48,7 @@ export default function MobileMenu({ menu = [], logo }) {
           {/* Drawer Header */}
           <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
             {logo ? (
-              <img src={logo} alt="Logo" className="h-7" />
+              <Image src={logo} alt="Logo" width={120} height={28} className="h-7 w-auto" />
             ) : (
               <span className="text-xl font-semibold">Menu</span>
             )}

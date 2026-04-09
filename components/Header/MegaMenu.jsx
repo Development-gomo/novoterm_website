@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function MegaMenu({ menuData, logo, mobileMode = false }) {
   const [activeIdx, setActiveIdx] = useState(null);
@@ -105,7 +106,7 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
             {/* Drawer Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 flex-shrink-0">
               {logo ? (
-                <img src={logo} alt="Logo" className="h-7" />
+                <Image src={logo} alt="Logo" width={120} height={28} className="h-7 w-auto" />
               ) : (
                 <span className="text-xl font-semibold">Menu</span>
               )}
@@ -488,10 +489,12 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                       className="flex-shrink-0 relative"
                       style={{ width: `${imageWidth}px`, minHeight: '200px' }}
                     >
-                      <img
+                      <Image
                         src={menu.side_image}
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        sizes="300px"
+                        className="object-cover"
                       />
                     </div>
                   )}

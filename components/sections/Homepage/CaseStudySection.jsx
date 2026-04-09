@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
 import DotIndicator from "../../ui/DotIndicator";
@@ -95,8 +96,8 @@ export default function CaseStudySection({
             {slides.map((slide, i) => (
               <div key={i} className="rounded-[3px] overflow-hidden bg-[#061837] flex flex-col">
                 {/* IMAGE */}
-                <div className="h-[180px] w-full flex-shrink-0">
-                  <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+                <div className="relative h-[180px] w-full flex-shrink-0">
+                  <Image src={slide.image} alt={slide.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                 </div>
                 {/* CONTENT */}
                 <div className="p-[24px] flex flex-col flex-1">

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const formatLabel = (layout) => {
   if (!layout) return null;
   return layout
@@ -73,9 +75,12 @@ export default function CaseStudyAboutSection({ section, sectionId, index = 0 })
               {/* IMAGE */}
               {imageUrl && (
                 <div className="w-full max-w-[380px] lg:max-w-[400px] flex-shrink-0">
-                  <img
+                  <Image
                     src={imageUrl}
                     alt={heading || ""}
+                    width={400}
+                    height={300}
+                    sizes="(max-width: 768px) 100vw, 400px"
                     className="w-full h-auto rounded-[3px] block"
                   />
 

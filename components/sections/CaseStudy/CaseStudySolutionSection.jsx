@@ -1,3 +1,4 @@
+import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 
 const formatLabel = (layout) => {
@@ -79,9 +80,11 @@ export default function CaseStudySolutionSection({
                     flex items-center justify-center rounded-full border border-[#061837]
                     mb-[40px] sm:mb-[62px]"
                   >
-                    <img
+                    <Image
                       src={item.icon?.url || item.icon}
                       alt=""
+                      width={28}
+                      height={28}
                       className="w-[24px] h-[24px] sm:w-[28px] sm:h-[28px]"
                     />
                   </div>

@@ -304,10 +304,12 @@ export default function Header({
                 </div>
               </div>
               {/* Decorative circle bottom right */}
-              <img
+              <Image
                 src="/hamburger_menu_logo.png"
                 alt="Hamburger Menu Logo"
-                className="absolute bottom-0 right-0 w-[331px] h-[408px] object-contan"
+                width={331}
+                height={408}
+                className="absolute bottom-0 right-0 object-contain"
                 style={{ zIndex: 1 }}
               />
             </div>

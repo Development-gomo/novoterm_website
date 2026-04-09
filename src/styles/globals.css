@@ -73,24 +73,24 @@ h6 { font-size: 1rem; } */
 .case-study-hero em {
  color: #FFF;
 text-transform: lowercase !important;
-font-family: Merriweather;
+font-family: var(--font-merriweather), serif;
 font-size: 80px !important;
 font-style: italic;
 font-weight: 400 !important;
 line-height: 90px; /* 112.5% */
 }
 .case-study-intro-heading em { 
-font-family: Merriweather;
+font-family: var(--font-merriweather), serif;
 }
 .font-heading em { 
-font-family: Merriweather;
+font-family: var(--font-merriweather), serif;
 }
 .btn-primary {
   @apply relative inline-flex items-center justify-center h-[48px] pt-[15px] pr-[32px] pb-[15px] pl-[22px]
          bg-[#2655c4] text-white text-sm font-medium rounded-[2px]
          border border-transparent
          transition-all duration-300 z-[20];
-  font-family: "Montserrat", sans-serif !important;
+  font-family: var(--font-montserrat), sans-serif !important;
   overflow: hidden;
   -webkit-mask-image: radial-gradient(circle 21px at calc(100% + -3px) calc(100% + -3px), transparent 21px, black 22px);
   mask-image: radial-gradient(circle 21px at calc(100% + -3px) calc(100% + -3px), transparent 21px, black 22px);
@@ -112,7 +112,7 @@ font-family: Merriweather;
   z-index: -1;
 }
 .menu-font span{
-  font-family: "montserrat", sans-serif !important;
+  font-family: var(--font-montserrat), sans-serif !important;
   font-weight: 400 !important;
   font-size: 14px !important;
   cursor: pointer;

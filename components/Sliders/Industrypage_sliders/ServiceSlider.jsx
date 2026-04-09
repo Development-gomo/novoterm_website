@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
+import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
@@ -72,11 +73,13 @@ export default function ServiceSlider({ slides = [], isDark = false }) {
             >
               {/* FEATURED IMAGE */}
               {service.bg && (
-                <div className="w-full h-[200px] overflow-hidden shrink-0">
-                  <img
+                <div className="relative w-full h-[200px] overflow-hidden shrink-0">
+                  <Image
                     src={service.bg}
                     alt={service.heading}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               )}

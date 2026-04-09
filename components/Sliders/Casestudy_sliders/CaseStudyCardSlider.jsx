@@ -4,6 +4,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
@@ -57,8 +58,8 @@ export default function CaseStudyCardSlider({ slides }) {
             <div className="h-full rounded-[3px] overflow-hidden bg-[#061837] flex flex-col">
 
               {/* IMAGE */}
-              <div className="h-[180px] w-full flex-shrink-0">
-                <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+              <div className="relative h-[180px] w-full flex-shrink-0">
+                <Image src={slide.image} alt={slide.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
               </div>
 
               {/* CONTENT */}

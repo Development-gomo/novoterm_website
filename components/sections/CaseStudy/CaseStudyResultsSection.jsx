@@ -1,3 +1,4 @@
+import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 
 const formatLabel = (layout) => {
@@ -85,9 +86,12 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
             {/* RIGHT COLUMN: IMAGE or CARD */}
             {result_column === "image" && result_image && (
               <div className="w-full max-w-full sm:max-w-[360px] flex items-center justify-center">
-                <img
+                <Image
                   src={result_image?.url || result_image}
                   alt="Result"
+                  width={360}
+                  height={270}
+                  sizes="360px"
                   className="w-full h-auto rounded-[3px] object-contain"
                 />
               </div>
@@ -97,7 +101,7 @@ export default function CaseStudyResultsSection({ section, sectionId, index = 0 
               <div className="w-full max-w-full sm:max-w-[360px] bg-[#2655C4] rounded-[3px] p-[24px] sm:p-[32px] text-white">
                 {highlight.icon && (
                   <div className="w-[40px] h-[40px] flex items-center justify-center rounded-full border border-white mb-[32px]">
-                    <img src={highlight.icon?.url || highlight.icon} alt="" className="w-[24px] h-[24px]" />
+                    <Image src={highlight.icon?.url || highlight.icon} alt="" width={24} height={24} />
                   </div>
                 )}
                 {highlight.metric && (

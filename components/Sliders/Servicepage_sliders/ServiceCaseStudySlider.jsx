@@ -4,6 +4,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
@@ -93,11 +94,13 @@ export default function ServiceCaseStudySlider({ slides }) {
 
             {/* RIGHT SIDE — IMAGE */}
             <div className="flex items-center justify-end p-4">
-              <div className="w-[370px] h-[370px] overflow-hidden rounded-[3px] bg-white">
-                <img
+              <div className="relative w-[370px] h-[370px] overflow-hidden rounded-[3px] bg-white">
+                <Image
                   src={slide.cs_image}
-                  alt={slide.review_heading}
-                  className="w-full h-full object-cover"
+                  alt={slide.review_heading || ""}
+                  fill
+                  sizes="370px"
+                  className="object-cover"
                 />
               </div>
             </div>

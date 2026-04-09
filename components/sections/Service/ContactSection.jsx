@@ -1,4 +1,5 @@
 
+import Image from "next/image";
 import CF7ContactForm from "../../ui/CF7ContactForm";
 
 /**
@@ -92,15 +93,13 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
               {/* IMAGE */}
               {imageUrl && (
                 <div className="w-full lg:w-[46%]">
-                  <img
+                  <Image
                     src={imageUrl}
                     alt="Contact"
-                    className="
-                      rounded-[3px]
-                      w-[520px]
-                      h-[630px]
-                      object-cover object-top
-                    "
+                    width={520}
+                    height={630}
+                    sizes="(max-width: 1024px) 100vw, 520px"
+                    className="rounded-[3px] w-full h-auto object-cover object-top"
                   />
                 </div>
               )}
