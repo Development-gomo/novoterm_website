@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import { pickWpImageUrl } from "../../../lib/wpImage";
-import HeroImagePreload from "../../SEO/HeroImagePreload";
+
+const HERO_QUALITY = 72;
 
 export default function NewHomeBanner({ block, sectionId }) {
   const sceneRef = useRef(null);
@@ -10,7 +12,7 @@ export default function NewHomeBanner({ block, sectionId }) {
 
   const getImageUrl = (img) => {
     if (!img) return undefined;
-    const u = pickWpImageUrl(img, "hero");
+    const u = pickWpImageUrl(img, "heroNext");
     return u || undefined;
   };
 
@@ -18,7 +20,6 @@ export default function NewHomeBanner({ block, sectionId }) {
   const english = getImageUrl(block?.english_image);
   const size = parseInt(block?.circle_size) || 200;
 
-  // ✅ RELIABLE LANGUAGE DETECTION
   const isEnglish =
     block?.lang === "en" ||
     block?.locale?.startsWith("en") ||
@@ -89,27 +90,42 @@ export default function NewHomeBanner({ block, sectionId }) {
   if (!foregroundImage || !revealImage) return null;
 
   return (
-    <>
-      <HeroImagePreload href={foregroundImage} />
     <div
       id={sectionId}
       ref={sceneRef}
       className="relative w-full h-[500px] md:h-screen overflow-hidden"
       style={{ cursor: "none" }}
     >
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${foregroundImage})` }}
-      />
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={foregroundImage}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+          quality={HERO_QUALITY}
+          className="object-cover object-center"
+        />
+      </div>
 
       <div
         ref={revealRef}
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 z-10"
         style={{
-          backgroundImage: `url(${revealImage})`,
           clipPath: `circle(${size}px at 50% 50%)`,
         }}
-      />
+      >
+        <Image
+          src={revealImage}
+          alt=""
+          fill
+          sizes="100vw"
+          quality={HERO_QUALITY}
+          loading="lazy"
+          className="object-cover object-center"
+        />
+      </div>
 
       <div
         ref={circleRef}
@@ -125,6 +141,5 @@ export default function NewHomeBanner({ block, sectionId }) {
         }}
       />
     </div>
-    </>
   );
 }

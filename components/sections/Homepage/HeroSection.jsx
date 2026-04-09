@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
-import HeroImagePreload from "../../SEO/HeroImagePreload";
+
+const HERO_QUALITY = 72;
 
 export default function HeroSection({
   background_image,
@@ -10,21 +12,36 @@ export default function HeroSection({
   button_text = "",
   button_link = "#",
 }) {
-  const bgUrl = pickWpImageUrl(background_image, "hero");
+  const bgUrl = pickWpImageUrl(background_image, "heroNext");
 
   return (
-    <>
-      <HeroImagePreload href={bgUrl} />
-    <section
-      className="relative w-full min-h-screen flex items-center overflow-hidden"
-      style={{
-        backgroundImage: `linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%), url(${bgUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center center", 
-      }}
-    >
+    <section className="relative w-full min-h-screen flex items-center overflow-hidden">
+      {bgUrl ? (
+        <>
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={bgUrl}
+              alt=""
+              fill
+              priority
+              fetchPriority="high"
+              sizes="100vw"
+              quality={HERO_QUALITY}
+              className="object-cover object-center"
+            />
+          </div>
+          <div
+            className="absolute inset-0 z-[1] pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%)",
+            }}
+          />
+        </>
+      ) : null}
+
       {/* CONTENT WRAPPER */}
-      <div className="relative min-h-[100vh] web-width px-6 py-24 lg:py-36 lg:px-48 h-full flex flex-col items-start justify-center lg:justify-start">
+      <div className="relative z-10 min-h-[100vh] web-width px-6 py-24 lg:py-36 lg:px-48 h-full w-full flex flex-col items-start justify-center lg:justify-start">
 
         {/* BLOCK 1 – heading from ACF */}
         <div className="text-left">
@@ -56,8 +73,7 @@ export default function HeroSection({
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 w-full h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-[#061837] to-transparent" />
+      <div className="absolute bottom-0 left-0 z-[2] w-full h-32 sm:h-40 lg:h-48 bg-gradient-to-t from-[#061837] to-transparent pointer-events-none" />
     </section>
-    </>
   );
 }
