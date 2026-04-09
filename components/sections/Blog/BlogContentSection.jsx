@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
@@ -47,7 +48,7 @@ export default function BlogContentSection({ section }) {
     slug,
   } = section || {};
 
-  const bgUrl = pickWpImageUrl(featured_image, "hero");
+  const bgUrl = pickWpImageUrl(featured_image, "heroNext");
 
   /* =========================
      TOC GENERATION
@@ -224,12 +225,15 @@ const res = await fetch(
 
       {/* FEATURED IMAGE – parallax */}
       {bgUrl && (
-        <div className="w-full h-[400px] overflow-hidden">
-          <div
-            className="w-full h-full bg-fixed bg-center bg-cover"
-            style={{ backgroundImage: `url(${bgUrl})` }}
-            role="img"
-            aria-label={heading ? heading.replace(/<[^>]*>/g, "") : ""}
+        <div className="relative w-full h-[400px] overflow-hidden">
+          <Image
+            src={bgUrl}
+            alt={heading ? heading.replace(/<[^>]*>/g, "") : ""}
+            fill
+            sizes="100vw"
+            quality={72}
+            loading="lazy"
+            className="object-cover object-center"
           />
         </div>
       )}

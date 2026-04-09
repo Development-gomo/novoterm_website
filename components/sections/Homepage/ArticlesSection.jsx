@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG } from "../../../lib/api";
 
@@ -269,12 +270,17 @@ export default function ArticlesSection({
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[3px] overflow-hidden border border-[#D1D9E6]">
               {/* Left — Image */}
-              <div
-                className="relative h-[280px] md:h-[420px] bg-cover bg-center"
-                style={{
-                  backgroundImage: `url(${featuredPost.image})`,
-                }}
-              />
+              <div className="relative h-[280px] md:h-[420px]">
+                <Image
+                  src={featuredPost.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={72}
+                  loading="lazy"
+                  className="object-cover object-center"
+                />
+              </div>
 
               {/* Right — Content Panel */}
               <div className="bg-[#081B33] text-white p-8 md:p-12 flex flex-col justify-center">
@@ -309,14 +315,16 @@ export default function ArticlesSection({
                 style={{ minHeight: 432 }}
               >
                 {/* IMAGE */}
-                <div
-                  className="relative h-[240px] flex-shrink-0"
-                  style={{
-                    backgroundImage: `url(${post.image})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                >
+                <div className="relative h-[240px] flex-shrink-0">
+                  <Image
+                    src={post.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    quality={72}
+                    loading="lazy"
+                    className="object-cover object-center"
+                  />
                   <span className="absolute bottom-4 left-4 bg-[#2655c4] text-white font-montserrat text-xs px-3 py-1 rounded-[4px] uppercase">
                     {post.category}
                   </span>

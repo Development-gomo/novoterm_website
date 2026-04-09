@@ -1,3 +1,4 @@
+import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 
@@ -15,21 +16,34 @@ export default function CaseStudyTestimonialSection({ section, sectionId }) {
 
   const { section_label, quote, author_name, author_title, author_company, background_image } = section;
 
-  const bgUrl = pickWpImageUrl(background_image, "card");
+  const bgUrl = pickWpImageUrl(background_image, "heroNext");
 
   return (
     <section
       id={sectionId}
-      className="relative w-full flex bg-cover bg-center h-auto lg:h-[660px] py-6 md:py-8 lg:pt-[100px] lg:pb-[80px]"
-      style={{ backgroundImage: `url(${bgUrl})` }}
+      className="relative w-full flex h-auto lg:min-h-[660px] py-6 md:py-8 lg:pt-[100px] lg:pb-[80px] overflow-hidden"
     >
-      {/* OVERLAY: linear gradient from 10% transparent black to solid black */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, #000000 100%)",
-        }}
-      />
+      {bgUrl ? (
+        <>
+          <div className="absolute inset-0 z-0">
+            <Image
+              src={bgUrl}
+              alt=""
+              fill
+              sizes="100vw"
+              quality={70}
+              loading="lazy"
+              className="object-cover object-center"
+            />
+          </div>
+          <div
+            className="absolute inset-0 z-[1] pointer-events-none"
+            style={{
+              background: "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, #000000 100%)",
+            }}
+          />
+        </>
+      ) : null}
 
       {/* CONTENT */}
       <div className="relative z-10 web-width mx-auto px-6 md:px-0">

@@ -2,6 +2,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import Image from "next/image";
 import { DEFAULT_LANG } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 
@@ -38,7 +39,7 @@ export default function ServicesSection({ section, sectionId }) {
   const SITE_HEADER_HEIGHT = isMobile ? SITE_HEADER_MOBILE : SITE_HEADER_DESKTOP;
   const SERVICE_HEADER_HEIGHT = isMobile ? SERVICE_HEADER_MOBILE : SERVICE_HEADER_DESKTOP;
 
-  const getBgUrl = (img) => pickWpImageUrl(img, "card");
+  const getBgUrl = (img) => pickWpImageUrl(img, "heroNext");
 
   const getCtaUrl = (link) => {
     if (!link) return "#";
@@ -122,18 +123,28 @@ export default function ServicesSection({ section, sectionId }) {
               </div>
             </div>
 
-            {/* ===== BACKGROUND ===== */}
+            {/* ===== BACKGROUND (next/image — avoids multi‑MB raw JPGs) ===== */}
             {bgUrl && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%), url(${bgUrl})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  zIndex: 1,
-                }}
-              />
+              <>
+                <div className="absolute inset-0 z-[1]">
+                  <Image
+                    src={bgUrl}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    quality={70}
+                    loading="lazy"
+                    className="object-cover object-center"
+                  />
+                </div>
+                <div
+                  className="absolute inset-0 z-[2] pointer-events-none"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%)",
+                  }}
+                />
+              </>
             )}
 
             {/* ===== CONTENT ===== */}

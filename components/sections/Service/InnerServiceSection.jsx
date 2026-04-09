@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 
@@ -47,7 +48,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
   };
   const mobileLabel = section_label || formatLabel(section?.acf_fc_layout);
 
-  const getBgUrl = (img) => pickWpImageUrl(img, "card");
+  const getBgUrl = (img) => pickWpImageUrl(img, "heroNext");
 
   const getCtaUrl = (link) => {
     if (!link) return "#";
@@ -150,18 +151,27 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
 
             {/* ===== BACKGROUND ===== */}
             {bgUrl && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: isMobile
-                    ? `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.59) 60%, rgba(6,24,55,0.57) 100%), url(${bgUrl})`
-                    : `linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%), url(${bgUrl})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "top center",
-                  zIndex: 1,
-                }}
-              />
+              <>
+                <div className="absolute inset-0 z-[1]">
+                  <Image
+                    src={bgUrl}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    quality={70}
+                    loading="lazy"
+                    className="object-cover object-top"
+                  />
+                </div>
+                <div
+                  className="absolute inset-0 z-[2] pointer-events-none"
+                  style={{
+                    background: isMobile
+                      ? "linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.59) 60%, rgba(6,24,55,0.57) 100%)"
+                      : "linear-gradient(90deg, rgba(6,24,55,0.8) 0%, rgba(6,24,55,0.45) 60%, rgba(6,24,55,0.15) 100%)",
+                  }}
+                />
+              </>
             )}
 
             {/* ===== CONTENT ===== */}

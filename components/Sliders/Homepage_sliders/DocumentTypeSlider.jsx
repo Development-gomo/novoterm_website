@@ -4,9 +4,14 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
+
+const CARD_SIZES =
+  "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw";
 
 export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
   const router = useRouter();
@@ -30,7 +35,11 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
               z-[50]
               pointer-events-auto
               ">
-        <button ref={prevRef} className="
+        <button
+          type="button"
+          ref={prevRef}
+          aria-label={lang === "en" ? "Previous slides" : "Föregående bilder"}
+          className="
           w-[48px] h-[48px] 
           bg-[#BBC8E1] 
           text-[#1B3A6F] 
@@ -44,7 +53,11 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
 </svg>
         </button>
 
-        <button ref={nextRef} className="
+        <button
+          type="button"
+          ref={nextRef}
+          aria-label={lang === "en" ? "Next slides" : "Nästa bilder"}
+          className="
           w-[48px] h-[48px] 
           bg-[#2655c4] 
           text-white 
@@ -119,19 +132,33 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
                     </div>
                   ) : (
                     <>
-                      {/* ---------------- Background Image + Gradients ---------------- */}
-                      <div
-                        className="absolute inset-0"
-                        style={{
-                          backgroundImage: `
+                      {(() => {
+                        const imgSrc = pickWpImageUrl(slide.cs_image, "card");
+                        return imgSrc ? (
+                          <>
+                            <div className="absolute inset-0 z-0">
+                              <Image
+                                src={imgSrc}
+                                alt={slide.heading || ""}
+                                fill
+                                sizes={CARD_SIZES}
+                                quality={72}
+                                loading={index < 2 ? "eager" : "lazy"}
+                                className="object-cover object-center"
+                              />
+                            </div>
+                            <div
+                              className="absolute inset-0 z-[1] pointer-events-none"
+                              style={{
+                                backgroundImage: `
                             linear-gradient(180deg, rgba(0,0,0,0.00) 66.63%, rgba(0,0,0,0.80) 100%),
-                            linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.00) 100%),
-                            url(${slide.cs_image})
-                          `,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                      />
+                            linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.00) 100%)`,
+                                backgroundSize: "cover",
+                              }}
+                            />
+                          </>
+                        ) : null;
+                      })()}
 
                       {/* Title before hover */}
                       <h3 className="absolute top-8 left-8 text-[24px] font-semibold text-white z-20 group-hover:opacity-0 transition">

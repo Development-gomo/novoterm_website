@@ -21,7 +21,9 @@ export default function CaseStudySlider({ slides }) {
       {/* NAVIGATION */}
       <div className="flex gap-3 justify-end lg:mt-[-58px] mt-[-20px]">
         <button
+          type="button"
           ref={prevRef}
+          aria-label={lang === "en" ? "Previous slide" : "Föregående"}
           className="w-[48px] h-[48px] rounded-full bg-[#BBC8E1] cursor-pointer flex items-center justify-center hover:bg-[#2655C4] group transition"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
@@ -29,7 +31,9 @@ export default function CaseStudySlider({ slides }) {
           </svg>
         </button>
         <button
+          type="button"
           ref={nextRef}
+          aria-label={lang === "en" ? "Next slide" : "Nästa"}
           className="w-[48px] h-[48px] rounded-full bg-[#2655C4] cursor-pointer text-white flex items-center justify-center hover:bg-[#1C3C90] transition"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="14" viewBox="0 0 16 14" fill="none">
