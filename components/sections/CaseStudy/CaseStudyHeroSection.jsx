@@ -1,35 +1,24 @@
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
-import { pickWpImageUrl } from "../../../lib/wpImage";
-import HeroImagePreload from "../../SEO/HeroImagePreload";
+import HeroBackdrop from "../../ui/HeroBackdrop";
 
 export default function CaseStudyHeroSection({ section, sectionId }) {
   if (!section) return null;
 
   const { heading, sub_heading, background_image, cta_text, cta_url } = section;
 
-  const bgUrl = pickWpImageUrl(background_image, "hero");
-
   return (
-    <>
-      <HeroImagePreload href={bgUrl} />
     <section
       id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        backgroundImage: bgUrl
-          ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
-          : `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)`,
-        backgroundColor: "lightgray",
-        backgroundPosition: "top center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
     >
-      {/* CONTENT WRAPPER */}
-      <div className="web-width mx-auto px-6 md:px-0 flex flex-col sm:block">
+      <HeroBackdrop
+        media={background_image}
+        objectPosition="object-top object-center"
+      />
 
-        {/* HEADING */}
+      <div className="relative z-10 web-width mx-auto px-6 md:px-0 flex flex-col sm:block">
+
         {heading && (
           <h1
             className="font-heading  font-semibold text-white [&_em]:italic [&_em]:font-serif [&_em]:normal-case
@@ -39,7 +28,6 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
           />
         )}
 
-        {/* DESCRIPTION + CTA */}
         <div
           className="max-w-full sm:max-w-[411px]
                      mt-1 sm:mt-8 lg:mt-0
@@ -68,32 +56,25 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
         </div>
       </div>
 
-      {/* DOWN ARROW */}
-      {/* DOWN ARROW */}
-<div
-  onClick={() =>
-    document
-      .getElementById("next-section")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }
-  className="absolute bottom-6 sm:bottom-9 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
->
-  <svg
-    viewBox="0 0 83 83"
-    className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
-    <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-    <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-  </svg>
-</div>
-
-
-      {/* BOTTOM FADE */}
-     
+      <div
+        onClick={() =>
+          document
+            .getElementById("next-section")
+            ?.scrollIntoView({ behavior: "smooth" })
+        }
+        className="absolute bottom-6 sm:bottom-9 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
+      >
+        <svg
+          viewBox="0 0 83 83"
+          className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
+          <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      </div>
     </section>
-    </>
   );
 }

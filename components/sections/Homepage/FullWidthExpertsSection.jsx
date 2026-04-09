@@ -1,8 +1,10 @@
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
-import { pickWpImageUrl } from "../../../lib/wpImage";
-import HeroImagePreload from "../../SEO/HeroImagePreload";
+import HeroBackdrop from "../../ui/HeroBackdrop";
+
+const EXPERTS_GRADIENT =
+  "linear-gradient(180deg, rgba(6, 24, 55, 0.21) 13.86%, rgba(6, 24, 55, 0.70) 100%)";
 
 export default function FullWidthExpertsSection({
   background_image,
@@ -12,26 +14,14 @@ export default function FullWidthExpertsSection({
   cta_button_text,
   cta_button_link,
 }) {
-  const bg = pickWpImageUrl(background_image, "hero");
-
   return (
-    <>
-      <HeroImagePreload href={bg} />
-    <section
-      className="relative w-full py-15 md:py-[100px] h-auto bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: `
-          linear-gradient(
-            180deg,
-            rgba(6, 24, 55, 0.21) 13.86%,
-            rgba(6, 24, 55, 0.70) 100%
-          ),
-          url(${bg})
-        `,
-      }}
-    >
-      
-      {/* Custom italic styling for <em> */}
+    <section className="relative w-full py-15 md:py-[100px] h-auto overflow-hidden">
+      <HeroBackdrop
+        media={background_image}
+        gradient={EXPERTS_GRADIENT}
+        priority={false}
+      />
+
       <style>{`
         .experts-content em {
           color: #ffffff !important;
@@ -41,7 +31,6 @@ export default function FullWidthExpertsSection({
         }
       `}</style>
 
-      {/* Wrapper */}
       <div
         className="
           relative
@@ -57,11 +46,9 @@ export default function FullWidthExpertsSection({
           md:gap-10
         "
       >
-        
-        {/* LEFT CONTENT */}
+
         <div className="experts-content flex flex-col justify-center text-white">
 
-          {/* Dot + Label */}
           <div className="flex items-center gap-2 mb-4 md:mb-6">
             <DotIndicator variant="white" />
             <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider">
@@ -69,7 +56,6 @@ export default function FullWidthExpertsSection({
             </span>
           </div>
 
-          {/* Intro Paragraph */}
           <div
             className="
               max-w-[390px]
@@ -86,7 +72,6 @@ export default function FullWidthExpertsSection({
             suppressHydrationWarning
           />
 
-          {/* Heading */}
           <div
             className="block font-serif font-semibold text-[36px] sm:text-[48px] 
             md:text-[60px] lg:text-[80px] leading-tight md:leading-[90px] text-white lg:w-[900px]"
@@ -95,7 +80,6 @@ export default function FullWidthExpertsSection({
           />
         </div>
 
-        {/* RIGHT BUTTON */}
         <div
           className="
             flex
@@ -104,7 +88,6 @@ export default function FullWidthExpertsSection({
             justify-start
             md:justify-end
             w-full
-           
           "
         >
           {cta_button_text?.trim() && (
@@ -118,6 +101,5 @@ export default function FullWidthExpertsSection({
         </div>
       </div>
     </section>
-    </>
   );
 }

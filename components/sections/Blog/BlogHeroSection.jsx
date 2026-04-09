@@ -1,57 +1,40 @@
-import { pickWpImageUrl } from "../../../lib/wpImage";
-import HeroImagePreload from "../../SEO/HeroImagePreload";
+import HeroBackdrop from "../../ui/HeroBackdrop";
 
 export default function BlogHeroSection({ section }) {
   if (!section) return null;
 
-  const {
-    featured_image,
-  } = section;
-
-  const bgUrl = pickWpImageUrl(featured_image, "hero");
+  const { featured_image } = section;
 
   return (
-    <>
-      <HeroImagePreload href={bgUrl} />
     <section
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
-                 px-4 sm:px-0"
-      style={{
-        backgroundImage: bgUrl
-          ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
-          : `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)`,
-        backgroundColor: "lightgray",
-        backgroundPosition: "top center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
+      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-0"
     >
-      {/* CONTENT WRAPPER */}
-      <div className="w-full flex flex-col sm:block">
-      <div className="web-width mx-auto ">
-        {/* HEADING */}
-        <h1
-          className="font-heading  font-semibold text-white 
+      <HeroBackdrop
+        media={featured_image}
+        objectPosition="object-top object-center"
+      />
+
+      <div className="relative z-10 w-full flex flex-col sm:block">
+        <div className="web-width mx-auto ">
+          <h1
+            className="font-heading  font-semibold text-white 
               text-[32px] sm:text-[48px] md:text-[60px] lg:text-[80px]
               leading-tight md:leading-[90px] tracking-[1px]
               w-full  mx-auto sm:mx-0 mb-1"
-        >
-          Varför är tekniska  <i className=" italic  font-merriweather">översättningar viktiga?</i>
-        </h1>
+          >
+            Varför är tekniska  <i className=" italic  font-merriweather">översättningar viktiga?</i>
+          </h1>
 
-
-        {/* DESCRIPTION */}
-        <div className="max-w-full sm:max-w-[611px] mt-1 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left sm:!justify-self-end">
-          <p className="font-body text-white/90
+          <div className="max-w-full sm:max-w-[611px] mt-1 sm:mt-8 lg:mt-0 mx-auto sm:mx-0 sm:text-left sm:!justify-self-end">
+            <p className="font-body text-white/90
             text-[14px] sm:text-[15px] md:text-[16px] lg:text-[18px]
             leading-[24px]">
             Stay updated with the latest insights, trends, and news from the world of translation and localization. Explore expert tips, industry updates, and stories from our team.
-          </p>
-        </div>
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* DOWN ARROW */}
       <div
         onClick={() =>
           document
@@ -72,6 +55,5 @@ export default function BlogHeroSection({ section }) {
         </svg>
       </div>
     </section>
-    </>
   );
 }
