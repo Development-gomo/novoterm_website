@@ -11,33 +11,32 @@ import {
   DEFAULT_LANG,
 } from "../../lib/api";
 
+import dynamic from "next/dynamic";
 import Script from "next/script";
+import { Montserrat, Cabin, Merriweather } from "next/font/google";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
-import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
-
-const archivo = Archivo({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-archivo",
-  display: "swap",
-});
+const SpeedInsights = dynamic(
+  () => import("@vercel/speed-insights/next").then((m) => m.SpeedInsights),
+  { ssr: false }
+);
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-montserrat",
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const merriweather = Merriweather({
-  subsets: ["latin-ext"],
+  subsets: ["latin", "latin-ext"],
   style: ["normal", "italic"],
-  weight: ["300", "400", "600"],
+  weight: ["400", "600"],
   variable: "--font-merriweather",
   display: "swap",
+  adjustFontFallback: true,
 });
 
 const cabin = Cabin({
@@ -45,6 +44,7 @@ const cabin = Cabin({
   weight: ["400", "500", "600", "700"],
   variable: "--font-cabin",
   display: "swap",
+  adjustFontFallback: true,
 });
 
 function buildHeaderData(header, menu) {
@@ -163,7 +163,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           `,
         }}
       />
-    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} ${archivo.variable}`}>
+    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
       {headerData && (
         <Header
           {...headerData}

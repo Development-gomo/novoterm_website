@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
+import { pickWpImageUrl } from "../../../lib/wpImage";
+import HeroImagePreload from "../../SEO/HeroImagePreload";
 
 export default function NewHomeBanner({ block, sectionId }) {
   const sceneRef = useRef(null);
@@ -8,9 +10,8 @@ export default function NewHomeBanner({ block, sectionId }) {
 
   const getImageUrl = (img) => {
     if (!img) return undefined;
-    if (typeof img === "string") return img;
-    if (img.url) return img.url;
-    return undefined;
+    const u = pickWpImageUrl(img, "hero");
+    return u || undefined;
   };
 
   const swedish = getImageUrl(block?.swedish_image);
@@ -88,6 +89,8 @@ export default function NewHomeBanner({ block, sectionId }) {
   if (!foregroundImage || !revealImage) return null;
 
   return (
+    <>
+      <HeroImagePreload href={foregroundImage} />
     <div
       id={sectionId}
       ref={sceneRef}
@@ -122,5 +125,6 @@ export default function NewHomeBanner({ block, sectionId }) {
         }}
       />
     </div>
+    </>
   );
 }

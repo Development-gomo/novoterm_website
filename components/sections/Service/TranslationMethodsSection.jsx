@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function TranslationMethodsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
@@ -43,10 +44,7 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
 
             <div className="flex flex-wrap gap-[24px] lg:gap-[32px]">
               {translation_methods.map((item, i) => {
-                const imageUrl =
-                  typeof item.image === "string"
-                    ? item.image
-                    : item.image?.url || item.image?.sizes?.large || "";
+                const imageUrl = pickWpImageUrl(item.image, "card");
 
                 return (
                   <div key={i} className="group w-full sm:w-[48%] lg:w-[353px] h-[420px] rounded-[4px] overflow-hidden bg-black">

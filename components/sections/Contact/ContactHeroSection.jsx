@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
+import HeroImagePreload from "../../SEO/HeroImagePreload";
 
 export default function ContactHeroSection({ section }) {
   if (!section) return null;
@@ -12,15 +14,11 @@ export default function ContactHeroSection({ section }) {
     background_image,
   } = section;
 
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(background_image, "hero");
 
   return (
+    <>
+      <HeroImagePreload href={bgUrl} />
     <section
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
@@ -99,5 +97,6 @@ export default function ContactHeroSection({ section }) {
       {/* BOTTOM FADE */}
      
     </section>
+    </>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const SITE_HEADER_DESKTOP = 80;
 const SITE_HEADER_MOBILE = 64;
@@ -46,11 +47,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
   };
   const mobileLabel = section_label || formatLabel(section?.acf_fc_layout);
 
-  const getBgUrl = (img) => {
-    if (!img) return "";
-    if (typeof img === "string") return img;
-    return img.url || img.sizes?.large || img.sizes?.medium_large || "";
-  };
+  const getBgUrl = (img) => pickWpImageUrl(img, "card");
 
   const getCtaUrl = (link) => {
     if (!link) return "#";

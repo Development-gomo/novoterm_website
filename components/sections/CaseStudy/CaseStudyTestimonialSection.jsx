@@ -1,4 +1,5 @@
 import DotIndicator from "../../ui/DotIndicator";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const formatLabel = (layout) => {
   if (!layout) return null;
@@ -14,12 +15,7 @@ export default function CaseStudyTestimonialSection({ section, sectionId }) {
 
   const { section_label, quote, author_name, author_title, author_company, background_image } = section;
 
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        "";
+  const bgUrl = pickWpImageUrl(background_image, "card");
 
   return (
     <section

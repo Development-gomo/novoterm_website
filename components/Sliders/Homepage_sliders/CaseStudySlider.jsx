@@ -103,6 +103,8 @@ export default function CaseStudySlider({ slides }) {
                       fill
                       sizes="(max-width: 768px) 100vw, 370px"
                       className="object-cover"
+                      priority={index === 0}
+                      fetchPriority={index === 0 ? "high" : "auto"}
                     />
                   )}
                 </div>

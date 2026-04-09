@@ -1,6 +1,8 @@
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
+import HeroImagePreload from "../../SEO/HeroImagePreload";
 
 export default function FullWidthExpertsSection({
   background_image,
@@ -10,15 +12,11 @@ export default function FullWidthExpertsSection({
   cta_button_text,
   cta_button_link,
 }) {
-  const bg =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  const bg = pickWpImageUrl(background_image, "hero");
 
   return (
+    <>
+      <HeroImagePreload href={bg} />
     <section
       className="relative w-full py-15 md:py-[100px] h-auto bg-cover bg-center bg-no-repeat"
       style={{
@@ -120,5 +118,6 @@ export default function FullWidthExpertsSection({
         </div>
       </div>
     </section>
+    </>
   );
 }

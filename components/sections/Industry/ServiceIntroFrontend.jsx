@@ -3,6 +3,7 @@ import ReadMoreContent from "./ReadMoreContent";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function IndustryIntro({
   section,
@@ -39,13 +40,7 @@ export default function IndustryIntro({
   const labelColor = isDark ? "text-white/70" : "text-[#061837]";
 
   /* Normalize image */
-  const imageUrl =
-    typeof image === "string"
-      ? image
-      : image?.url ||
-        image?.sizes?.large ||
-        image?.sizes?.medium_large ||
-        "";
+  const imageUrl = pickWpImageUrl(image, "card");
 
   const isMediaRight = media_position === "right";
 const getEmbedUrl = (url) => {

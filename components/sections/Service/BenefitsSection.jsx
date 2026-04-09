@@ -1,10 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const getImageUrl = (img) => {
   if (!img) return null;
-  if (typeof img === "string") return img;
-  return img.url || null;
+  const u = pickWpImageUrl(img, "card");
+  return u || null;
 };
 
 export default function BenefitsSection({ section, sectionId, index = 0 }) {
@@ -95,8 +97,14 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
                     <div className={`relative z-10 h-full flex flex-col ${isImageCard ? "p-[24px] pb-[26px] text-white" : "p-[24px] pb-[32px] text-[#061837]"}`}>
 
                       {iconUrl && (
-                        <div className="w-[48px] h-[48px] mb-[102px]">
-                          <img src={iconUrl} alt={item.title || "Benefit icon"} className="w-full h-full object-contain" />
+                        <div className="relative w-[48px] h-[48px] mb-[102px]">
+                          <Image
+                            src={iconUrl}
+                            alt={item.title || "Benefit icon"}
+                            fill
+                            sizes="48px"
+                            className="object-contain"
+                          />
                         </div>
                       )}
                       {!iconUrl && isImageCard && (

@@ -1,20 +1,18 @@
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
+import HeroImagePreload from "../../SEO/HeroImagePreload";
 
 export default function CaseStudyHeroSection({ section, sectionId }) {
   if (!section) return null;
 
   const { heading, sub_heading, background_image, cta_text, cta_url } = section;
 
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(background_image, "hero");
 
   return (
+    <>
+      <HeroImagePreload href={bgUrl} />
     <section
       id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
@@ -96,5 +94,6 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
       {/* BOTTOM FADE */}
      
     </section>
+    </>
   );
 }
