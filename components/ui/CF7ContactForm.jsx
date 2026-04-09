@@ -201,9 +201,10 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
             name="email"
             placeholder={t("E-POST*", "E-MAIL*")}
             required
-            className={`h-[48px] px-4 rounded-[3px] border ${errors.email ? "border-red-500" : borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
+            className={`h-12 px-4 rounded-[3px] border ${errors.email ? "border-red-500" : borderColor} ${textColor} text-[14px] outline-none ${placeholderColor}`}
             onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
           />
+
 
           <div className="relative w-full">
             <select
