@@ -1,10 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
-import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
-import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function HeroSection({
   background_image,
@@ -24,7 +21,13 @@ export default function HeroSection({
 
   const [ready, setReady] = useState(false);
 
-  const bgUrl = pickWpImageUrl(background_image, "heroNext");
+  const bgUrl =
+    typeof background_image === "string"
+      ? background_image
+      : background_image?.url ||
+        background_image?.sizes?.large ||
+        background_image?.sizes?.medium_large ||
+        "";
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -36,23 +39,28 @@ export default function HeroSection({
 
     let isInside = false;
 
+    // ✅ FINAL FIXED FUNCTION
     const update = (clientX, clientY) => {
       const rect = scene.getBoundingClientRect();
 
       const x = clientX - rect.left;
       const y = clientY - rect.top;
 
+      // 🔵 English reveal
       englishLayer.style.clipPath = `circle(${circle_size}px at ${x}px ${y}px)`;
 
+      // 🔴 Swedish cut
       const mask = `radial-gradient(circle ${circle_size}px at ${x}px ${y}px, transparent 98%, black 100%)`;
       swedishLayer.style.webkitMaskImage = mask;
       swedishLayer.style.maskImage = mask;
 
+      // ⚪ Perfectly aligned circle
       circle.style.transform = `translate(${x - circle_size}px, ${y - circle_size}px)`;
     };
 
     const rect = scene.getBoundingClientRect();
 
+    // ✅ Initial center (FIXED)
     update(rect.left + rect.width / 2, rect.top + rect.height / 2);
 
     setReady(true);
@@ -91,36 +99,15 @@ export default function HeroSection({
       className="relative w-full min-h-screen overflow-hidden flex items-center"
       style={{
         cursor: "none",
+        backgroundImage: `linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%), url(${bgUrl})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
       }}
     >
-      {bgUrl ? (
-        <>
-          <div className="absolute inset-0 z-0">
-            <Image
-              src={bgUrl}
-              alt=""
-              fill
-              priority
-              fetchPriority="high"
-              sizes="100vw"
-              quality={HERO_IMAGE_QUALITY}
-              className="object-cover object-center"
-            />
-          </div>
-          <div
-            className="absolute inset-0 z-[1] pointer-events-none"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%)",
-            }}
-          />
-        </>
-      ) : null}
-
       {/* CONTENT WRAPPER */}
-      <div className="relative z-[5] w-full min-h-[100vh] web-width px-6 py-24 lg:px-48 flex flex-col justify-center">
+      <div className="relative w-full min-h-[100vh] web-width px-6 py-24 lg:px-48 flex flex-col justify-center">
 
-        {/* SWEDISH */}
+        {/* 🔴 SWEDISH */}
         <div ref={swedishRef} className="absolute inset-0 z-10">
           <div className="flex flex-col justify-center h-full">
 
@@ -147,7 +134,7 @@ export default function HeroSection({
           </div>
         </div>
 
-        {/* ENGLISH */}
+        {/* 🔵 ENGLISH */}
         <div
           ref={englishRef}
           className="absolute inset-0 z-20 pointer-events-none"
@@ -182,6 +169,7 @@ export default function HeroSection({
         </div>
       </div>
 
+      {/* ⚪ SINGLE PERFECT CIRCLE */}
       <div
         ref={circleRef}
         className="pointer-events-none absolute z-30 rounded-full"
@@ -196,7 +184,8 @@ export default function HeroSection({
         }}
       />
 
-      <div className="absolute bottom-0 left-0 z-[25] w-full h-32 bg-gradient-to-t from-[#061837] to-transparent pointer-events-none" />
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#061837] to-transparent" />
     </section>
   );
 }

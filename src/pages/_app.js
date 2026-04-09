@@ -11,27 +11,33 @@ import {
   DEFAULT_LANG,
 } from "../../lib/api";
 
-import { Montserrat, Cabin, Merriweather } from "next/font/google";
-import DeferredGtm from "../../components/DeferredGtm";
-import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
+import Script from "next/script";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
+import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
+
+const archivo = Archivo({
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-archivo",
+  display: "swap",
+});
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   variable: "--font-montserrat",
   display: "swap",
-  adjustFontFallback: true,
 });
 
 const merriweather = Merriweather({
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin-ext"],
   style: ["normal", "italic"],
-  weight: ["400", "600"],
+  weight: ["300", "400", "600"],
   variable: "--font-merriweather",
   display: "swap",
-  adjustFontFallback: true,
 });
 
 const cabin = Cabin({
@@ -39,7 +45,6 @@ const cabin = Cabin({
   weight: ["400", "500", "600", "700"],
   variable: "--font-cabin",
   display: "swap",
-  adjustFontFallback: true,
 });
 
 function buildHeaderData(header, menu) {
@@ -65,11 +70,9 @@ export default function MyApp({
   const [headerData, setHeaderData] = useState(initialHeader || null);
   const [footerData, setFooterData] = useState(initialFooter || null);
   const [hamburgerMenuData, setHamburgerMenuData] = useState(initialHamburgerMenu || null);
-  const [megaMenuData, setMegaMenuData] = useState(
-    () => initialMegaMenu ?? null
-  );
+  const [megaMenuData, setMegaMenuData] = useState(initialMegaMenu || null);
   useEffect(() => {
-    if (initialMegaMenu != null) {
+    if (initialMegaMenu) {
       setMegaMenuData(initialMegaMenu);
       return;
     }
@@ -147,8 +150,20 @@ export default function MyApp({
 
   return (
     <>
-      <DeferredGtm />
-    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
+      <Script
+        id="gtm-script"
+        strategy="lazyOnload"
+        dangerouslySetInnerHTML={{
+          __html: `
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PMXNC6T');
+          `,
+        }}
+      />
+    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} ${archivo.variable}`}>
       {headerData && (
         <Header
           {...headerData}
@@ -159,7 +174,7 @@ export default function MyApp({
       )}
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
-      <DelayedSpeedInsights />
+      <SpeedInsights />
     </div>
     </>
   );
@@ -169,11 +184,12 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
   const lang = ctx.locale || DEFAULT_LANG;
 
   // Fetch header, menu, footer, hamburger menu, mega menu in parallel on the server
-  const [header, menu, footer, hamburgerMenu] = await Promise.all([
+  const [header, menu, footer, hamburgerMenu, megaMenu] = await Promise.all([
     getHeaderData(lang).catch(() => null),
     getMainMenu(lang).catch(() => null),
     getFooterData(lang).catch(() => null),
     getHamburgerMenu(lang).catch(() => null),
+    getMegaMenu(lang).catch(() => null),
   ]);
 
   let pageProps = {};
@@ -186,5 +202,6 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
     initialHeader: header && menu ? buildHeaderData(header, menu) : null,
     initialFooter: footer,
     initialHamburgerMenu: hamburgerMenu,
+    initialMegaMenu: megaMenu?.items || [],
   };
 };
