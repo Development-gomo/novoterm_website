@@ -2,6 +2,7 @@
     import { useRouter } from "next/router";
     import Link from "next/link";
     import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
+    import LazyWhenVisible from "../../ui/LazyWhenVisible";
     import DotIndicator from "../../ui/DotIndicator";
     import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 
@@ -32,9 +33,11 @@
             const category =
                 post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
 
-            // FEATURED IMAGE (fallback placeholder)
+            const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
             const image =
-                post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+                fm?.media_details?.sizes?.medium_large?.source_url ||
+                fm?.media_details?.sizes?.large?.source_url ||
+                fm?.source_url ||
                 "/default-blog.jpg";
 
             // DATE
@@ -97,7 +100,11 @@
             />
 
             {/* SLIDER */}
-            {slides.length > 0 && <InsightsSlider slides={slides} />}
+            {slides.length > 0 && (
+            <LazyWhenVisible minHeight={400}>
+                <InsightsSlider slides={slides} lang={lang} />
+            </LazyWhenVisible>
+            )}
 
             {/* BUTTON */}
             {button && (

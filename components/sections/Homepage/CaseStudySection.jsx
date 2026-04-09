@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
+import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
 
@@ -80,14 +81,18 @@ export default function CaseStudySection({
 
         {/* Single large slider (1 slide at a time — homepage style) */}
         {display_mode === "slider_single" && slides.length > 0 && (
-          <CaseStudySlider slides={slides} />
+          <LazyWhenVisible minHeight={420}>
+            <CaseStudySlider slides={slides} />
+          </LazyWhenVisible>
         )}
 
         {/* Multi-card slider (3 visible — casestudy style) */}
         {display_mode === "slider_multi" && slides.length > 0 && (
-          <div className="mt-10">
-            <CaseStudyCardSlider slides={slides} />
-          </div>
+          <LazyWhenVisible minHeight={480}>
+            <div className="mt-10">
+              <CaseStudyCardSlider slides={slides} />
+            </div>
+          </LazyWhenVisible>
         )}
 
         {/* Grid — 3 columns using casestudy card design */}

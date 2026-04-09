@@ -3,9 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
 import { pickWpImageUrl } from "../../../lib/wpImage";
-
-const HERO_QUALITY = 72;
 
 export default function HeroSection({
   background_image,
@@ -104,7 +103,7 @@ export default function HeroSection({
               priority
               fetchPriority="high"
               sizes="100vw"
-              quality={HERO_QUALITY}
+              quality={HERO_IMAGE_QUALITY}
               className="object-cover object-center"
             />
           </div>

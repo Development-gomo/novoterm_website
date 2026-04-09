@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
+import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath, DEFAULT_LANG } from "../../../lib/api";
 
@@ -91,7 +92,11 @@ export default function DocumentTypeSection({
         />
 
         {/* SLIDER */}
-        {slides.length > 0 && <DocumentTypeSlider slides={slides} />}
+        {slides.length > 0 && (
+          <LazyWhenVisible minHeight={420}>
+            <DocumentTypeSlider slides={slides} />
+          </LazyWhenVisible>
+        )}
 
         {/* CTA BUTTON BELOW SLIDER */}
         {button && (

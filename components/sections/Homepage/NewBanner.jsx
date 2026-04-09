@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
 import { pickWpImageUrl } from "../../../lib/wpImage";
-
-const HERO_QUALITY = 72;
 
 export default function NewHomeBanner({ block, sectionId }) {
   const sceneRef = useRef(null);
@@ -104,7 +103,7 @@ export default function NewHomeBanner({ block, sectionId }) {
           priority
           fetchPriority="high"
           sizes="100vw"
-          quality={HERO_QUALITY}
+          quality={HERO_IMAGE_QUALITY}
           className="object-cover object-center"
         />
       </div>
@@ -121,7 +120,7 @@ export default function NewHomeBanner({ block, sectionId }) {
           alt=""
           fill
           sizes="100vw"
-          quality={HERO_QUALITY}
+          quality={HERO_IMAGE_QUALITY}
           loading="lazy"
           className="object-cover object-center"
         />

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
+import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 import Link from "next/link";
@@ -27,8 +28,11 @@ export default function IndustryInsightsSection({ section, sectionId }) {
           const category =
             post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
 
+          const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
           const image =
-            post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+            fm?.media_details?.sizes?.medium_large?.source_url ||
+            fm?.media_details?.sizes?.large?.source_url ||
+            fm?.source_url ||
             "/default-blog.jpg";
 
           const date = new Date(post.date).toLocaleDateString("en-US", {
@@ -103,7 +107,11 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             )}
 
             {/* SLIDER */}
-            {slides.length > 0 && <InsightsSlider slides={slides} lang={lang} />}
+            {slides.length > 0 && (
+              <LazyWhenVisible minHeight={400}>
+                <InsightsSlider slides={slides} lang={lang} />
+              </LazyWhenVisible>
+            )}
 
             {/* BUTTON */}
             {button && (

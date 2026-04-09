@@ -1,7 +1,6 @@
 import Image from "next/image";
+import { HERO_IMAGE_QUALITY } from "../../lib/imageConstants";
 import { pickWpImageUrl } from "../../lib/wpImage";
-
-const HERO_QUALITY = 72;
 
 const DEFAULT_GRADIENT =
   "linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%)";
@@ -43,7 +42,7 @@ export default function HeroBackdrop({
           priority={priority}
           fetchPriority={priority ? "high" : "auto"}
           sizes="100vw"
-          quality={HERO_QUALITY}
+          quality={HERO_IMAGE_QUALITY}
           className={`object-cover ${objectPosition}`}
         />
       </div>

@@ -11,16 +11,11 @@ import {
   DEFAULT_LANG,
 } from "../../lib/api";
 
-import dynamic from "next/dynamic";
-import Script from "next/script";
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
+import DeferredGtm from "../../components/DeferredGtm";
+import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
-
-const SpeedInsights = dynamic(
-  () => import("@vercel/speed-insights/next").then((m) => m.SpeedInsights),
-  { ssr: false }
-);
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -150,19 +145,7 @@ export default function MyApp({
 
   return (
     <>
-      <Script
-        id="gtm-script"
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PMXNC6T');
-          `,
-        }}
-      />
+      <DeferredGtm />
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
       {headerData && (
         <Header
@@ -174,7 +157,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       )}
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
-      <SpeedInsights />
+      <DelayedSpeedInsights />
     </div>
     </>
   );
