@@ -89,7 +89,8 @@ export async function proxy(request) {
   const basePath = pathname;
   const localePrefixedPath = isNonDefaultLocale
     ? `/${lang}${basePath === "/" ? "" : basePath}`
-    : null;
+    : null; 
+    
 
   // 1. Check WordPress redirects
   const redirects = await getRedirects(origin);
