@@ -59,7 +59,15 @@ export default function CaseStudyCardSlider({ slides }) {
 
               {/* IMAGE */}
               <div className="relative h-[180px] w-full flex-shrink-0">
-                <Image src={slide.image} alt={slide.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
+                <Image
+                  src={slide.image}
+                  alt={slide.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover"
+                  priority={i === 0}
+                  fetchPriority={i === 0 ? "high" : "auto"}
+                />
               </div>
 
               {/* CONTENT */}

@@ -1,4 +1,5 @@
 import DotIndicator from "../../ui/DotIndicator";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const formatLabel = (layout) => {
   if (!layout) return null;
@@ -22,13 +23,7 @@ export default function ServiceIntroFrontend({
     content_blocks = [],
   } = section;
 
-  const imageUrl =
-    typeof image === "string"
-      ? image
-      : image?.url ||
-        image?.sizes?.large ||
-        image?.sizes?.medium_large ||
-        "";
+  const imageUrl = pickWpImageUrl(image, "card");
 
   return (
     <section id={sectionId}

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const translations = {
   sv: {
@@ -46,13 +47,7 @@ export default function BlogContentSection({ section }) {
     slug,
   } = section || {};
 
-  const bgUrl =
-    typeof featured_image === "string"
-      ? featured_image
-      : featured_image?.url ||
-        featured_image?.sizes?.large ||
-        featured_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(featured_image, "hero");
 
   /* =========================
      TOC GENERATION

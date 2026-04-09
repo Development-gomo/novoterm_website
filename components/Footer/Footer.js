@@ -148,9 +148,10 @@ export default function Footer({ data }) {
             <Image
               src={branding.footer_logo_large}
               alt="Footer Logo"
-              width={1500}
-              height={216}
-              className="object-contain"
+              width={360}
+              height={52}
+              sizes="(max-width: 768px) 200px, 360px"
+              className="h-auto max-w-[200px] sm:max-w-[280px] md:max-w-[360px] w-full object-contain"
             />
           </div>
         )}

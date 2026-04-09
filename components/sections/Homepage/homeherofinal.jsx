@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
+import HeroImagePreload from "../../SEO/HeroImagePreload";
 
 export default function HeroSection({
   background_image,
@@ -21,13 +23,7 @@ export default function HeroSection({
 
   const [ready, setReady] = useState(false);
 
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(background_image, "hero");
 
   useEffect(() => {
     const scene = sceneRef.current;
@@ -94,6 +90,8 @@ export default function HeroSection({
   }, [circle_size]);
 
   return (
+    <>
+      <HeroImagePreload href={bgUrl} />
     <section
       ref={sceneRef}
       className="relative w-full min-h-screen overflow-hidden flex items-center"
@@ -187,5 +185,6 @@ export default function HeroSection({
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#061837] to-transparent" />
     </section>
+    </>
   );
 }

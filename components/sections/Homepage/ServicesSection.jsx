@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG } from "../../../lib/api";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const SITE_HEADER_DESKTOP = 80;
 const SITE_HEADER_MOBILE = 64;
@@ -37,11 +38,7 @@ export default function ServicesSection({ section, sectionId }) {
   const SITE_HEADER_HEIGHT = isMobile ? SITE_HEADER_MOBILE : SITE_HEADER_DESKTOP;
   const SERVICE_HEADER_HEIGHT = isMobile ? SERVICE_HEADER_MOBILE : SERVICE_HEADER_DESKTOP;
 
-  const getBgUrl = (img) => {
-    if (!img) return "";
-    if (typeof img === "string") return img;
-    return img.url || img.sizes?.large || img.sizes?.medium_large || "";
-  };
+  const getBgUrl = (img) => pickWpImageUrl(img, "card");
 
   const getCtaUrl = (link) => {
     if (!link) return "#";

@@ -1,3 +1,6 @@
+import { pickWpImageUrl } from "../../../lib/wpImage";
+import HeroImagePreload from "../../SEO/HeroImagePreload";
+
 export default function BlogHeroSection({ section }) {
   if (!section) return null;
 
@@ -5,15 +8,11 @@ export default function BlogHeroSection({ section }) {
     featured_image,
   } = section;
 
-  const bgUrl =
-    typeof featured_image === "string"
-      ? featured_image
-      : featured_image?.url ||
-        featured_image?.sizes?.large ||
-        featured_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(featured_image, "hero");
 
   return (
+    <>
+      <HeroImagePreload href={bgUrl} />
     <section
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
@@ -73,5 +72,6 @@ export default function BlogHeroSection({ section }) {
         </svg>
       </div>
     </section>
+    </>
   );
 }

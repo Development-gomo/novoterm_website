@@ -9,8 +9,11 @@ const POSTS_PER_PAGE = 6;
 function formatPost(post, lang) {
   const category =
     post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+  const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
   const image =
-    post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+    fm?.media_details?.sizes?.medium_large?.source_url ||
+    fm?.media_details?.sizes?.large?.source_url ||
+    fm?.source_url ||
     "/default-blog.jpg";
   // Use Swedish or English month names based on lang
   const dateLocale = lang === "sv" ? "sv-SE" : "en-US";
