@@ -17,11 +17,11 @@ class MyDocument extends Document {
     return (
       <Html lang={lang}>
         <Head>
-          <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-          <link rel="dns-prefetch" href="https://consent.cookiebot.com" />
-          <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
           {wpOrigin ? (
-            <link rel="preconnect" href={wpOrigin} crossOrigin="" />
+            <>
+              <link rel="dns-prefetch" href={wpOrigin} />
+              <link rel="preconnect" href={wpOrigin} crossOrigin="" />
+            </>
           ) : null}
         </Head>
 

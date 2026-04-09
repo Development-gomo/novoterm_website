@@ -5,8 +5,7 @@ import { useEffect } from "react";
 const GTM_ID = "GTM-PMXNC6T";
 
 /**
- * Loads GTM after the browser is idle (or max 5s wait) so mobile LCP/FCP
- * compete less with tag manager parse + Cookiebot-triggered tags.
+ * Loads GTM after window "load" + idle so tag JS never competes with LCP/SI.
  */
 export default function DeferredGtm() {
   useEffect(() => {
@@ -31,19 +30,24 @@ export default function DeferredGtm() {
       }
     };
 
-    let id;
-    let usedIdle = false;
-    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
-      usedIdle = true;
-      id = window.requestIdleCallback(() => inject(), { timeout: 5000 });
+    const runAfterLoad = () => {
+      if (cancelled) return;
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(() => inject(), { timeout: 8000 });
+      } else {
+        window.setTimeout(inject, 5500);
+      }
+    };
+
+    if (document.readyState === "complete") {
+      runAfterLoad();
     } else {
-      id = window.setTimeout(inject, 4000);
+      window.addEventListener("load", runAfterLoad, { once: true });
     }
 
     return () => {
       cancelled = true;
-      if (usedIdle) window.cancelIdleCallback(id);
-      else window.clearTimeout(id);
+      window.removeEventListener("load", runAfterLoad);
     };
   }, []);
 

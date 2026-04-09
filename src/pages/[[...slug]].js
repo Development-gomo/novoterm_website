@@ -2,6 +2,7 @@
 
 import SectionRenderer from "../../components/SectionRenderer";
 import StickyPageNav from "../../components/StickyPageNav";
+import LcpHeroPreload from "../../components/LcpHeroPreload";
 import { fetchPages, fetchPageBySlug, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 
@@ -56,6 +57,7 @@ export default function Page({ page, lang, yoastHead }) {
 
   return (
     <main className="w-full">
+      <LcpHeroPreload sections={sections} />
       <YoastHead yoastHead={yoastHead} />
       <SpeakableSchema title={title} summary={summary} />
 

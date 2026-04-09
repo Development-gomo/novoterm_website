@@ -17,12 +17,11 @@
     "swr": "^2.4.1"
   },
   "browserslist": [
-    "chrome >= 92",
-    "firefox >= 90",
-    "safari >= 15.4",
-    "edge >= 92",
-    "not dead",
-    "not ie 11"
+    "chrome >= 100",
+    "edge >= 100",
+    "firefox >= 100",
+    "safari >= 16",
+    "ios_saf >= 16"
   ],
   "devDependencies": {
     "@eslint/eslintrc": "^3",

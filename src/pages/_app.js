@@ -19,7 +19,7 @@ import Footer from "../../components/Footer/Footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-montserrat",
   display: "swap",
   adjustFontFallback: true,
@@ -65,9 +65,11 @@ export default function MyApp({
   const [headerData, setHeaderData] = useState(initialHeader || null);
   const [footerData, setFooterData] = useState(initialFooter || null);
   const [hamburgerMenuData, setHamburgerMenuData] = useState(initialHamburgerMenu || null);
-  const [megaMenuData, setMegaMenuData] = useState(initialMegaMenu || null);
+  const [megaMenuData, setMegaMenuData] = useState(
+    () => initialMegaMenu ?? null
+  );
   useEffect(() => {
-    if (initialMegaMenu) {
+    if (initialMegaMenu != null) {
       setMegaMenuData(initialMegaMenu);
       return;
     }
@@ -167,12 +169,11 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
   const lang = ctx.locale || DEFAULT_LANG;
 
   // Fetch header, menu, footer, hamburger menu, mega menu in parallel on the server
-  const [header, menu, footer, hamburgerMenu, megaMenu] = await Promise.all([
+  const [header, menu, footer, hamburgerMenu] = await Promise.all([
     getHeaderData(lang).catch(() => null),
     getMainMenu(lang).catch(() => null),
     getFooterData(lang).catch(() => null),
     getHamburgerMenu(lang).catch(() => null),
-    getMegaMenu(lang).catch(() => null),
   ]);
 
   let pageProps = {};
@@ -185,6 +186,5 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
     initialHeader: header && menu ? buildHeaderData(header, menu) : null,
     initialFooter: footer,
     initialHamburgerMenu: hamburgerMenu,
-    initialMegaMenu: megaMenu?.items || [],
   };
 };

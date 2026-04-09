@@ -1,9 +1,9 @@
 
 import dynamic from "next/dynamic";
+import HeroSection from "./sections/Homepage/HeroSection";
 
 /* ===================== HOMEPAGE ===================== */
 const HomeHeroFinal = dynamic(() => import("./sections/Homepage/homeherofinal"));
-const HeroSection = dynamic(() => import("./sections/Homepage/HeroSection"));
 const AboutSection = dynamic(() => import("./sections/Homepage/AboutSection"));
 const FullWidthExpertsSection = dynamic(() => import("./sections/Homepage/FullWidthExpertsSection"));
 const CaseStudySection = dynamic(() => import("./sections/Homepage/CaseStudySection"));
