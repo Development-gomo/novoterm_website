@@ -91,10 +91,8 @@ export default function BlogContentSection({ section }) {
       if (!category_id) return;
 
       try {
-const WP_API = process.env.NEXT_PUBLIC_WP_URL;
-
 const res = await fetch(
-  `${WP_API}/wp-json/wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`
+  `/wp-api/wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`
 );
         const data = await res.json();
 

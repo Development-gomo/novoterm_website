@@ -35,7 +35,14 @@ async function getRedirects(origin) {
 }
 
 // ─── Match pathname against redirect list ─────────────────────────────────────
+// Safely decode percent-encoded paths so /%c3%b6 matches /ö
+function decode(str) {
+  try { return decodeURIComponent(str); } catch { return str; }
+}
+
 function matchRedirect(redirects, pathname) {
+  const decodedPathname = decode(pathname);
+
   for (const r of redirects) {
     const source = r.url;
     const destination = r.action_data?.url;
@@ -47,10 +54,12 @@ function matchRedirect(redirects, pathname) {
     const ignoreTrailing = r.match_data?.source?.flag_trailing ?? false;
     const norm = (p) => (ignoreTrailing ? p.replace(/\/$/, "") : p);
 
+    const decodedSource = decode(source);
+
     if (matchType === "url") {
-      if (norm(pathname) === norm(source)) return { destination, code };
+      if (norm(decodedPathname) === norm(decodedSource)) return { destination, code };
     } else if (matchType === "url-nocase") {
-      if (norm(pathname).toLowerCase() === norm(source).toLowerCase())
+      if (norm(decodedPathname).toLowerCase() === norm(decodedSource).toLowerCase())
         return { destination, code };
     } else if (matchType === "regex") {
       try {
