@@ -1,5 +1,27 @@
 import Head from "next/head";
 
+const DEFAULT_SITE_URL = "https://www.novoterm.se";
+
+function safeOrigin(url, fallback = "") {
+  if (!url) return fallback;
+  try {
+    return new URL(url).origin;
+  } catch {
+    return fallback;
+  }
+}
+
+const BACKEND_ORIGIN = safeOrigin(process.env.NEXT_PUBLIC_WP_URL);
+const PUBLIC_ORIGIN = safeOrigin(
+  process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL,
+  DEFAULT_SITE_URL
+);
+
+function mapToPublicOrigin(value) {
+  if (!value || !BACKEND_ORIGIN || BACKEND_ORIGIN === PUBLIC_ORIGIN) return value;
+  return value.split(BACKEND_ORIGIN).join(PUBLIC_ORIGIN);
+}
+
 // ─── YoastHead ────────────────────────────────────────────────────────────────
 // Parses the yoast_head HTML string WordPress/Yoast adds to REST responses and
 // renders each tag individually inside next/head.
@@ -11,7 +33,7 @@ function parseAttrs(tagStr) {
   while ((m = re.exec(tagStr)) !== null) {
     // Map HTML attr names → React prop names where needed
     const key = m[1] === "class" ? "className" : m[1] === "http-equiv" ? "httpEquiv" : m[1];
-    attrs[key] = m[2];
+    attrs[key] = mapToPublicOrigin(m[2]);
   }
   return attrs;
 }
@@ -39,7 +61,7 @@ export function YoastHead({ yoastHead }) {
   [...yoastHead.matchAll(/<script\s([^>]*)>([\s\S]*?)<\/script>/g)].forEach((m, i) => {
     els.push(
       <script key={`ys${i}`} {...parseAttrs(m[1])}
-        dangerouslySetInnerHTML={{ __html: m[2] }} />
+        dangerouslySetInnerHTML={{ __html: mapToPublicOrigin(m[2]) }} />
     );
   });
 

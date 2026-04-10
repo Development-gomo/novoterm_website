@@ -6,10 +6,10 @@ class MyDocument extends Document {
   render() {
     const lang = this.props.__NEXT_DATA__.locale || this.props.__NEXT_DATA__.props.pageProps.lang || DEFAULT_LANG;
 
-    let wpOrigin = "";
+    let siteOrigin = "https://www.novoterm.se";
     try {
-      const base = process.env.NEXT_PUBLIC_WP_URL;
-      if (base) wpOrigin = new URL(base).origin;
+      const base = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL;
+      if (base) siteOrigin = new URL(base).origin;
     } catch {
       /* ignore */
     }
@@ -17,10 +17,10 @@ class MyDocument extends Document {
     return (
       <Html lang={lang}>
         <Head>
-          {wpOrigin ? (
+          {siteOrigin ? (
             <>
-              <link rel="dns-prefetch" href={wpOrigin} />
-              <link rel="preconnect" href={wpOrigin} crossOrigin="" />
+              <link rel="dns-prefetch" href={siteOrigin} />
+              <link rel="preconnect" href={siteOrigin} crossOrigin="" />
             </>
           ) : null}
         </Head>
