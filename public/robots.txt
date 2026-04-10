@@ -1,5 +1,37 @@
-User-agent: *
+User-agent: GPTBot
 Allow: /
 
-Sitemap: https://www.novoterm.se/sitemap.xml
+User-agent: ClaudeBot
+Allow: /
 
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: DeepseekBot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: *
+Disallow: /blogg/?avia*
+Disallow: /feed/
+Disallow: /novotermpanel
+Disallow: */page/*
+
+Sitemap: https://www.novoterm.se/sitemap.xml
