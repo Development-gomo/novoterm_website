@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://novoterm-website.vercel.app/sitemap.xml
+Sitemap: https://www.novoterm.se/sitemap.xml
 

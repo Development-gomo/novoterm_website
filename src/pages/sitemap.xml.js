@@ -86,7 +86,7 @@ export async function getServerSideProps({ res }) {
 ${urls
   .map(
     (u) => `  <url>
-    <loc>${escapeXml(u.loc)}</loc>
+    <loc>https://www.novoterm.se${escapeXml(u.loc)}</loc>
     <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
