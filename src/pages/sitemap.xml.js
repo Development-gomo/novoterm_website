@@ -26,6 +26,7 @@ async function fetchAllPosts(endpoint, lang) {
   }
 }
 
+
 function toW3CDate(dateStr) {
   if (!dateStr) return new Date().toISOString();
   const d = new Date(dateStr);
