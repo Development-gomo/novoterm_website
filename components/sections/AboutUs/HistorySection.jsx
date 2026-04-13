@@ -55,8 +55,9 @@ export default function HistorySection({ section, sectionId, index = 0 }) {
                 <div
                   className="text-white text-[16px] leading-relaxed
                     [&_h3]:text-[24px]
+                    [&_h3]:mb-[24px]
                     [&_h3]:font-semibold
-                    [&_h3]:leading-[48px]
+                    [&_h3]:leading-[32px]
                     [&_p]:leading-[24px]
                     [&_p]:mb-[24px]"
                   dangerouslySetInnerHTML={{ __html: description }}

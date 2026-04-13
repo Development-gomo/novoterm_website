@@ -33,7 +33,7 @@ export default function CaseStudyTestimonialSection({ section, sectionId }) {
               sizes="100vw"
               quality={70}
               loading="lazy"
-              className="object-cover object-center"
+              className="object-cover object-top"
             />
           </div>
           <div

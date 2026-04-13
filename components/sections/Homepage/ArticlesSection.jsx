@@ -88,10 +88,10 @@ export default function ArticlesSection({
     async function loadCategories() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/categories?per_page=100&lang=${lang}`
+          `/wp-api/wp/v2/categories?per_page=100&hide_empty=false&lang=${lang}`
         );
         const data = await res.json();
-        let filtered = data.filter((c) => c.count > 0);
+        let filtered = data;
         // If ACF specifies allowed categories, only show those
         if (allowedCategoryIds.length > 0) {
           filtered = filtered.filter((c) =>

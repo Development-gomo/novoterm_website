@@ -25,7 +25,7 @@ export default function ExpertsCTASection({ section }) {
               rgba(6, 24, 55, 0.21) 13.86%,
               rgba(6, 24, 55, 0.70) 100%
             ),
-            url(${bgUrl}) center / cover no-repeat`
+            url(${bgUrl}) top center / cover no-repeat`
           : undefined,
       }}
     >

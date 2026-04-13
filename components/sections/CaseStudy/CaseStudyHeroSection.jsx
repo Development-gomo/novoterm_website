@@ -71,13 +71,12 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
       </div>
 
       {/* DOWN ARROW */}
-      {/* DOWN ARROW */}
 <div
-  onClick={() =>
-    document
-      .getElementById("next-section")
-      ?.scrollIntoView({ behavior: "smooth" })
-  }
+  onClick={(e) => {
+    const section = e.currentTarget.closest("section");
+    const next = section?.nextElementSibling;
+    if (next) next.scrollIntoView({ behavior: "smooth" });
+  }}
   className="absolute bottom-6 sm:bottom-9 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
 >
   <svg
