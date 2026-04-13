@@ -1,6 +1,6 @@
 import { DEFAULT_LANG, SUPPORTED_LANGS } from "../../lib/api";
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/$/, "");
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.novoterm.se").replace(/\/$/, "");
 const WP_API = (process.env.NEXT_PUBLIC_WP_URL || "").replace(/\/$/, "");
 if (!SITE_URL || !WP_API) {
   console.error("Missing environment variables for sitemap");
