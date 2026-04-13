@@ -16,7 +16,7 @@ const POST_TYPES = [
 ];
 
 async function fetchAllPosts(endpoint, lang) {
-  const url = `${WP_API}/wp-json/wp/v2/${endpoint}?per_page=100&lang=${lang}&_fields=slug,modified`;
+  const url = `${WP_API}/wp-json/wp/v2/${endpoint}?per_page=100&lang=${lang}&_fields=slug,modified,yoast_head_json`;
   try {
     const res = await fetch(url);
     if (!res.ok) return [];
@@ -49,6 +49,8 @@ export async function getServerSideProps({ res }) {
 
       for (const post of posts) {
         const slug = post.slug;
+        // Skip pages marked as noindex in Yoast SEO (WP admin → Yoast → Advanced tab)
+        if (post.yoast_head_json?.robots?.index === "noindex") continue;
         const lastmod = toW3CDate(post.modified);
 
         // Pages: "home" slug → root, others → /slug
@@ -86,7 +88,7 @@ export async function getServerSideProps({ res }) {
 ${urls
   .map(
     (u) => `  <url>
-    <loc>https://www.novoterm.se${escapeXml(u.loc)}</loc>
+    <loc>${escapeXml(u.loc)}</loc>
     <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
