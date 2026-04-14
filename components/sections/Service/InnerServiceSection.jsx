@@ -113,7 +113,7 @@ export default function InnerServiceSection({ section, sectionId, index = 0 }) {
         return (
           <section
             key={i}
-            className="relative pb-0 md:pb-25"
+            className="relative"
             style={{
               minHeight: isMobile ? "auto" : "",
               width: isLg ? 'calc(100% + max(0px, (100vw - 1280px) / 2))' : undefined,
