@@ -1,4 +1,4 @@
-import SectionRenderer from "../../../components/SectionRenderer";
+﻿import SectionRenderer from "../../../components/SectionRenderer";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { resolveLang } from "../../../lib/api";
 

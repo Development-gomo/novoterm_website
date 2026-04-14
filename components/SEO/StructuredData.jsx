@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 const DEFAULT_SITE_URL = "https://www.novoterm.se";
 
@@ -22,6 +23,15 @@ function mapToPublicOrigin(value) {
   return value.split(BACKEND_ORIGIN).join(PUBLIC_ORIGIN);
 }
 
+function toCanonicalUrl(asPath) {
+  if (!asPath) return PUBLIC_ORIGIN;
+
+  const [pathOnly] = asPath.split(/[?#]/);
+  if (!pathOnly || pathOnly === "/") return `${PUBLIC_ORIGIN}/`;
+
+  return `${PUBLIC_ORIGIN}${pathOnly}`;
+}
+
 // ─── YoastHead ────────────────────────────────────────────────────────────────
 // Parses the yoast_head HTML string WordPress/Yoast adds to REST responses and
 // renders each tag individually inside next/head.
@@ -39,9 +49,12 @@ function parseAttrs(tagStr) {
 }
 
 export function YoastHead({ yoastHead }) {
+  const router = useRouter();
+
   if (!yoastHead) return null;
 
   const els = [];
+  const canonicalUrl = toCanonicalUrl(router.asPath);
 
   // <title>
   const titleM = yoastHead.match(/<title>([\s\S]*?)<\/title>/);
@@ -49,12 +62,30 @@ export function YoastHead({ yoastHead }) {
 
   // <meta ...>
   [...yoastHead.matchAll(/<meta\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
-    els.push(<meta key={`ym${i}`} {...parseAttrs(m[0])} />);
+    const attrs = parseAttrs(m[0]);
+    const metaName = attrs.name?.toLowerCase();
+    const metaProperty = attrs.property?.toLowerCase();
+
+    if (metaProperty === "og:url" || metaName === "twitter:url") {
+      return;
+    }
+
+    els.push(<meta key={`ym${i}`} {...attrs} />);
   });
 
   // <link ...>
   [...yoastHead.matchAll(/<link\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
-    els.push(<link key={`yl${i}`} {...parseAttrs(m[0])} />);
+    const attrs = parseAttrs(m[0]);
+
+    if (attrs.rel?.toLowerCase() === "canonical") {
+      return;
+    }
+
+    if (attrs.href) {
+      attrs.href = mapToPublicOrigin(attrs.href);
+    }
+
+    els.push(<link key={`yl${i}`} {...attrs} />);
   });
 
   // <script type="application/ld+json">
@@ -64,6 +95,9 @@ export function YoastHead({ yoastHead }) {
         dangerouslySetInnerHTML={{ __html: mapToPublicOrigin(m[2]) }} />
     );
   });
+
+  els.push(<link key="canonical" rel="canonical" href={canonicalUrl} />);
+  els.push(<meta key="og-url" property="og:url" content={canonicalUrl} />);
 
   return <Head>{els}</Head>;
 }
