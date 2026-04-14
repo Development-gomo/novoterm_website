@@ -3,7 +3,7 @@
 import SectionRenderer from "../../components/SectionRenderer";
 import StickyPageNav from "../../components/StickyPageNav";
 import LcpHeroPreload from "../../components/LcpHeroPreload";
-import { fetchPages, fetchPageBySlug, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang } from "../../lib/api";
+import { buildSiteUrl, fetchPages, fetchPageBySlug, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 
 // Generate paths for both languages with locale so Next.js i18n
@@ -51,6 +51,8 @@ export async function getStaticProps({ params, locale }) {
 export default function Page({ page, lang, yoastHead }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
+  const pagePath = page?.slug === "home" ? "/" : `/${page?.slug || ""}`;
+  const canonicalUrl = buildSiteUrl(withLocalePrefix(pagePath, lang));
 
   // Unified page builder field - all pages use page_sections
   const sections = page?.acf?.page_sections || [];
@@ -58,7 +60,7 @@ export default function Page({ page, lang, yoastHead }) {
   return (
     <main className="w-full">
       <LcpHeroPreload sections={sections} />
-      <YoastHead yoastHead={yoastHead} />
+      <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
       <SpeakableSchema title={title} summary={summary} />
 
       {/* RENDER SECTIONS */}

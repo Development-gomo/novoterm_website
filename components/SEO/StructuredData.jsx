@@ -1,5 +1,4 @@
 import Head from "next/head";
-import { useRouter } from "next/router";
 
 const DEFAULT_SITE_URL = "https://www.novoterm.se";
 
@@ -23,15 +22,6 @@ function mapToPublicOrigin(value) {
   return value.split(BACKEND_ORIGIN).join(PUBLIC_ORIGIN);
 }
 
-function toCanonicalUrl(asPath) {
-  if (!asPath) return PUBLIC_ORIGIN;
-
-  const [pathOnly] = asPath.split(/[?#]/);
-  if (!pathOnly || pathOnly === "/") return `${PUBLIC_ORIGIN}/`;
-
-  return `${PUBLIC_ORIGIN}${pathOnly}`;
-}
-
 // ─── YoastHead ────────────────────────────────────────────────────────────────
 // Parses the yoast_head HTML string WordPress/Yoast adds to REST responses and
 // renders each tag individually inside next/head.
@@ -48,13 +38,10 @@ function parseAttrs(tagStr) {
   return attrs;
 }
 
-export function YoastHead({ yoastHead }) {
-  const router = useRouter();
-
+export function YoastHead({ yoastHead, canonicalUrl }) {
   if (!yoastHead) return null;
 
   const els = [];
-  const canonicalUrl = toCanonicalUrl(router.asPath);
 
   // <title>
   const titleM = yoastHead.match(/<title>([\s\S]*?)<\/title>/);
@@ -66,7 +53,7 @@ export function YoastHead({ yoastHead }) {
     const metaName = attrs.name?.toLowerCase();
     const metaProperty = attrs.property?.toLowerCase();
 
-    if (metaProperty === "og:url" || metaName === "twitter:url") {
+    if (canonicalUrl && (metaProperty === "og:url" || metaName === "twitter:url")) {
       return;
     }
 
@@ -77,7 +64,7 @@ export function YoastHead({ yoastHead }) {
   [...yoastHead.matchAll(/<link\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
     const attrs = parseAttrs(m[0]);
 
-    if (attrs.rel?.toLowerCase() === "canonical") {
+    if (canonicalUrl && attrs.rel?.toLowerCase() === "canonical") {
       return;
     }
 
@@ -96,8 +83,10 @@ export function YoastHead({ yoastHead }) {
     );
   });
 
-  els.push(<link key="canonical" rel="canonical" href={canonicalUrl} />);
-  els.push(<meta key="og-url" property="og:url" content={canonicalUrl} />);
+  if (canonicalUrl) {
+    els.push(<link key="canonical" rel="canonical" href={canonicalUrl} />);
+    els.push(<meta key="og-url" property="og:url" content={canonicalUrl} />);
+  }
 
   return <Head>{els}</Head>;
 }

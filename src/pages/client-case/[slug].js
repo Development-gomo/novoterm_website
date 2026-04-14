@@ -1,7 +1,7 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyPageNav from "../../../components/StickyPageNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { resolveLang } from "../../../lib/api";
+import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
@@ -34,13 +34,14 @@ export async function getServerSideProps({ params, locale }) {
   };
 }
 
-export default function CaseStudyPage({ caseStudy, currentSlug, yoastHead }) {
+export default function CaseStudyPage({ caseStudy, currentSlug, yoastHead, lang }) {
   const title = caseStudy?.title?.rendered || "";
   const summary = caseStudy?.acf?.article_summary || "";
+  const canonicalUrl = buildSiteUrl(withLocalePrefix(`/client-case/${currentSlug}`, lang));
 
   return (
     <>
-      <YoastHead yoastHead={yoastHead} />
+      <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
       <SpeakableSchema title={title} summary={summary} />
       {caseStudy?.acf?.sections && (
         <>

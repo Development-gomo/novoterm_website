@@ -1,7 +1,7 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { resolveLang } from "../../../lib/api";
+import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
@@ -32,14 +32,15 @@ export async function getServerSideProps({ params, locale }) {
     },
   };
 }
-export default function SingleService({ service, yoastHead }) {
+export default function SingleService({ service, yoastHead, lang }) {
   const sections = service.acf?.sections || [];
   const title = service.title?.rendered || "";
   const summary = service.acf?.article_summary || "";
+  const canonicalUrl = buildSiteUrl(withLocalePrefix(`/services/${service?.slug || ""}`, lang));
 
   return (
     <main>
-      <YoastHead yoastHead={yoastHead} />
+      <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
       <SpeakableSchema title={title} summary={summary} />
       {sections.length > 0 ? (
         <>

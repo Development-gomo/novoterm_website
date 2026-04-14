@@ -1,7 +1,7 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyIndustryNav from "../../../components/StickyIndustryNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { resolveLang } from "../../../lib/api";
+import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
@@ -27,12 +27,13 @@ export async function getServerSideProps({ params, locale }) {
   return { props: { industry: data[0], translations: data[0].translations || null, yoastHead: data[0].yoast_head || null } };
 }
 
-export default function SingleIndustry({ industry, yoastHead }) {
+export default function SingleIndustry({ industry, yoastHead, lang }) {
   const sections = industry.acf?.sections || [];
+  const canonicalUrl = buildSiteUrl(withLocalePrefix(`/industry/${industry?.slug || ""}`, lang));
 
   return (
     <main>
-      <YoastHead yoastHead={yoastHead} />
+      <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
       <SpeakableSchema title={industry.title?.rendered || ""} summary={industry.acf?.article_summary || ""} />
       {sections.length > 0 ? (
         <>
