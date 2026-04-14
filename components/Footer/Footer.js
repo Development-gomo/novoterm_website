@@ -144,14 +144,14 @@ export default function Footer({ data }) {
 
         {/* ROW 2 — LOGO CENTERED */}
         {branding?.footer_logo_large && (
-          <div className="mt-20 flex justify-center">
+          <div className="mt-20 w-full">
             <Image
               src={branding.footer_logo_large}
               alt="Footer Logo"
-              width={360}
-              height={52}
-              sizes="(max-width: 768px) 200px, 360px"
-              className="h-auto max-w-[200px] sm:max-w-[280px] md:max-w-[360px] w-full object-contain"
+              width={1440}
+              height={208}
+              sizes="100vw"
+              className="block h-auto w-full max-w-none object-contain"
             />
           </div>
         )}

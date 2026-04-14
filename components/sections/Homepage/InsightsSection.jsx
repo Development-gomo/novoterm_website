@@ -35,9 +35,9 @@
 
             const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
             const image =
-                fm?.media_details?.sizes?.medium_large?.source_url ||
                 fm?.media_details?.sizes?.large?.source_url ||
                 fm?.source_url ||
+                fm?.media_details?.sizes?.medium_large?.source_url ||
                 "/default-blog.jpg";
 
             // DATE
