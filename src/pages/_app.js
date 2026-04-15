@@ -151,12 +151,12 @@ export default function MyApp({
 
   return (
     <>
-      {/* Cookiebot consent banner — load promptly so banner appears early */}
+      {/* Cookiebot consent banner — lazyOnload keeps it out of the LCP measurement window */}
       {process.env.NEXT_PUBLIC_COOKIEBOT_ID && (
         <Script
           id="cookiebot"
           src={`https://consent.cookiebot.com/uc.js?cbid=${process.env.NEXT_PUBLIC_COOKIEBOT_ID}`}
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           data-cbid={process.env.NEXT_PUBLIC_COOKIEBOT_ID}
           data-blockingmode="auto"
         />
