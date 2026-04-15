@@ -15,6 +15,7 @@ import Script from "next/script";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import DeferredGtm from "../../components/DeferredGtm";
+import DeferredCookiebot from "../../components/DeferredCookiebot";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 
 import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
@@ -151,16 +152,9 @@ export default function MyApp({
 
   return (
     <>
-      {/* Cookiebot consent banner — load promptly so banner appears early */}
-      {process.env.NEXT_PUBLIC_COOKIEBOT_ID && (
-        <Script
-          id="cookiebot"
-          src={`https://consent.cookiebot.com/uc.js?cbid=${process.env.NEXT_PUBLIC_COOKIEBOT_ID}`}
-          strategy="afterInteractive"
-          data-cbid={process.env.NEXT_PUBLIC_COOKIEBOT_ID}
-          data-blockingmode="auto"
-        />
-      )}
+      {/* Cookiebot — injected on first user interaction to prevent the consent
+          banner from becoming the LCP element (4s+ render delay penalty) */}
+      <DeferredCookiebot />
 
       {/* GTM — consent-gated via DeferredGtm + useCookieConsent */}
       <DeferredGtm />

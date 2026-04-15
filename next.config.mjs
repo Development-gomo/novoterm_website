@@ -1,25 +1,8 @@
 /** @type {import('next').NextConfig} */
 const WP_URL = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, '') || '';
 
-// next/image only loads remotes from these hosts (see https://nextjs.org/docs/messages/next-image-unconfigured-host)
-const imageHostnames = new Set(["backend.novoterm.se", "gomostaging.com"]);
-if (WP_URL) {
-  try {
-    imageHostnames.add(new URL(WP_URL).hostname);
-  } catch {
-    /* ignore invalid NEXT_PUBLIC_WP_URL */
-  }
-}
-
 const nextConfig = {
   reactStrictMode: true,
-
-  compiler: {
-    removeConsole:
-      process.env.NODE_ENV === "production"
-        ? { exclude: ["error", "warn"] }
-        : false,
-  },
 
   experimental: {
     optimizePackageImports: ["swiper", "gsap", "framer-motion"],
@@ -33,15 +16,13 @@ const nextConfig = {
   },
 
   images: {
-    formats: ["image/avif", "image/webp"],
-    qualities: [55, 60, 70, 75],
-    minimumCacheTTL: 60 * 60 * 24 * 7,
-    deviceSizes: [320, 384, 640, 750, 828, 1080, 1200, 1280, 1920],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    remotePatterns: [...imageHostnames].map((hostname) => ({
-      protocol: "https",
-      hostname,
-    })),
+      formats: ["image/avif", "image/webp"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "backend.novoterm.se",
+      },
+    ],
   },
 
   async rewrites() {
