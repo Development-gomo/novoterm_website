@@ -17,7 +17,7 @@ export default function ServicesHeroSection({
   return (
   <section
       id={sectionId}
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
+      className="relative w-full min-h-svh flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
     >
       {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}
@@ -39,7 +39,7 @@ export default function ServicesHeroSection({
         style={{ background: "linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)" }}
       />
       {/* CONTENT WRAPPER */}
-      <div className="relative z-[2] w-full web-width  px-6  py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
+      <div className="relative z-[2] w-full web-width  px-6  pb-28 pt-24 sm:py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
 
         {/* HEADING */}
         {heading && (

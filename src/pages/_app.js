@@ -152,15 +152,12 @@ export default function MyApp({
   return (
     <>
       {/* Cookiebot consent banner — lazyOnload keeps it out of the LCP measurement window */}
-      {process.env.NEXT_PUBLIC_COOKIEBOT_ID && (
-        <Script
-          id="cookiebot"
-          src={`https://consent.cookiebot.com/uc.js?cbid=${process.env.NEXT_PUBLIC_COOKIEBOT_ID}`}
-          strategy="lazyOnload"
-          data-cbid={process.env.NEXT_PUBLIC_COOKIEBOT_ID}
-          data-blockingmode="auto"
-        />
-      )}
+      <Script
+        id="Cookiebot"
+        src="https://consent.cookiebot.com/uc.js"
+        data-cbid="a20b27f4-0588-45c4-b8bf-2eba20b6700d"
+        strategy="lazyOnload"
+      />
 
       {/* GTM — consent-gated via DeferredGtm + useCookieConsent */}
       <DeferredGtm />
