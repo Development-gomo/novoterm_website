@@ -17,22 +17,17 @@ export default function CaseStudySection({
   display_mode = "slider_single",
 }) {
   const [slides, setSlides] = useState([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
 
   useEffect(() => {
-    let cancelled = false;
     async function getData() {
-      setLoading(true);
-      setSlides([]);
       try {
         const res = await fetch(
           `/wp-api/wp/v2/case_study?acf_format=standard&lang=${lang}`
         );
 
         const data = await res.json();
-        if (cancelled) return;
 
         const formatted = data.map(post => ({
           slug: post.slug,
@@ -49,30 +44,26 @@ export default function CaseStudySection({
         }));
 
         setSlides(formatted);
+
       } catch (error) {
         console.error("CASE STUDY FETCH ERROR:", error);
-      } finally {
-        if (!cancelled) setLoading(false);
       }
     }
 
     getData();
-    return () => { cancelled = true; };
   }, [lang]);
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-[#E9F0FF]">
       <div className="web-width mx-auto px-6 md:px-0">
 
-        {/* DOT LABEL — only when section_title exists */}
-        {section_title && (
-          <div className="flex items-center gap-2 mb-6">
-            <DotIndicator/>
-            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
-              {section_title}
-            </span>
-          </div>
-        )}
+        {/* DOT LABEL */}
+        <div className="flex items-center gap-2 mb-6">
+          <DotIndicator/>
+          <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
+            {section_title}
+          </span>
+        </div>
 
         {/* HEADING */}
         <h2
@@ -86,34 +77,18 @@ export default function CaseStudySection({
           dangerouslySetInnerHTML={{ __html: paragraph }}
         />
 
-        {/* ===== LOADING STATE ===== */}
-        {loading && (
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((n) => (
-              <div key={n} className="rounded-[3px] overflow-hidden bg-[#061837] animate-pulse">
-                <div className="h-[180px] bg-[#0a2548]" />
-                <div className="p-6 space-y-4">
-                  <div className="h-6 bg-[#0a2548] rounded w-3/4" />
-                  <div className="h-4 bg-[#0a2548] rounded w-1/2" />
-                  <div className="h-10 bg-[#0a2548] rounded w-32 mt-6" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
         {/* ===== DISPLAY MODES ===== */}
 
         {/* Single large slider (1 slide at a time — homepage style) */}
-        {!loading && display_mode === "slider_single" && slides.length > 0 && (
-          <LazyWhenVisible key={`single-${lang}`} minHeight={420}>
+        {display_mode === "slider_single" && slides.length > 0 && (
+          <LazyWhenVisible minHeight={420}>
             <CaseStudySlider slides={slides} />
           </LazyWhenVisible>
         )}
 
         {/* Multi-card slider (3 visible — casestudy style) */}
-        {!loading && display_mode === "slider_multi" && slides.length > 0 && (
-          <LazyWhenVisible key={`multi-${lang}`} minHeight={480}>
+        {display_mode === "slider_multi" && slides.length > 0 && (
+          <LazyWhenVisible minHeight={480}>
             <div className="mt-10">
               <CaseStudyCardSlider slides={slides} />
             </div>
@@ -121,7 +96,7 @@ export default function CaseStudySection({
         )}
 
         {/* Grid — 3 columns using casestudy card design */}
-        {!loading && display_mode === "grid" && slides.length > 0 && (
+        {display_mode === "grid" && slides.length > 0 && (
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {slides.map((slide, i) => (
               <div key={i} className="rounded-[3px] overflow-hidden bg-[#061837] flex flex-col">

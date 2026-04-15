@@ -23,9 +23,11 @@ class MyDocument extends Document {
               <link rel="preconnect" href={siteOrigin} crossOrigin="" />
             </>
           ) : null}
-          {/* DNS hints only — no preconnect to avoid early TLS handshakes Lighthouse penalises */}
+          {/* Early connection hints for GTM and Cookiebot */}
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="dns-prefetch" href="https://consent.cookiebot.com" />
+          <link rel="preconnect" href="https://consent.cookiebot.com" />
         </Head>
 
         <body className="antialiased">
