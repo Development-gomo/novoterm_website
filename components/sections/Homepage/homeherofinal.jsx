@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
 
 export default function HeroSection({
   background_image,
@@ -97,13 +99,26 @@ export default function HeroSection({
     <section
       ref={sceneRef}
       className="relative w-full min-h-screen overflow-hidden flex items-center"
-      style={{
-        cursor: "none",
-        backgroundImage: `linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%), url(${bgUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      style={{ cursor: "none" }}
     >
+      {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}
+      {bgUrl && (
+        <Image
+          src={bgUrl}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          quality={HERO_IMAGE_QUALITY}
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      )}
+      {/* Dark gradient overlay — sits above image (z-1), below content layers (z-10+) */}
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{ background: "linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%)" }}
+      />
       {/* CONTENT WRAPPER */}
       <div className="relative w-full min-h-[100vh] web-width px-6 py-24 lg:px-48 flex flex-col justify-center">
 

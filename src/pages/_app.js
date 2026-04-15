@@ -17,18 +17,18 @@ import Footer from "../../components/Footer/Footer";
 import DeferredGtm from "../../components/DeferredGtm";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 
-import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
+import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
-const archivo = Archivo({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-archivo",
-  display: "swap",
-});
+// const archivo = Archivo({
+//   subsets: ["latin"],
+//   weight: ["400", "600", "700"],
+//   variable: "--font-archivo",
+//   display: "swap",
+// });
 
 const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-montserrat",
   display: "swap",
 });
@@ -165,7 +165,7 @@ export default function MyApp({
       {/* GTM — consent-gated via DeferredGtm + useCookieConsent */}
       <DeferredGtm />
 
-    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} ${archivo.variable}`}>
+    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
       {headerData && (
         <Header
           {...headerData}

@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
 
 export default function ServicesHeroSection({
   heading,
@@ -22,18 +24,27 @@ export default function ServicesHeroSection({
       id={sectionId}
       className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
-      style={{
-        backgroundImage: bgUrl
-          ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
-          : `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)`,
-        backgroundColor: "lightgray",
-        backgroundPosition: "top center",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-      }}
     >
+      {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}
+      {bgUrl && (
+        <Image
+          src={bgUrl}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          quality={HERO_IMAGE_QUALITY}
+          sizes="100vw"
+          className="object-cover object-top"
+        />
+      )}
+      {/* Dark gradient overlay */}
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{ background: "linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%)" }}
+      />
       {/* CONTENT WRAPPER */}
-      <div className="w-full web-width  px-6  py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
+      <div className="relative z-[2] w-full web-width  px-6  py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
 
         {/* HEADING */}
         {heading && (

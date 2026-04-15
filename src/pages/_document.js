@@ -17,6 +17,10 @@ class MyDocument extends Document {
     return (
       <Html lang={lang}>
         <Head>
+          {/* Google Fonts CDN — preconnect so font files start loading before render */}
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+
           {siteOrigin ? (
             <>
               <link rel="dns-prefetch" href={siteOrigin} />

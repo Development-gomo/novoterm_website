@@ -1,5 +1,7 @@
+import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
+import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
 
 export default function HeroSection({
   background_image,
@@ -19,14 +21,27 @@ export default function HeroSection({
   return (
     <section
       className="relative w-full min-h-screen flex items-center overflow-hidden"
-      style={{
-        backgroundImage: `linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%), url(${bgUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center center", 
-      }}
     >
+      {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}
+      {bgUrl && (
+        <Image
+          src={bgUrl}
+          alt=""
+          fill
+          priority
+          fetchPriority="high"
+          quality={HERO_IMAGE_QUALITY}
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      )}
+      {/* Dark gradient overlay */}
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{ background: "linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%)" }}
+      />
       {/* CONTENT WRAPPER */}
-      <div className="relative min-h-[100vh] web-width px-6 py-24 lg:py-36 lg:px-48 h-full flex flex-col items-start justify-center lg:justify-start">
+      <div className="relative z-[2] min-h-[100vh] web-width px-6 py-24 lg:py-36 lg:px-48 h-full flex flex-col items-start justify-center lg:justify-start">
 
         {/* BLOCK 1 – heading from ACF */}
         <div className="text-left">
