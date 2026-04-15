@@ -17,21 +17,10 @@ class MyDocument extends Document {
     return (
       <Html lang={lang}>
         <Head>
-          {/* Google Fonts CDN — preconnect so font files start loading before render */}
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-
-          {siteOrigin ? (
-            <>
-              <link rel="dns-prefetch" href={siteOrigin} />
-              <link rel="preconnect" href={siteOrigin} crossOrigin="" />
-            </>
-          ) : null}
-          {/* Early connection hints for GTM and Cookiebot */}
+          {siteOrigin ? <link rel="dns-prefetch" href={siteOrigin} /> : null}
+          {/* Keep third-party hints lightweight so they do not contend with LCP. */}
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-          <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="dns-prefetch" href="https://consent.cookiebot.com" />
-          <link rel="preconnect" href="https://consent.cookiebot.com" />
         </Head>
 
         <body className="antialiased">

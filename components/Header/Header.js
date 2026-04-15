@@ -107,8 +107,6 @@ export default function Header({
               height={32}
               sizes="(max-width: 1024px) 148px, 186px"
               className="h-7 md:h-[30px] lg:h-8 w-auto"
-              priority
-              fetchPriority="high"
             />
           )}
         </Link>
