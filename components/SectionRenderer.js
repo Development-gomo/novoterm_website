@@ -78,7 +78,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], currentSlug, pageType, postAcf }) {
+export default function SectionRenderer({ sections = [], currentSlug, pageType, postAcf, initialArticles }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -220,6 +220,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType, 
             category_filter={block.category_filter}
             max_posts={block.max_posts}
             cta_text={block.cta_text}
+            initialArticles={initialArticles}
           />
         );
 

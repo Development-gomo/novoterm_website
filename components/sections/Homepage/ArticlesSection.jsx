@@ -49,6 +49,7 @@ export default function ArticlesSection({
   category_filter,
   max_posts,
   cta_text,
+  initialArticles,
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
@@ -60,16 +61,38 @@ export default function ArticlesSection({
     ? [String(category_filter.term_id || category_filter)]
     : [];
 
+  // Pre-process SSR data for instant initial render
+  const ssrData = (() => {
+    if (!initialArticles?.posts?.length) return null;
+    const formatted = initialArticles.posts.map((p) => formatPost(p, lang));
+    return {
+      featured: formatted[0] || null,
+      grid: formatted.slice(1, 7),
+      totalPages: initialArticles.totalPages || 1,
+    };
+  })();
+
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [featuredPost, setFeaturedPost] = useState(null);
-  const [gridPosts, setGridPosts] = useState([]);
+  const [featuredPost, setFeaturedPost] = useState(ssrData?.featured || null);
+  const [gridPosts, setGridPosts] = useState(ssrData?.grid || []);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
+  const [hasMore, setHasMore] = useState(
+    ssrData ? (ssrData.featured ? 1 : 0) + ssrData.grid.length < (max_posts || 50) && 1 < ssrData.totalPages : false
+  );
   const [loading, setLoading] = useState(false);
-  const seenIdsRef = useRef(new Set());
+  const seenIdsRef = useRef(
+    new Set(
+      ssrData
+        ? [
+            ...(ssrData.featured ? [ssrData.featured.id] : []),
+            ...ssrData.grid.map((p) => p.id),
+          ]
+        : []
+    )
+  );
 
   const limit = max_posts || 50;
 
@@ -173,8 +196,16 @@ export default function ArticlesSection({
     [lang, selectedCategories, limit]
   );
 
+  // Track whether initial SSR data has been consumed
+  const ssrConsumedRef = useRef(false);
+
   // Initial load & category change
   useEffect(() => {
+    // Skip client fetch on first mount if we already have SSR data
+    if (ssrData && !ssrConsumedRef.current && selectedCategories.length === 0) {
+      ssrConsumedRef.current = true;
+      return;
+    }
     fetchPosts(1, true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, selectedCategories]);

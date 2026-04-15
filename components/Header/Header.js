@@ -51,9 +51,9 @@ export default function Header({
       : ""
   );
   const router = useRouter();
+// Blog/article single pages have a light hero, so header needs solid bg from the start
+  const isBlogSingle = /^\/(blog|articles|artiklar)\/.+/.test(router.asPath);
 
-  // Blog single pages have a light hero, so header needs solid bg from the start
-  const isBlogSingle = /^\/blog\/.+/.test(router.asPath);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);

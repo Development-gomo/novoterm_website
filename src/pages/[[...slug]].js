@@ -37,18 +37,65 @@ export async function getStaticProps({ params, locale }) {
 
   if (!page) return { notFound: true };
 
+  // Pre-fetch initial articles if any articles_section exists on this page
+  let initialArticles = null;
+  const sections = page?.acf?.page_sections || [];
+  const hasArticlesSection = sections.some(
+    (s) => s?.acf_fc_layout === "articles_section"
+  );
+  if (hasArticlesSection) {
+    try {
+      const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
+      const res = await fetch(
+        `${wpUrl}/wp-json/wp/v2/posts?_embed&lang=${lang}&per_page=7&page=1&orderby=date&order=desc`
+      );
+      if (res.ok) {
+        const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
+        const rawPosts = await res.json();
+        // Trim to only the fields ArticlesSection.formatPost() needs
+        const posts = (rawPosts || []).map((p) => {
+          const fm = p._embedded?.["wp:featuredmedia"]?.[0];
+          return {
+            id: p.id,
+            slug: p.slug,
+            date: p.date,
+            title: { rendered: p.title?.rendered || "" },
+            excerpt: { rendered: p.excerpt?.rendered || "" },
+            content: { rendered: p.content?.rendered || "" },
+            _embedded: {
+              "wp:term": [[{ name: p._embedded?.["wp:term"]?.[0]?.[0]?.name || "General" }]],
+              "wp:featuredmedia": fm ? [{
+                source_url: fm.source_url || "",
+                media_details: {
+                  sizes: {
+                    medium_large: { source_url: fm.media_details?.sizes?.medium_large?.source_url || "" },
+                    large: { source_url: fm.media_details?.sizes?.large?.source_url || "" },
+                  },
+                },
+              }] : [],
+            },
+          };
+        });
+        initialArticles = { posts, totalPages };
+      }
+    } catch (e) {
+      console.error("SSR articles prefetch failed:", e);
+    }
+  }
+
   return {
     props: {
       page,
       lang,
       translations: page.translations || null,
       yoastHead: page.yoast_head || null,
+      initialArticles,
     },
     revalidate: 60
   };
 }
 
-export default function Page({ page, lang, yoastHead }) {
+export default function Page({ page, lang, yoastHead, initialArticles }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
   const pagePath = page?.slug === "home" ? "/" : `/${page?.slug || ""}`;
@@ -67,7 +114,7 @@ export default function Page({ page, lang, yoastHead }) {
       {sections.length ? (
         <>
           {page?.slug !== "home" && <StickyPageNav sections={sections} />}
-          <SectionRenderer sections={sections} lang={lang} />
+          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} />
         </>
       ) : (
         <div>No sections found</div>
