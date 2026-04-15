@@ -157,6 +157,7 @@ export default function MyApp({
         src="https://consent.cookiebot.com/uc.js"
         data-cbid="a20b27f4-0588-45c4-b8bf-2eba20b6700d"
         strategy="lazyOnload"
+        async
       />
 
       {/* GTM — consent-gated via DeferredGtm + useCookieConsent */}
