@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,7 +6,6 @@ import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG } from "../../../lib/api";
 
 const POSTS_PER_PAGE = 6;
-const FEATURED_POST_COUNT = 1;
 
 function formatPost(post, lang) {
   const category =
@@ -16,7 +15,7 @@ function formatPost(post, lang) {
     fm?.media_details?.sizes?.medium_large?.source_url ||
     fm?.media_details?.sizes?.large?.source_url ||
     fm?.source_url ||
-    null;
+    "/default-blog.jpg";
   // Use Swedish or English month names based on lang
   const dateLocale = lang === "sv" ? "sv-SE" : "en-US";
   const date = new Date(post.date).toLocaleDateString(dateLocale, {
@@ -55,14 +54,11 @@ export default function ArticlesSection({
   const lang = router.locale || DEFAULT_LANG;
 
   // category_filter from ACF can be a single term or an array of terms
-  const allowedCategoryIds = useMemo(
-    () => (Array.isArray(category_filter)
-      ? category_filter.map((term) => String(term.term_id || term))
-      : category_filter
-      ? [String(category_filter.term_id || category_filter)]
-      : []),
-    [category_filter]
-  );
+  const allowedCategoryIds = Array.isArray(category_filter)
+    ? category_filter.map((t) => String(t.term_id || t))
+    : category_filter
+    ? [String(category_filter.term_id || category_filter)]
+    : [];
 
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -73,11 +69,9 @@ export default function ArticlesSection({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
-  const activeRequestRef = useRef(0);
+  const seenIdsRef = useRef(new Set());
 
-  const limit = Number(max_posts) || 50;
-  const gridLimit = Math.max(0, limit - FEATURED_POST_COUNT);
-  const pageSize = Math.max(1, Math.min(limit, POSTS_PER_PAGE + FEATURED_POST_COUNT));
+  const limit = max_posts || 50;
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -111,7 +105,7 @@ export default function ArticlesSection({
       }
     }
     loadCategories();
-  }, [allowedCategoryIds, lang]);
+  }, [lang]);
 
   const toggleCategory = (catId) => {
     setSelectedCategories((prev) =>
@@ -121,39 +115,26 @@ export default function ArticlesSection({
     );
   };
 
-  // Fetch posts
+  // Fetch posts — always use the same per_page so WordPress pagination never overlaps between calls
   const fetchPosts = useCallback(
     async (pageNum, reset = false) => {
-      const requestId = ++activeRequestRef.current;
       setLoading(true);
-
-      if (reset) {
-        setFeaturedPost(null);
-        setGridPosts([]);
-        setHasMore(false);
-        setPage(1);
-      }
-
       try {
-        let endpoint = `/wp-api/wp/v2/posts?_embed&lang=${lang}&per_page=${pageSize}&page=${pageNum}&orderby=date&order=desc`;
+        // Keep per_page identical on every request: 1 featured slot + 6 grid slots
+        const PER_PAGE = POSTS_PER_PAGE + 1; // 7
+        let endpoint = `/wp-api/wp/v2/posts?_embed&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`;
 
         if (selectedCategories.length > 0) {
           endpoint += `&categories=${selectedCategories.join(",")}`;
         }
 
         const res = await fetch(endpoint);
-        if (!res.ok) {
-          throw new Error(`Failed to fetch posts: ${res.status}`);
-        }
-
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
         const data = await res.json();
 
-        if (requestId !== activeRequestRef.current) {
-          return;
-        }
-
         if (!Array.isArray(data)) {
+          setLoading(false);
           return;
         }
 
@@ -161,44 +142,35 @@ export default function ArticlesSection({
 
         if (reset) {
           const featured = formatted[0] || null;
-          const grid = formatted.slice(FEATURED_POST_COUNT, FEATURED_POST_COUNT + gridLimit);
+          // slice(1, PER_PAGE) gives exactly POSTS_PER_PAGE (6) grid posts
+          const grid = formatted.slice(1, PER_PAGE);
+          // Record every shown ID so load-more can deduplicate reliably
+          seenIdsRef.current = new Set([
+            ...(featured ? [featured.id] : []),
+            ...grid.map((p) => p.id),
+          ]);
           setFeaturedPost(featured);
           setGridPosts(grid);
           setPage(1);
-
-          const totalShown = (featured ? FEATURED_POST_COUNT : 0) + grid.length;
-          setHasMore(totalShown < limit && pageNum < totalPages);
+          setHasMore((featured ? 1 : 0) + grid.length < limit && 1 < totalPages);
         } else {
-          const filtered = formatted.filter((post) => post.id !== featuredPost?.id);
+          // Deduplicate against every previously shown post (featured + all grid pages)
+          // Cap to POSTS_PER_PAGE (6) per load-more batch so exactly 6 new cards appear
+          const newPosts = formatted
+            .filter((p) => !seenIdsRef.current.has(p.id))
+            .slice(0, POSTS_PER_PAGE);
+          newPosts.forEach((p) => seenIdsRef.current.add(p.id));
 
-          setGridPosts((prev) => {
-            const seenIds = new Set(prev.map((post) => post.id));
-            const merged = [...prev];
-
-            for (const post of filtered) {
-              if (!seenIds.has(post.id)) {
-                seenIds.add(post.id);
-                merged.push(post);
-              }
-            }
-
-            return merged.slice(0, gridLimit);
-          });
-
-          const currentTotal = (featuredPost ? FEATURED_POST_COUNT : 0) + Math.min(gridPosts.length + filtered.length, gridLimit);
-          setHasMore(currentTotal < limit && pageNum < totalPages);
+          setGridPosts((prev) => [...prev, ...newPosts].slice(0, limit - 1));
           setPage(pageNum);
+          setHasMore(seenIdsRef.current.size < limit && pageNum < totalPages);
         }
       } catch (e) {
         console.error("ARTICLES FETCH ERROR:", e);
-      } finally {
-        if (requestId === activeRequestRef.current) {
-          setLoading(false);
-        }
       }
+      setLoading(false);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [featuredPost?.id, gridLimit, gridPosts.length, lang, limit, pageSize, selectedCategories]
+    [lang, selectedCategories, limit]
   );
 
   // Initial load & category change
@@ -208,9 +180,8 @@ export default function ArticlesSection({
   }, [lang, selectedCategories]);
 
   const handleLoadMore = () => {
-    if (loading) return;
-
     const nextPage = page + 1;
+    setPage(nextPage);
     fetchPosts(nextPage, false);
   };
 
@@ -296,17 +267,15 @@ export default function ArticlesSection({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[3px] overflow-hidden border border-[#D1D9E6]">
               {/* Left — Image */}
               <div className="relative h-[280px] md:h-[420px]">
-                {featuredPost.image && (
-                  <Image
-                    src={featuredPost.image}
-                    alt=""
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    quality={72}
-                    loading="lazy"
-                    className="object-cover object-center"
-                  />
-                )}
+                <Image
+                  src={featuredPost.image}
+                  alt=""
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  quality={72}
+                  loading="lazy"
+                  className="object-cover object-center"
+                />
               </div>
 
               {/* Right — Content Panel */}
@@ -343,17 +312,15 @@ export default function ArticlesSection({
               >
                 {/* IMAGE */}
                 <div className="relative h-[240px] flex-shrink-0">
-                  {post.image && (
-                    <Image
-                      src={post.image}
-                      alt=""
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      quality={72}
-                      loading="lazy"
-                      className="object-cover object-center"
-                    />
-                  )}
+                  <Image
+                    src={post.image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    quality={72}
+                    loading="lazy"
+                    className="object-cover object-center"
+                  />
                   <span className="absolute bottom-4 left-4 bg-[#2655c4] text-white font-montserrat text-xs px-3 py-1 rounded-[4px] uppercase">
                     {post.category}
                   </span>
