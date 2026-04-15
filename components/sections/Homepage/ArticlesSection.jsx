@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, localePath } from "../../../lib/api";
 
 const POSTS_PER_PAGE = 6;
 
@@ -36,7 +36,7 @@ function formatPost(post, lang) {
     excerpt:
       post.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 120) +
       "...",
-    url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
+    url: localePath("article", post.slug, lang),
     image,
     category,
     date,

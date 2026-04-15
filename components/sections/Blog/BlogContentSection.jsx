@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, localePath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 
 const translations = {
@@ -131,7 +131,7 @@ const res = await fetch(
               post.excerpt?.rendered
                 ?.replace(/<[^>]*>/g, "")
                 .slice(0, 100) + "..." || "",
-            url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
+            url: localePath("article", post.slug, lang),
             image:
               post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
               "/default-blog.jpg",

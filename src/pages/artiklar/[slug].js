@@ -1,10 +1,15 @@
 ﻿import SectionRenderer from "../../../components/SectionRenderer";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, localePath, resolveLang } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
   const lang = resolveLang(locale);
+
+  // /artiklar/* is Swedish-only — redirect if reached under any other locale
+  if (lang !== "sv") {
+    return { redirect: { destination: `/artiklar/${slug}`, permanent: true } };
+  }
 
   const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?slug=${slug}&acf_format=standard&_embed`;
 
@@ -26,13 +31,14 @@ export async function getServerSideProps({ params, locale }) {
   const wordCount = post.content?.rendered?.replace(/<[^>]*>/g, "").split(/\s+/).length || 0;
 
   if (post.acf?.sections && Array.isArray(post.acf.sections)) {
-    return { props: { post, sections: post.acf.sections, currentSlug: slug, translations: post.translations || null, yoastHead: post.yoast_head || null } };
+    return { props: { post, sections: post.acf.sections, currentSlug: slug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null } };
   }
 
   return {
     props: {
       post,
       currentSlug: slug,
+      lang,
       translations: post.translations || null,
       yoastHead: post.yoast_head || null,
       sections: [
@@ -55,7 +61,7 @@ export async function getServerSideProps({ params, locale }) {
 }
 
 export default function BlogPost({ post, sections, currentSlug, yoastHead, lang }) {
-  const canonicalUrl = buildSiteUrl(withLocalePrefix(`/blog/${currentSlug}`, lang));
+  const canonicalUrl = buildSiteUrl(localePath("article", currentSlug, lang));
 
   return (
     <>
