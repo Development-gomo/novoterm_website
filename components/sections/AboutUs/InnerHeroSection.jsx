@@ -23,7 +23,7 @@ export default function InnerHeroSection({ section, sectionId }) {
   return (
     <section
       id={sectionId}
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden
+      className="relative w-full min-h-svh flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
       style={{
         backgroundImage: bgUrl
@@ -36,7 +36,7 @@ export default function InnerHeroSection({ section, sectionId }) {
       }}
     >
       {/* CONTENT WRAPPER */}
-      <div className="w-full web-width  px-6  py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
+      <div className="w-full web-width  px-6  pb-28 pt-24 sm:py-24 lg:py-36 lg:px-48 flex flex-col sm:block">
 
         {/* HEADING */}
         {heading && (
