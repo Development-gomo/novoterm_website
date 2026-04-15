@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
 import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpToPath } from "../../../lib/api";
 import Link from "next/link";
 
 export default function IndustryInsightsSection({ section, sectionId }) {
@@ -50,7 +50,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             excerpt:
               post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) +
               "...",
-            url: `${lang !== DEFAULT_LANG ? `/${lang}` : ""}/blog/${post.slug}`,
+            url: localePath("article", post.slug, lang),
             image,
             category,
             date,

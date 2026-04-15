@@ -9,7 +9,7 @@ if (!SITE_URL || !WP_API) {
 // CPTs to include: [wp rest endpoint, { sv: prefix, en: prefix }]
 const POST_TYPES = [
   ["pages",       { sv: "",           en: "" }],
-  ["posts",       { sv: "/blog",      en: "/blog" }],
+  ["posts",       { sv: "/artiklar",  en: "/articles" }],
   ["service",     { sv: "/tjanster",  en: "/services" }],
   ["industry",    { sv: "/branscher", en: "/industry" }],
   ["case_study",  { sv: "/kundcase",  en: "/client-case" }],
