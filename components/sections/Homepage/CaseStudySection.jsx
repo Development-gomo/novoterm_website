@@ -21,6 +21,8 @@ export default function CaseStudySection({
   const lang = router.locale || DEFAULT_LANG;
 
   useEffect(() => {
+    if (!router.isReady) return;
+
     async function getData() {
       try {
         const res = await fetch(
@@ -28,6 +30,7 @@ export default function CaseStudySection({
         );
 
         const data = await res.json();
+        if (!Array.isArray(data)) return;
 
         const formatted = data.map(post => ({
           slug: post.slug,
@@ -51,19 +54,21 @@ export default function CaseStudySection({
     }
 
     getData();
-  }, [lang]);
+  }, [lang, router.isReady]);
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-[#E9F0FF]">
       <div className="web-width mx-auto px-6 md:px-0">
 
         {/* DOT LABEL */}
-        <div className="flex items-center gap-2 mb-6">
-          <DotIndicator/>
-          <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
-            {section_title}
-          </span>
-        </div>
+        {section_title && (
+          <div className="flex items-center gap-2 mb-6">
+            <DotIndicator/>
+            <span className="uppercase font-montserrat font-medium text-[10px] sm:text-[10px] md:text-[12px] tracking-wider text-black">
+              {section_title}
+            </span>
+          </div>
+        )}
 
         {/* HEADING */}
         <h2
