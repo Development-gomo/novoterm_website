@@ -69,6 +69,7 @@ export default function ArticlesSection({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const seenIdsRef = useRef(new Set());
 
   const limit = max_posts || 50;
 
@@ -114,20 +115,21 @@ export default function ArticlesSection({
     );
   };
 
-  // Fetch posts
+  // Fetch posts — always use the same per_page so WordPress pagination never overlaps between calls
   const fetchPosts = useCallback(
     async (pageNum, reset = false) => {
       setLoading(true);
       try {
-        let endpoint = `/wp-api/wp/v2/posts?_embed&lang=${lang}&per_page=${
-          POSTS_PER_PAGE + (reset ? 1 : 0)
-        }&page=${pageNum}&orderby=date&order=desc`;
+        // Keep per_page identical on every request: 1 featured slot + 6 grid slots
+        const PER_PAGE = POSTS_PER_PAGE + 1; // 7
+        let endpoint = `/wp-api/wp/v2/posts?_embed&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`;
 
         if (selectedCategories.length > 0) {
           endpoint += `&categories=${selectedCategories.join(",")}`;
         }
 
         const res = await fetch(endpoint);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
         const data = await res.json();
 
@@ -139,42 +141,36 @@ export default function ArticlesSection({
         const formatted = data.map((post) => formatPost(post, lang));
 
         if (reset) {
-          // First load — first post is featured, rest go to grid
           const featured = formatted[0] || null;
-          const grid = formatted.slice(1).slice(0, POSTS_PER_PAGE);
+          // slice(1, PER_PAGE) gives exactly POSTS_PER_PAGE (6) grid posts
+          const grid = formatted.slice(1, PER_PAGE);
+          // Record every shown ID so load-more can deduplicate reliably
+          seenIdsRef.current = new Set([
+            ...(featured ? [featured.id] : []),
+            ...grid.map((p) => p.id),
+          ]);
           setFeaturedPost(featured);
           setGridPosts(grid);
           setPage(1);
-
-          // Check if the total fetched so far is less than what's available
-          const totalShown = 1 + grid.length;
-          setHasMore(
-            totalShown < limit && pageNum < totalPages
-          );
+          setHasMore((featured ? 1 : 0) + grid.length < limit && 1 < totalPages);
         } else {
-          // Load more — append, excluding featured
-          const filtered = formatted.filter(
-            (p) => p.id !== featuredPost?.id
-          );
-          setGridPosts((prev) => {
-            const merged = [...prev, ...filtered];
-            // Respect max_posts (subtract 1 for featured)
-            return merged.slice(0, limit - 1);
-          });
+          // Deduplicate against every previously shown post (featured + all grid pages)
+          // Cap to POSTS_PER_PAGE (6) per load-more batch so exactly 6 new cards appear
+          const newPosts = formatted
+            .filter((p) => !seenIdsRef.current.has(p.id))
+            .slice(0, POSTS_PER_PAGE);
+          newPosts.forEach((p) => seenIdsRef.current.add(p.id));
 
-          const currentTotal =
-            1 + gridPosts.length + filtered.length;
-          setHasMore(
-            currentTotal < limit && pageNum < totalPages
-          );
+          setGridPosts((prev) => [...prev, ...newPosts].slice(0, limit - 1));
+          setPage(pageNum);
+          setHasMore(seenIdsRef.current.size < limit && pageNum < totalPages);
         }
       } catch (e) {
         console.error("ARTICLES FETCH ERROR:", e);
       }
       setLoading(false);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [lang, selectedCategories, limit, featuredPost?.id, gridPosts.length]
+    [lang, selectedCategories, limit]
   );
 
   // Initial load & category change
