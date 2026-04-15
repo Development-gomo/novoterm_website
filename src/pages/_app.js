@@ -14,7 +14,8 @@ import {
 import Script from "next/script";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import DeferredGtm from "../../components/DeferredGtm";
+import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 
 import { Montserrat, Cabin, Merriweather, Archivo } from "next/font/google";
 
@@ -150,19 +151,20 @@ export default function MyApp({
 
   return (
     <>
-      <Script
-        id="gtm-script"
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: `
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-PMXNC6T');
-          `,
-        }}
-      />
+      {/* Cookiebot consent banner — load promptly so banner appears early */}
+      {process.env.NEXT_PUBLIC_COOKIEBOT_ID && (
+        <Script
+          id="cookiebot"
+          src={`https://consent.cookiebot.com/uc.js?cbid=${process.env.NEXT_PUBLIC_COOKIEBOT_ID}`}
+          strategy="afterInteractive"
+          data-cbid={process.env.NEXT_PUBLIC_COOKIEBOT_ID}
+          data-blockingmode="auto"
+        />
+      )}
+
+      {/* GTM — consent-gated via DeferredGtm + useCookieConsent */}
+      <DeferredGtm />
+
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} ${archivo.variable}`}>
       {headerData && (
         <Header
@@ -174,7 +176,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       )}
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
-      <SpeedInsights />
+      <DelayedSpeedInsights />
     </div>
     </>
   );
