@@ -11,10 +11,10 @@ import {
   DEFAULT_LANG,
 } from "../../lib/api";
 
-import Script from "next/script";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import DeferredGtm from "../../components/DeferredGtm";
+import DeferredCookiebot from "../../components/DeferredCookiebot";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
@@ -151,14 +151,7 @@ export default function MyApp({
 
   return (
     <>
-      {/* Cookiebot consent banner — lazyOnload keeps it out of the LCP measurement window */}
-      <Script
-        id="Cookiebot"
-        src="https://consent.cookiebot.com/uc.js"
-        data-cbid="a20b27f4-0588-45c4-b8bf-2eba20b6700d"
-        strategy="lazyOnload"
-        async
-      />
+      <DeferredCookiebot />
 
       {/* GTM — consent-gated via DeferredGtm + useCookieConsent */}
       <DeferredGtm />
