@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
 import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function HeroSection({
   background_image,
@@ -10,13 +11,10 @@ export default function HeroSection({
   button_text = "",
   button_link = "#",
 }) {
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  // Use pickWpImageUrl("heroNext") so the source URL matches LcpHeroPreload exactly —
+  // prefers sizes.large (1024px WP thumbnail) over the raw full-resolution URL.
+  // Mismatched URLs waste the preload and force the optimizer to process a giant source.
+  const bgUrl = pickWpImageUrl(background_image, "heroNext");
 
   return (
     <section

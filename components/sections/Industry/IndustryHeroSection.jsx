@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
 import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function IndustryHeroSection({
   heading,
@@ -11,13 +12,7 @@ export default function IndustryHeroSection({
   cta_url,
   sectionId,
 }) {
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(background_image, "heroNext");
 
   return (
     <section

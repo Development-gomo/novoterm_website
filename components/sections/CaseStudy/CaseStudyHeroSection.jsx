@@ -2,19 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { wpToPath } from "../../../lib/api";
 import { HERO_IMAGE_QUALITY } from "../../../lib/imageConstants";
+import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function CaseStudyHeroSection({ section, sectionId }) {
   if (!section) return null;
 
   const { heading, sub_heading, background_image, cta_text, cta_url } = section;
 
-  const bgUrl =
-    typeof background_image === "string"
-      ? background_image
-      : background_image?.url ||
-        background_image?.sizes?.large ||
-        background_image?.sizes?.medium_large ||
-        "";
+  const bgUrl = pickWpImageUrl(background_image, "heroNext");
 
   return (
     <section
