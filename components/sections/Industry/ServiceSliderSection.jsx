@@ -137,8 +137,6 @@ export default function ServiceSliderSection({ section, sectionId }) {
           {/* RIGHT 85% */}
           <div className="md:w-[85%]">
 
-       
-
             {/* TITLE (WYSIWYG) */}
             {section_title && (
               <h2
@@ -168,7 +166,15 @@ export default function ServiceSliderSection({ section, sectionId }) {
             )}
 
             {/* SLIDER */}
-            {slides.length > 0 && <DocumentTypeSlider slides={slides} isDark={isDark} desktopSlides={3} />}
+            <div style={{ minHeight: 200 }}>
+              {slides.length > 0 ? (
+                <DocumentTypeSlider slides={slides} isDark={isDark} desktopSlides={3} />
+              ) : (
+                <div className="flex items-center justify-center w-full h-[200px]">
+                  <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#2655C4]" />
+                </div>
+              )}
+            </div>
 
           </div>
         </div>

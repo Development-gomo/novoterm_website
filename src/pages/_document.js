@@ -1,5 +1,6 @@
 // pages/_document.js
 import Document, { Html, Head, Main, NextScript } from "next/document";
+import { Partytown } from "@builder.io/partytown/react";
 import { DEFAULT_LANG } from "../../lib/api";
 
 class MyDocument extends Document {
@@ -21,6 +22,8 @@ class MyDocument extends Document {
           {/* Keep third-party hints lightweight so they do not contend with LCP. */}
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
           <link rel="dns-prefetch" href="https://consent.cookiebot.com" />
+          {/* Partytown: forwards dataLayer.push calls from the GTM worker to the main thread */}
+          <Partytown forward={["dataLayer.push"]} />
         </Head>
 
         <body className="antialiased">

@@ -1,3 +1,8 @@
+import { copyLibFiles } from "@builder.io/partytown/utils";
+
+// Copy Partytown lib files to public/~partytown at build/dev time
+await copyLibFiles("./public/~partytown");
+
 /** @type {import('next').NextConfig} */
 const WP_URL = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, '') || '';
 

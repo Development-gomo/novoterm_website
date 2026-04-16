@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
@@ -13,11 +13,31 @@ import { pickWpImageUrl } from "../../../lib/wpImage";
 const CARD_SIZES =
   "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw";
 
+
 export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const swiperRef = useRef(null);
+
+  // Fix Swiper navigation refs after slides/ref are set
+  useEffect(() => {
+    if (
+      swiperRef.current &&
+      swiperRef.current.params &&
+      prevRef.current &&
+      nextRef.current
+    ) {
+      swiperRef.current.params.navigation.prevEl = prevRef.current;
+      swiperRef.current.params.navigation.nextEl = nextRef.current;
+      if (swiperRef.current.navigation && swiperRef.current.navigation.destroy && swiperRef.current.navigation.init) {
+        swiperRef.current.navigation.destroy();
+        swiperRef.current.navigation.init();
+        swiperRef.current.navigation.update();
+      }
+    }
+  }, [slides]);
 
   return (
     <div className="relative w-full mt-25 md:mt-0 lg:mt-0">
@@ -80,6 +100,7 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
             nextEl: nextRef.current,
           }}
           onBeforeInit={(swiper) => {
+            swiperRef.current = swiper;
             swiper.params.navigation.prevEl = prevRef.current;
             swiper.params.navigation.nextEl = nextRef.current;
           }}
