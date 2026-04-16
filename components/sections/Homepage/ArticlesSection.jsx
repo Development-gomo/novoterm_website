@@ -145,7 +145,8 @@ export default function ArticlesSection({
       try {
         // Keep per_page identical on every request: 1 featured slot + 6 grid slots
         const PER_PAGE = POSTS_PER_PAGE + 1; // 7
-        let endpoint = `/wp-api/wp/v2/posts?_embed&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`;
+        // Only embed what we actually need (featured media + terms), skip author embed for speed
+        let endpoint = `/wp-api/wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`;
 
         if (selectedCategories.length > 0) {
           endpoint += `&categories=${selectedCategories.join(",")}`;
@@ -185,7 +186,6 @@ export default function ArticlesSection({
           newPosts.forEach((p) => seenIdsRef.current.add(p.id));
 
           setGridPosts((prev) => [...prev, ...newPosts].slice(0, limit - 1));
-          setPage(pageNum);
           setHasMore(seenIdsRef.current.size < limit && pageNum < totalPages);
         }
       } catch (e) {
@@ -211,6 +211,7 @@ export default function ArticlesSection({
   }, [lang, selectedCategories]);
 
   const handleLoadMore = () => {
+    if (loading) return;
     const nextPage = page + 1;
     setPage(nextPage);
     fetchPosts(nextPage, false);

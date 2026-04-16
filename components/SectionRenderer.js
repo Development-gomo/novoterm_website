@@ -62,7 +62,7 @@ const IndustryIntroSection = dynamic(() => import("./sections/Industry/ServiceIn
 const IndustrySpecialHeading = dynamic(() => import("./sections/Industry/IndustrySpecialHeading"));
 const IconBoxSection = dynamic(() => import("./sections/Industry/IconBoxSection"));
 const NumberDocumentsSection = dynamic(() => import("./sections/Industry/NumberDocumentsSection"));
-const ServiceSliderSection = dynamic(() => import("./sections/Industry/ServiceSliderSection"));
+import ServiceSliderSection from "./sections/Industry/ServiceSliderSection";
 const IndustryInsightsSection = dynamic(() => import("./sections/Industry/IndustryInsightsSection"));
 
 

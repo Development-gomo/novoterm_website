@@ -1,8 +1,82 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
 import { DEFAULT_LANG } from "../../../lib/api";
+
+// Module-level cache to persist data between renders and page navigations
+const dataCache = {};
+const fetchPromiseCache = {};
+
+// Fetch function that can be called immediately
+async function fetchDocumentTypesData(lang) {
+  // Return cached data if available
+  if (dataCache[lang]) {
+    return dataCache[lang];
+  }
+  
+  // If already fetching, return the existing promise
+  if (fetchPromiseCache[lang]) {
+    return fetchPromiseCache[lang];
+  }
+  
+  // Start new fetch
+  fetchPromiseCache[lang] = (async () => {
+    try {
+      const res = await fetch(
+        `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`
+      );
+      
+      if (!res.ok) {
+        console.error("DOCUMENT TYPE SLIDER FETCH FAILED:", res.status, res.statusText);
+        return [];
+      }
+      
+      const data = await res.json();
+      if (!Array.isArray(data)) {
+        console.error("DOCUMENT TYPE SLIDER: Invalid data format", data);
+        return [];
+      }
+
+      let formatted = data.map((post) => ({
+        slug: post.slug,
+        heading: post.acf?.heading || post.title?.rendered || "",
+        subtext: post.acf?.subtext || "",
+        cs_image: post.acf?.cs_image || "",
+        button_url: post.acf?.button_url || "",
+        last_block:
+          Array.isArray(post.acf?.last_block) &&
+          post.acf.last_block.some(
+            (v) => v === "yes" || v.startsWith("yes:")
+          ),
+        slider_sequence: parseInt(post.acf?.slider_sequence, 10) || 0,
+      }));
+
+      formatted = formatted.sort((a, b) => a.slider_sequence - b.slider_sequence);
+
+      // Mark the last item in sequence as the special card
+      if (formatted.length > 0) {
+        formatted[formatted.length - 1].last_block = true;
+      }
+
+      formatted = formatted.sort((a, b) => {
+        if (a.last_block !== b.last_block) return a.last_block ? 1 : -1;
+        return 0;
+      });
+
+      // Cache the result
+      dataCache[lang] = formatted;
+      return formatted;
+    } catch (e) {
+      console.error("DOCUMENT TYPE SLIDER FETCH ERROR:", e);
+      return [];
+    } finally {
+      delete fetchPromiseCache[lang];
+    }
+  })();
+  
+  return fetchPromiseCache[lang];
+}
 
 export default function ServiceSliderSection({ section, sectionId }) {
   if (!section) return null;
@@ -22,53 +96,26 @@ export default function ServiceSliderSection({ section, sectionId }) {
 
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const [slides, setSlides] = useState([]);
+  
+  // Initialize with cached data if available
+  const [slides, setSlides] = useState(() => dataCache[lang] || []);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    async function fetchDocumentTypes() {
-      try {
-        const res = await fetch(
-          `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`,
-          { cache: "no-store" }
-        );
-        const data = await res.json();
-        if (!Array.isArray(data)) return;
-
-
-        let formatted = data.map((post) => ({
-          slug: post.slug,
-          heading: post.acf?.heading || post.title?.rendered || "",
-          subtext: post.acf?.subtext || "",
-          cs_image: post.acf?.cs_image || "",
-          button_url: post.acf?.button_url || "", // always from ACF
-          last_block:
-            Array.isArray(post.acf?.last_block) &&
-            post.acf.last_block.some(
-              (v) => v === "yes" || v.startsWith("yes:")
-            ),
-          slider_sequence: parseInt(post.acf?.slider_sequence, 10) || 0,
-        }));
-
-        formatted = formatted.sort((a, b) => a.slider_sequence - b.slider_sequence);
-
-        // Mark the last item in sequence as the special card
-        if (formatted.length > 0) {
-          formatted[formatted.length - 1].last_block = true;
-        }
-
-        formatted = formatted.sort((a, b) => {
-          if (a.last_block !== b.last_block) return a.last_block ? 1 : -1;
-          return 0;
-        });
-
-        setSlides(formatted);
-      } catch (e) {
-        console.error("DOCUMENT TYPE SLIDER FETCH ERROR:", e);
-      }
+    // Skip if we already have cached data and haven't re-fetched
+    if (dataCache[lang] && slides.length > 0) {
+      return;
     }
+    
+    if (hasFetched.current) return;
+    hasFetched.current = true;
 
-    fetchDocumentTypes();
-  }, [lang]);
+    fetchDocumentTypesData(lang).then((data) => {
+      if (data.length > 0) {
+        setSlides(data);
+      }
+    });
+  }, [lang, slides.length]);
 
   return (
     <section id={sectionId} className={`w-full ${sectionBg} py-[60px] md:py-[80px] lg:py-[100px]`}>
