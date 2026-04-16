@@ -19,7 +19,13 @@ const PUBLIC_ORIGIN = safeOrigin(
 
 function mapToPublicOrigin(value) {
   if (!value || !BACKEND_ORIGIN || BACKEND_ORIGIN === PUBLIC_ORIGIN) return value;
-  return value.split(BACKEND_ORIGIN).join(PUBLIC_ORIGIN);
+  // Replace unescaped URLs (in HTML attributes, URLs, etc.)
+  let result = value.split(BACKEND_ORIGIN).join(PUBLIC_ORIGIN);
+  // Also replace JSON-escaped URLs (forward slashes are escaped as \/ in JSON-LD)
+  const escapedBackend = BACKEND_ORIGIN.replace(/\//g, "\\/");
+  const escapedPublic = PUBLIC_ORIGIN.replace(/\//g, "\\/");
+  result = result.split(escapedBackend).join(escapedPublic);
+  return result;
 }
 
 // ─── YoastHead ────────────────────────────────────────────────────────────────
