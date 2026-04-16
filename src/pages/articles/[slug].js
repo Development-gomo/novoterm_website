@@ -1,6 +1,6 @@
 ﻿import SectionRenderer from "../../../components/SectionRenderer";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, localePath, resolveLang } from "../../../lib/api";
+import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
@@ -61,7 +61,7 @@ export async function getServerSideProps({ params, locale }) {
 }
 
 export default function BlogPost({ post, sections, currentSlug, yoastHead, lang }) {
-  const canonicalUrl = buildSiteUrl(localePath("article", currentSlug, lang));
+  const canonicalUrl = buildSiteUrl(withLocalePrefix(localePath("article", currentSlug, lang), lang));
 
   return (
     <>

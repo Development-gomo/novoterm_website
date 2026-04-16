@@ -293,6 +293,7 @@ export default function ArticlesSection({
         {featuredPost && (
           <Link
             href={featuredPost.url}
+            locale={lang}
             className="group block mb-12"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-[3px] overflow-hidden border border-[#D1D9E6]">
@@ -335,9 +336,10 @@ export default function ArticlesSection({
         {gridPosts.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {gridPosts.map((post) => (
-              <a
+              <Link
                 key={post.id}
                 href={post.url}
+                locale={lang}
                 className="block rounded-[3px] overflow-hidden border border-[#D1D9E6] flex flex-col transition hover:shadow-lg"
                 style={{ minHeight: 432 }}
               >
@@ -370,7 +372,7 @@ export default function ArticlesSection({
                     <span>{post.readTime}</span>
                   </div>
                 </div>
-              </a>
+              </Link>
             ))}
           </div>
         )}
