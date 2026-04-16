@@ -107,10 +107,13 @@ export function SpeakableSchema({ title, summary, url }) {
   // Only emit schema when a non-empty summary exists
   if (!summary || !summary.trim()) return null;
 
+  // Ensure the schema uses the public (live) URL, not the backend URL
+  const mappedUrl = url ? mapToPublicOrigin(url) : undefined;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    ...(url && { url }),
+    ...(mappedUrl && { url: mappedUrl }),
     name: stripHtml(title),
     description: stripHtml(summary),
     speakable: {
