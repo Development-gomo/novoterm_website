@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { wpToPath } from "../../../lib/api";
 
 const getImageUrl = (img) => {
@@ -8,6 +9,8 @@ const getImageUrl = (img) => {
 };
 
 export default function IconBoxSection({ section, sectionId, index = 0 }) {
+  const router = useRouter();
+  const lang = router.locale || "sv";
   if (!section) return null;
 
   const {
@@ -84,7 +87,7 @@ export default function IconBoxSection({ section, sectionId, index = 0 }) {
               </div>
 
               {cta_text && cta_link && (
-                <Link href={wpToPath(cta_link) || "#"} className="btn-primary w-fit shrink-0">
+                <Link href={wpToPath(cta_link, lang) || "#"} className="btn-primary w-fit shrink-0">
                   {cta_text}
                 </Link>
               )}

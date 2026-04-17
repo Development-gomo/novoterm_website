@@ -108,7 +108,7 @@ export default function DocumentTypeSection({
         {/* CTA BUTTON BELOW SLIDER */}
         {button && (
           <div className="flex justify-center mt-8 md:mt-10">
-            <Link href={wpToPath(button_url) || "#"} className="btn-primary">
+            <Link href={wpToPath(button_url, lang) || "#"} className="btn-primary">
               {button}
             </Link>
           </div>

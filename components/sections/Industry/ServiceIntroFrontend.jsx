@@ -1,6 +1,7 @@
 
 import ReadMoreContent from "./ReadMoreContent";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 import { wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
@@ -11,6 +12,8 @@ export default function IndustryIntro({
   index = 0,
   removeBottomPadding = false,
 }) {
+  const router = useRouter();
+  const lang = router.locale || "sv";
   if (!section) return null;
 
   const {

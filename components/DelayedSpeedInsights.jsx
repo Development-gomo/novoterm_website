@@ -8,12 +8,13 @@ const SpeedInsights = dynamic(
   { ssr: false }
 );
 
-/** Mount Speed Insights after first seconds so it does not contend with LCP. */
+/** Mount Speed Insights after user is done interacting (10+ seconds). */
 export default function DelayedSpeedInsights() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setShow(true), 8000);
+    // Delay SpeedInsights even more to not contend with any LCP or user interactions
+    const t = window.setTimeout(() => setShow(true), 12000);
     return () => window.clearTimeout(t);
   }, []);
 

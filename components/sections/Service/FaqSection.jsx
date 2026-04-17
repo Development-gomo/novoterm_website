@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { wpToPath } from "../../../lib/api";
 
 // Strip HTML tags for clean schema text
@@ -8,6 +9,8 @@ const stripHtml = (html) =>
   html ? html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() : "";
 
 export default function FaqSection({ section, sectionId, index = 0 }) {
+  const router = useRouter();
+  const lang = router.locale || "sv";
   const [openIndex, setOpenIndex] = useState(null);
 
   const {
@@ -105,7 +108,7 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
 
               {cta_text && cta_link && (
                 <a
-                  href={wpToPath(typeof cta_link === "object" ? cta_link?.url : cta_link) || "#"}
+                  href={wpToPath(typeof cta_link === "object" ? cta_link?.url : cta_link, lang) || "#"}
                   target={typeof cta_link === "object" && cta_link?.target ? cta_link.target : undefined}
                   className="btn-primary self-start sm:self-auto"
                 >

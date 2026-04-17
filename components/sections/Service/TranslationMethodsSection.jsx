@@ -1,8 +1,11 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 
 export default function TranslationMethodsSection({ section, sectionId, index = 0 }) {
+  const router = useRouter();
+  const lang = router.locale || "sv";
   if (!section) return null;
 
   const { heading, translation_methods = [] } = section;
@@ -80,7 +83,7 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
                         </h3>
                       )}
                       {item.cta_text && item.cta_link && (
-                        <Link href={wpToPath(item.cta_link) || "#"} className="btn-primary inline-block text-sm sm:text-base w-full text-center mt-[24px]">
+                        <Link href={wpToPath(item.cta_link, lang) || "#"} className="btn-primary inline-block text-sm sm:text-base w-full text-center mt-[24px]">
                           {item.cta_text}
                         </Link>
                       )}
