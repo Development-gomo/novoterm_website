@@ -40,7 +40,7 @@ export default function HeroSection({
         style={{ background: "linear-gradient(180deg, rgba(6, 24, 55, 0.50) 0%, #061837 100%)" }}
       />
       {/* CONTENT WRAPPER */}
-      <div className="relative z-[2] min-h-[100vh] web-width px-6 py-24 lg:py-36 lg:px-48 h-full flex flex-col items-start justify-center lg:justify-start">
+      <div className="relative z-[2] min-h-[100vh] web-width px-6 py-24 lg:py-36 lg:px-48 h-full flex flex-col items-start justify-center">
 
         {/* BLOCK 1 – heading from ACF */}
         <div className="text-left">
@@ -69,6 +69,27 @@ export default function HeroSection({
             )}
           </div>
         </div>
+      </div>
+
+      {/* DOWN ARROW */}
+      <div
+        onClick={(e) => {
+          const section = e.currentTarget.closest("section");
+          const next = section?.nextElementSibling;
+          if (next) next.scrollIntoView({ behavior: "smooth" });
+        }}
+        className="absolute bottom-6 sm:bottom-12 left-1/2 -translate-x-1/2 z-20 cursor-pointer"
+      >
+        <svg
+          viewBox="0 0 83 83"
+          className="w-16 h-16 sm:w-[80px] sm:h-[80px]"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect x="0.75" y="0.75" width="81.5" height="81.5" rx="40.75" stroke="white" strokeOpacity="0.9" strokeWidth="1.5" />
+          <line x1="41.5228" y1="27.7045" x2="41.5228" y2="53.8409" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M48.7727 48.0454L41.5 55.3181L34.2273 48.0454" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
       </div>
 
       {/* Bottom fade */}

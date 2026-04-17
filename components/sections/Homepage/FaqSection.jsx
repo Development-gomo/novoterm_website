@@ -2,7 +2,7 @@ import { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
-import { wpToPath } from "../../../lib/api";
+import { wpToPath, withLocalePrefix } from "../../../lib/api";
 
 const stripHtml = (html) =>
   html ? html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() : "";
@@ -82,8 +82,11 @@ export default function FaqSection({ section, sectionId, index = 0 }) {
             {cta_text && cta_link && (
               <a
                 href={
-                  wpToPath(
-                    typeof cta_link === "object" ? cta_link?.url : cta_link,
+                  withLocalePrefix(
+                    wpToPath(
+                      typeof cta_link === "object" ? cta_link?.url : cta_link,
+                      lang
+                    ) || "#",
                     lang
                   ) || "#"
                 }

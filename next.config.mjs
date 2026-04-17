@@ -13,7 +13,6 @@ if (WP_URL) {
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true, // Use SWC for faster, better minification
 
   compiler: {
     removeConsole:
@@ -24,7 +23,6 @@ const nextConfig = {
 
   experimental: {
     optimizePackageImports: ["swiper", "gsap", "framer-motion"],
-    esmExternals: true, // Better tree-shaking for dependencies
   },
 
   onDemandEntries: {
