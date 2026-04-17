@@ -92,8 +92,9 @@ export default function HeroSection({
 
   return (
     <section
+      id={`section-0`}
       ref={sceneRef}
-      className="relative w-full min-h-screen overflow-hidden flex items-center"
+      className="relative z-50 w-full min-h-screen overflow-hidden flex items-center"
       style={{ cursor: "none" }}
     >
       {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}

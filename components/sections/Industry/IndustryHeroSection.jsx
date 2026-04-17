@@ -17,7 +17,7 @@ export default function IndustryHeroSection({
   return (
     <section
       id={sectionId}
-      className="relative w-full min-h-svh flex items-center justify-center overflow-hidden
+      className="relative z-50 w-full min-h-svh flex items-center justify-center overflow-hidden
                  px-4 sm:px-0"
     >
       {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}

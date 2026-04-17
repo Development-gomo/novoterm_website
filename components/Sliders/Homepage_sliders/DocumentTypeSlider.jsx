@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
@@ -20,24 +20,24 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   const swiperRef = useRef(null);
+  const [swiperReady, setSwiperReady] = useState(false);
 
-  // Fix Swiper navigation refs after slides/ref are set
+  // Initialize navigation refs after Swiper is ready
   useEffect(() => {
-    if (
-      swiperRef.current &&
-      swiperRef.current.params &&
-      prevRef.current &&
-      nextRef.current
-    ) {
-      swiperRef.current.params.navigation.prevEl = prevRef.current;
-      swiperRef.current.params.navigation.nextEl = nextRef.current;
-      if (swiperRef.current.navigation && swiperRef.current.navigation.destroy && swiperRef.current.navigation.init) {
-        swiperRef.current.navigation.destroy();
-        swiperRef.current.navigation.init();
-        swiperRef.current.navigation.update();
+    if (swiperRef.current && prevRef.current && nextRef.current && !swiperReady) {
+      const swiper = swiperRef.current;
+      if (swiper.params?.navigation) {
+        swiper.params.navigation.prevEl = prevRef.current;
+        swiper.params.navigation.nextEl = nextRef.current;
+        if (swiper.navigation?.destroy && swiper.navigation?.init) {
+          swiper.navigation.destroy();
+          swiper.navigation.init();
+          swiper.navigation.update?.();
+        }
+        setSwiperReady(true);
       }
     }
-  }, [slides]);
+  }, [swiperReady]);
 
   return (
     <div className="relative w-full mt-25 md:mt-0 lg:mt-0">
@@ -104,8 +104,11 @@ export default function DocumentTypeSlider({ slides, desktopSlides = 4 }) {
             swiper.params.navigation.prevEl = prevRef.current;
             swiper.params.navigation.nextEl = nextRef.current;
           }}
-          watchOverflow={false}   // ✅ keeps arrows visible
-          slidesPerView={1}       // default (mobile)
+          onInit={() => {
+            setSwiperReady(true);
+          }}
+          watchOverflow={false}
+          slidesPerView={1}
           spaceBetween={0}
           breakpoints={{
             0: {

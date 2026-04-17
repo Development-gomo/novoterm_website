@@ -136,7 +136,7 @@ export default function InnerWhyChooseUsSection({data, section, sectionId, index
                       alt="Why choose us right image"
                       width={549}
                       height={575}
-                      className="rounded-[3px] object-cover w-full h-full"
+                      className="rounded-[3px] object-cover w-full h-auto"
                     />
                   </div>
                 )}

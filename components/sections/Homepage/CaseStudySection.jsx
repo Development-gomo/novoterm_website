@@ -15,12 +15,19 @@ export default function CaseStudySection({
   heading,
   paragraph,
   display_mode = "slider_single",
+  initialSlides = null,
 }) {
-  const [slides, setSlides] = useState([]);
+  const [slides, setSlides] = useState(initialSlides || []);
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
 
   useEffect(() => {
+    // If initialSlides is provided, use it immediately
+    if (initialSlides && initialSlides.length > 0) {
+      setSlides(initialSlides);
+      return;
+    }
+
     if (!router.isReady) return;
 
     async function getData() {
@@ -54,7 +61,7 @@ export default function CaseStudySection({
     }
 
     getData();
-  }, [lang, router.isReady]);
+  }, [lang, router.isReady, initialSlides]);
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-[#E9F0FF]">

@@ -18,7 +18,8 @@ export default function HeroSection({
 
   return (
     <section
-      className="relative w-full min-h-screen flex items-center overflow-hidden"
+      id={`section-0`}
+      className="relative z-50 w-full min-h-screen flex items-center overflow-hidden"
     >
       {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}
       {bgUrl && (

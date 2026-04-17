@@ -14,7 +14,7 @@ export default function CaseStudyHeroSection({ section, sectionId }) {
   return (
     <section
       id={sectionId}
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative z-50 w-full min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Background via next/image — enables AVIF/WebP, srcset, and early preload */}
       {bgUrl && (

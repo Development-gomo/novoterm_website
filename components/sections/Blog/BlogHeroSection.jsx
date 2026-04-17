@@ -7,7 +7,8 @@ export default function BlogHeroSection({ section }) {
 
   return (
     <section
-      className="relative w-full min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-0"
+      id={`section-0`}
+      className="relative z-50 w-full min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-0"
     >
       <HeroBackdrop
         media={featured_image}

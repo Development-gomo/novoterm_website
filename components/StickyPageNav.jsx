@@ -47,17 +47,21 @@ export default function StickyPageNav({ sections = [] }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Hide while hero (first section) is still visible
+      // PRIORITY 1: Hide while hero (first section) is still visible
       const firstSection = document.getElementById("section-0");
-      if (firstSection && isHeroSection(sections[0]?.acf_fc_layout)) {
+      const firstSectionLayout = sections[0]?.acf_fc_layout;
+      
+      // If the first section exists and looks like a hero, hide nav while it's visible
+      if (firstSection && firstSectionLayout && isHeroSection(firstSectionLayout)) {
         const rect = firstSection.getBoundingClientRect();
-        if (rect.bottom > 0) {
+        // Hide while first section is in viewport (visible on screen)
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
           setIsVisible(false);
           return;
         }
       }
 
-      // Hide near footer
+      // PRIORITY 2: Hide near footer
       const footer = document.querySelector("footer");
       if (footer) {
         const footerRect = footer.getBoundingClientRect();
@@ -65,6 +69,12 @@ export default function StickyPageNav({ sections = [] }) {
           setIsVisible(false);
           return;
         }
+      }
+
+      // Only show nav if we have items to show
+      if (navItems.length === 0) {
+        setIsVisible(false);
+        return;
       }
 
       setIsVisible(true);
@@ -94,7 +104,7 @@ export default function StickyPageNav({ sections = [] }) {
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [navItems.length]);
+  }, [navItems.length, sections]);
 
   const scrollToSection = (index) => {
     const element = document.getElementById(`section-${index}`);

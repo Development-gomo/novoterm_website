@@ -78,7 +78,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], currentSlug, pageType, postAcf, initialArticles }) {
+export default function SectionRenderer({ sections = [], currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -158,6 +158,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType, 
             heading={block.heading}
             paragraph={block.paragraph}
             display_mode={block.display_mode || "slider_single"}
+            initialSlides={initialCaseStudies}
           />
         );
 
@@ -170,6 +171,7 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType, 
             paragraph={block.paragraph}
             button={block.button}
             button_url={block.button_url}
+            initialSlides={initialDocumentTypes}
           />
         );
 

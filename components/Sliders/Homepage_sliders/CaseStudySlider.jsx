@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
 
@@ -14,6 +14,24 @@ export default function CaseStudySlider({ slides }) {
   const lang = router.locale || DEFAULT_LANG;
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const swiperRef = useRef(null);
+  const [swiperReady, setSwiperReady] = useState(false);
+
+  useEffect(() => {
+    if (swiperRef.current && prevRef.current && nextRef.current && !swiperReady) {
+      const swiper = swiperRef.current;
+      if (swiper.params?.navigation) {
+        swiper.params.navigation.prevEl = prevRef.current;
+        swiper.params.navigation.nextEl = nextRef.current;
+        if (swiper.navigation?.destroy && swiper.navigation?.init) {
+          swiper.navigation.destroy();
+          swiper.navigation.init();
+          swiper.navigation.update?.();
+        }
+        setSwiperReady(true);
+      }
+    }
+  }, [swiperReady]);
 
   return (
     <div className="w-full">
@@ -49,8 +67,12 @@ export default function CaseStudySlider({ slides }) {
           nextEl: nextRef.current,
         }}
         onBeforeInit={(swiper) => {
+          swiperRef.current = swiper;
           swiper.params.navigation.prevEl = prevRef.current;
           swiper.params.navigation.nextEl = nextRef.current;
+        }}
+        onInit={() => {
+          setSwiperReady(true);
         }}
         loop
         slidesPerView={1}

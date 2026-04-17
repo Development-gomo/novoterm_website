@@ -39,10 +39,20 @@ export async function getStaticProps({ params, locale }) {
 
   // Pre-fetch initial articles if any articles_section exists on this page
   let initialArticles = null;
+  let initialDocumentTypes = null;
+  let initialCaseStudies = null;
   const sections = page?.acf?.page_sections || [];
   const hasArticlesSection = sections.some(
     (s) => s?.acf_fc_layout === "articles_section"
   );
+  const hasDocumentTypesSection = sections.some(
+    (s) => s?.acf_fc_layout === "document_types"
+  );
+  const hasCaseStudySection = sections.some(
+    (s) => s?.acf_fc_layout === "case_study_section"
+  );
+
+  // Prefetch articles
   if (hasArticlesSection) {
     try {
       const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
@@ -83,6 +93,63 @@ export async function getStaticProps({ params, locale }) {
     }
   }
 
+  // Prefetch document types
+  if (hasDocumentTypesSection) {
+    try {
+      const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
+      const res = await fetch(
+        `${wpUrl}/wp-json/wp/v2/document_type?acf_format=standard&lang=${lang}&per_page=100`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const formatted = data.map((post) => ({
+          slug: post.slug,
+          heading: post.acf.heading,
+          subtext: post.acf.subtext,
+          cs_image: post.acf.cs_image,
+          button_url: post.acf.button_url || "",
+          slider_sequence: parseInt(post.acf.slider_sequence, 10) || 0,
+        }));
+        formatted.sort((a, b) => a.slider_sequence - b.slider_sequence);
+        if (formatted.length > 0) {
+          formatted[formatted.length - 1].last_block = true;
+        }
+        initialDocumentTypes = formatted;
+      }
+    } catch (e) {
+      console.error("SSR document types prefetch failed:", e);
+    }
+  }
+
+  // Prefetch case studies
+  if (hasCaseStudySection) {
+    try {
+      const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
+      const res = await fetch(
+        `${wpUrl}/wp-json/wp/v2/case_study?acf_format=standard&lang=${lang}&per_page=100`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const formatted = data.map(post => ({
+          slug: post.slug,
+          title: post.acf.review_heading || "",
+          review_heading: post.acf.review_heading || "",
+          button_text: post.acf.button_text || "",
+          button_link: post.acf.button_link || "",
+          time_text: post.acf.time_text || "",
+          subtext: post.acf.subtext || "",
+          service_title: post.acf.service_title || "",
+          service_used: post.acf.service_used || "",
+          image: post.acf.cs_image || "",
+          cs_image: post.acf.cs_image || "",
+        }));
+        initialCaseStudies = formatted;
+      }
+    } catch (e) {
+      console.error("SSR case studies prefetch failed:", e);
+    }
+  }
+
   return {
     props: {
       page,
@@ -90,12 +157,14 @@ export async function getStaticProps({ params, locale }) {
       translations: page.translations || null,
       yoastHead: page.yoast_head || null,
       initialArticles,
+      initialDocumentTypes,
+      initialCaseStudies,
     },
     revalidate: 60
   };
 }
 
-export default function Page({ page, lang, yoastHead, initialArticles }) {
+export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
   const pagePath = page?.slug === "home" ? "/" : `/${page?.slug || ""}`;
@@ -114,7 +183,7 @@ export default function Page({ page, lang, yoastHead, initialArticles }) {
       {sections.length ? (
         <>
           {page?.slug !== "home" && <StickyPageNav sections={sections} />}
-          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} />
+          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} />
         </>
       ) : (
         <div>No sections found</div>

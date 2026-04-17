@@ -57,7 +57,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
                 alt="Why choose us left image"
                 width={286}
                 height={340}
-                className="rounded-[3px] object-cover w-full h-full"
+                className="rounded-[3px] object-cover w-full h-auto"
               />
             </div>
           )}
@@ -100,7 +100,7 @@ export default function WhyChooseUsSection({ left_column, right_column }) {
                 alt="Why choose us right image"
                 width={549}
                 height={575}
-                className="rounded-[3px] object-cover w-full h-full"
+                className="rounded-[3px] object-cover w-full h-auto"
               />
             </div>
           )}

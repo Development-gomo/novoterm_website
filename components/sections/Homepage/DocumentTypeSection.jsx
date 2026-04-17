@@ -13,12 +13,19 @@ export default function DocumentTypeSection({
   paragraph,
   button,
   button_url,
+  initialSlides = null,
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const [slides, setSlides] = useState([]);
+  const [slides, setSlides] = useState(initialSlides || []);
 
   useEffect(() => {
+    // If initialSlides is provided, use it immediately
+    if (initialSlides && initialSlides.length > 0) {
+      setSlides(initialSlides);
+      return;
+    }
+
     async function getData() {
       try {
         const res = await fetch(
@@ -50,7 +57,7 @@ export default function DocumentTypeSection({
     }
 
     getData();
-  }, [lang]);
+  }, [lang, initialSlides]);
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-[#061837] text-white">
