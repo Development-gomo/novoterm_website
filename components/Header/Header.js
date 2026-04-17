@@ -94,6 +94,7 @@ export default function Header({
             : "bg-transparent"
         }
       `}
+      suppressHydrationWarning={true}
     >
       <div className=" mx-auto flex justify-between items-center py-4 px-6 lg:py-4 lg:px-0 web-width">
 

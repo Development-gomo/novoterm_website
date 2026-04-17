@@ -295,7 +295,7 @@ const res = await fetch(
           {/* RIGHT CONTENT */}
           <div className="flex-1">
             <div
-              className="prose max-w-none [&_h2]:font-montserrat [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:leading-snug [&_h2]:mb-4 [&_h3]:font-montserrat [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:mb-3 [&_p]:font-cabin [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-2 [&_li]:font-cabin [&_li]:text-[16px] [&_li::marker]:text-[#2555C4]"
+              className="prose max-w-none [&_h2]:font-montserrat [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:leading-snug [&_h2]:mb-4 [&_h3]:font-montserrat [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:mb-3 [&_p]:font-cabin [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-2 [&_li]:font-cabin [&_li]:text-[16px] [&_li::marker]:text-[#2555C4] [&_a]:text-[#2555C4] [&_a:hover]:underline [&_a:hover]:text-[#2555C4]"
               dangerouslySetInnerHTML={{ __html: processedContent || content }}
             />
 
