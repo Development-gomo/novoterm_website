@@ -21,7 +21,7 @@ export default function CaseStudyTestimonialSection({ section, sectionId }) {
   return (
     <section
       id={sectionId}
-      className="relative w-full flex h-auto lg:min-h-[660px] py-6 md:py-8 lg:pt-[100px] lg:pb-[80px] overflow-hidden"
+      className="relative z-[60] w-full flex h-auto lg:min-h-[660px] py-6 md:py-8 lg:pt-[100px] lg:pb-[80px] overflow-hidden"
     >
       {bgUrl ? (
         <>
