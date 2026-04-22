@@ -56,6 +56,9 @@ const BlogContentSection = dynamic(() => import("./sections/Blog/BlogContentSect
 /* ===================== CONTACT PAGE ===================== */
 const ContactHeroSection = dynamic(() => import("./sections/Contact/ContactHeroSection"));
 
+/* ===================== NEWSLETTER PAGE ===================== */
+const NewsletterSection = dynamic(() => import("./sections/Newsletter/NewsletterSection"));
+
 /* ===================== INDUSTRY PAGE ===================== */
 const IndustryHeroSection = dynamic(() => import("./sections/Industry/IndustryHeroSection"));
 const IndustryIntroSection = dynamic(() => import("./sections/Industry/ServiceIntroFrontend"));
@@ -449,6 +452,17 @@ case "inner_hero_section":
           <ContactHeroSection
             key={`contact-hero-${index}`}
             section={block}
+          />
+        );
+
+      /* ===================== NEWSLETTER PAGE ===================== */
+      case "newsletter_section":
+        return (
+          <NewsletterSection
+            key={`newsletter-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
           />
         );
 

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function ContactForm({ sectionTheme = "light", formId }) {
+export default function ContactForm({ sectionTheme = "light", formId, mode = "contact" }) {
   const router = useRouter();
   const lang = router.locale || "sv";
 
@@ -100,6 +100,109 @@ export default function ContactForm({ sectionTheme = "light", formId }) {
   const textColor = isParentLight ? "#061837" : "text-white";
   const borderColor = isParentLight ? "#061837" : "border-white/50";
   const placeholderColor = isParentLight ? "#061837" : "placeholder-white/70";
+
+  const isNewsletter = mode === "newsletter_unsubscribe";
+  const newsletterTextColor = isParentLight ? "text-[#061837]" : "text-white";
+  const newsletterBorderColor = isParentLight ? "border-[#061837]" : "border-white/50";
+  const newsletterPlaceholderColor = isParentLight ? "placeholder-[#061837]/70" : "placeholder-white/70";
+
+  async function handleNewsletterSubmit(e) {
+    e.preventDefault();
+    setStatus("");
+
+    const formData = new FormData(e.target);
+    const email = formData.get("email") || "";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,6}$/;
+
+    if (!emailRegex.test(email)) {
+      setErrors({ email: errorMsg.email });
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
+
+    formData.append("company_name", "Newsletter Unsubscribe");
+    formData.append("full_name", "Newsletter Unsubscribe");
+    formData.append("phone", "0000000");
+    formData.append("user_type", "company");
+    formData.append("area", "Newsletter unsubscribe");
+    formData.append("message", "Newsletter unsubscribe request");
+    if (formId) formData.append("form_id", formId);
+
+    try {
+      const res = await fetch(`/wp-api/custom/v1/contact`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        const redirectPath = lang === "en"
+          ? "/en/unsubscribe-thank-you"
+          : "/unsubscribe-thank-you/";
+        router.push(redirectPath);
+        return;
+      }
+
+      setStatus(result.message || "Something went wrong.");
+    } catch (err) {
+      setStatus("Submission failed. Please try again later.");
+    }
+
+    setLoading(false);
+  }
+
+  if (isNewsletter) {
+    return (
+      <form
+        onSubmit={handleNewsletterSubmit}
+        className={`w-full max-w-[520px] ${newsletterTextColor}`}
+        noValidate
+      >
+        <div className="mb-4">
+          <p className="text-[18px] font-montserrat font-medium">
+            {t("Avsluta prenumeration", "Unsubscribe from newsletter")}
+          </p>
+          <p className="text-[12px] opacity-60 mt-1">
+            * {t("Obligatoriskt fält", "Mandatory field")}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <input
+            type="email"
+            name="email"
+            placeholder={t("E-POST*", "E-MAIL*")}
+            required
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.email ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+            onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
+          />
+
+          {Object.keys(errors).length > 0 && (
+            <p className="text-red-500 text-[13px]">
+              {Object.values(errors).find(Boolean)}
+            </p>
+          )}
+
+          {status && (
+            <p className="text-red-500 text-[13px]">{status}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary cursor-pointer disabled:opacity-50"
+          >
+            {loading
+              ? (lang === "sv" ? "Skickar..." : "Sending...")
+              : t("AVPRENUMERERA", "Unsubscribe")}
+          </button>
+        </div>
+      </form>
+    );
+  }
 
   return (
     <form
