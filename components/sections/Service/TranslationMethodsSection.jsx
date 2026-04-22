@@ -48,13 +48,95 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
             <div className="flex flex-wrap gap-[24px] lg:gap-[32px]">
               {translation_methods.map((item, i) => {
                 const imageUrl = pickWpImageUrl(item.image, "card");
-
+                // Mobile: whole card is clickable, no button inside
+                if (item.cta_link) {
+                  return (
+                    <Link
+                      key={i}
+                      href={wpToPath(item.cta_link, lang) || "#"}
+                      className="block lg:hidden group w-full sm:w-[48%] lg:w-[353px] h-[420px] rounded-[4px] overflow-hidden bg-black"
+                      tabIndex={0}
+                    >
+                      {/* IMAGE */}
+                      <div className="w-full h-full group-hover:h-[239px] transition-all duration-500 ease-out relative overflow-hidden">
+                        <div className="absolute inset-0" style={{ backgroundImage: `url(\"${imageUrl}\")`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-[24px] flex flex-col justify-end transition-opacity duration-300 group-hover:opacity-0">
+                          {item.card_tag && (
+                            <span className="text-[11px] uppercase tracking-widest text-[#5c83dd] mb-1">
+                              {item.card_tag}
+                            </span>
+                          )}
+                          {item.card_title && (
+                            <h3 className="text-white text-[20px] font-semibold">
+                              {item.card_title}
+                            </h3>
+                          )}
+                        </div>
+                      </div>
+                      {/* HOVER CONTENT */}
+                      <div className="w-full h-0 group-hover:h-[181px] transition-all duration-500 ease-out bg-[#FEE4CA] px-[24px] py-[20px] flex flex-col">
+                        {item.card_tag && (
+                          <span className="text-[11px] uppercase tracking-widest text-[#5c83dd] mb-1">
+                            {item.card_tag}
+                          </span>
+                        )}
+                        {item.card_title && (
+                          <h3 className="text-[24px] font-semibold text-[#061837] ">
+                            {item.card_title}
+                          </h3>
+                        )}
+                        {/* No button on mobile to avoid nested <a> */}
+                      </div>
+                    </Link>
+                  );
+                }
+                // If no link, fallback to non-clickable card
                 return (
-                  <div key={i} className="group w-full sm:w-[48%] lg:w-[353px] h-[420px] rounded-[4px] overflow-hidden bg-black">
-
+                  <div
+                    key={i}
+                    className="block lg:hidden group w-full sm:w-[48%] lg:w-[353px] h-[420px] rounded-[4px] overflow-hidden bg-black"
+                  >
                     {/* IMAGE */}
                     <div className="w-full h-full group-hover:h-[239px] transition-all duration-500 ease-out relative overflow-hidden">
-                      <div className="absolute inset-0" style={{ backgroundImage: `url("${imageUrl}")`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                      <div className="absolute inset-0" style={{ backgroundImage: `url(\"${imageUrl}\")`, backgroundSize: "cover", backgroundPosition: "center" }} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-[24px] flex flex-col justify-end transition-opacity duration-300 group-hover:opacity-0">
+                        {item.card_tag && (
+                          <span className="text-[11px] uppercase tracking-widest text-[#5c83dd] mb-1">
+                            {item.card_tag}
+                          </span>
+                        )}
+                        {item.card_title && (
+                          <h3 className="text-white text-[20px] font-semibold">
+                            {item.card_title}
+                          </h3>
+                        )}
+                      </div>
+                    </div>
+                    {/* HOVER CONTENT */}
+                    <div className="w-full h-0 group-hover:h-[181px] transition-all duration-500 ease-out bg-[#FEE4CA] px-[24px] py-[20px] flex flex-col">
+                      {item.card_tag && (
+                        <span className="text-[11px] uppercase tracking-widest text-[#5c83dd] mb-1">
+                          {item.card_tag}
+                        </span>
+                      )}
+                      {item.card_title && (
+                        <h3 className="text-[24px] font-semibold text-[#061837] ">
+                          {item.card_title}
+                        </h3>
+                      )}
+                      {/* No button on mobile to avoid nested <a> */}
+                    </div>
+                  </div>
+                );
+              })}
+              {/* Desktop: original card, only button clickable */}
+              {translation_methods.map((item, i) => {
+                const imageUrl = pickWpImageUrl(item.image, "card");
+                return (
+                  <div key={"desktop-"+i} className="hidden lg:block group w-full sm:w-[48%] lg:w-[353px] h-[420px] rounded-[4px] overflow-hidden bg-black">
+                    {/* IMAGE */}
+                    <div className="w-full h-full group-hover:h-[239px] transition-all duration-500 ease-out relative overflow-hidden">
+                      <div className="absolute inset-0" style={{ backgroundImage: `url(\"${imageUrl}\")`, backgroundSize: "cover", backgroundPosition: "center" }} />
 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent p-[24px] flex flex-col justify-end transition-opacity duration-300 group-hover:opacity-0">
                         {item.card_tag && (
@@ -88,7 +170,6 @@ export default function TranslationMethodsSection({ section, sectionId, index = 
                         </Link>
                       )}
                     </div>
-
                   </div>
                 );
               })}

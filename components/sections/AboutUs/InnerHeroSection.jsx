@@ -10,7 +10,17 @@ export default function InnerHeroSection({ section, sectionId }) {
     cta_text,
     cta_url,
     background_image,
+    banner_height,
   } = section;
+
+  // Height mapping with "full" as default
+  const heightClasses = {
+    "full": "min-h-svh",
+    "75": "min-h-[75vh]",
+    "50": "min-h-[50vh]",
+  };
+
+  const sectionHeight = heightClasses[String(banner_height).trim()] || heightClasses["full"];
 
   const bgUrl =
     typeof background_image === "string"
@@ -23,8 +33,8 @@ export default function InnerHeroSection({ section, sectionId }) {
   return (
     <section
       id={sectionId}
-      className="relative z-50 w-full min-h-svh flex items-center justify-center overflow-hidden
-                 px-4 sm:px-0"
+      className={`relative z-50 w-full ${sectionHeight} flex items-center justify-center overflow-hidden
+                 px-4 sm:px-0`}
       style={{
         backgroundImage: bgUrl
           ? `linear-gradient(180deg, rgba(6,24,55,0.50) 0%, #061837 100%), url(${bgUrl})`
