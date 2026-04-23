@@ -20,7 +20,7 @@ export default function DeferredCookiebot() {
       s.dataset.cbid = COOKIEBOT_ID;
       s.type = "text/javascript";
       s.async = true;
-      s.defer = true;
+      //s.defer = true;
       document.head.appendChild(s);
     };
 
