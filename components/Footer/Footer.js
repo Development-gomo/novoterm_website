@@ -67,9 +67,9 @@ export default function Footer({ data }) {
 
           {/* COLUMN 2 — SERVICES (15%) */}
           <div className="w-full lg:w-[14%]">
-            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
+            <p className="uppercase text-[14px] font-montserrat font-medium tracking-wider text-[#5C83DD] mb-4">
               {t.services}
-            </h4>
+            </p>
             <ul className="space-y-2">
               {services?.service_links?.map((item, i) => (
                 <li key={i}>
@@ -83,9 +83,9 @@ export default function Footer({ data }) {
 
           {/* COLUMN 3 — QUICK LINKS (15%) */}
           <div className="w-full lg:w-[14%]">
-            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
+            <p className="uppercase text-[14px] font-montserrat font-medium tracking-wider text-[#5C83DD] mb-4">
               {t.quickLinks}
-            </h4>
+            </p>
             <ul className="space-y-2">
               {quick?.quick_links?.map((item, i) => (
                 <li key={i}>
@@ -99,9 +99,9 @@ export default function Footer({ data }) {
 
           {/* COLUMN 4 — RESOURCES (15%) */}
           <div className="w-full lg:w-[12%]">
-            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
+            <p className="uppercase text-[14px] font-montserrat font-medium tracking-wider text-[#5C83DD] mb-4">
               {t.resources}
-            </h4>
+            </p>
             <ul className="space-y-2">
               {resources?.resource_links?.map((item, i) => (
                 <li key={i}>
@@ -115,9 +115,9 @@ export default function Footer({ data }) {
 
           {/* COLUMN 5 — CONTACT (15%) */}
           <div className="w-full lg:w-[17%]">
-            <h4 className="uppercase text-[14px] font-medium tracking-wider text-[#5C83DD] mb-4">
+            <p className="uppercase text-[14px] font-montserrat font-medium tracking-wider text-[#5C83DD] mb-4">
               {t.contact}
-            </h4>
+            </p>
 
             <div
               className="text-white hover:text-[#5C83DD] text-[16px] font-normal mb-3"
