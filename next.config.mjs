@@ -72,6 +72,21 @@ const nextConfig = {
       },
     ];
   },
+  
+  // Add custom headers for caching Cookiebot
+  async headers() {
+    return [
+      {
+        source: '/uc.js*', // Matches Cookiebot script URL
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable', // Cache for 1 year
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
