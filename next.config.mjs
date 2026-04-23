@@ -77,7 +77,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/uc.js*', // Matches Cookiebot script URL
+        source: '/uc.js', // Directly matching Cookiebot script URL
         headers: [
           {
             key: 'Cache-Control',
