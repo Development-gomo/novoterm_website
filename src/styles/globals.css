@@ -187,3 +187,9 @@ font-family: var(--font-merriweather), serif;
 .author-bio{
   display:none;
 }
+
+@media (min-width: 767px) {
+  #CybotCookiebotDialogBodyContentText{
+    display: none;
+  }
+}
