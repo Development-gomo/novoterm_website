@@ -109,7 +109,9 @@ export function YoastHead({ yoastHead, canonicalUrl }) {
 const stripHtml = (html) =>
   html ? html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim() : "";
 
-export function SpeakableSchema({ title, summary, url }) {
+export function SpeakableSchema({ title, heading, summary, url }) {
+  // Prefer heading if provided, else fallback to title
+  const pageTitle = heading || title;
   // Only emit schema when a non-empty summary exists
   if (!summary || !summary.trim()) return null;
 
@@ -120,7 +122,7 @@ export function SpeakableSchema({ title, summary, url }) {
     "@context": "https://schema.org",
     "@type": "WebPage",
     ...(mappedUrl && { url: mappedUrl }),
-    name: stripHtml(title),
+    name: stripHtml(pageTitle),
     description: stripHtml(summary),
     speakable: {
       "@type": "SpeakableSpecification",
