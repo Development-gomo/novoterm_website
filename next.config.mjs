@@ -13,6 +13,7 @@ if (WP_URL) {
 
 const nextConfig = {
   reactStrictMode: true,
+  bundlePagesRouterDependencies: true,
 
   compiler: {
     removeConsole:
@@ -24,6 +25,10 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["swiper", "gsap", "framer-motion"],
   },
+
+  // Next 16 uses Turbopack by default in dev. An explicit config keeps
+  // custom production webpack settings from tripping the dev-time warning.
+  turbopack: {},
 
   onDemandEntries: {
     maxInactiveAge: 15 * 60 * 1000, // Reduce inactive page holds
@@ -86,6 +91,54 @@ const nextConfig = {
         ],
       },
     ];
+  },
+
+  webpack(config, { dev, isServer }) {
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        minimize: true,
+        moduleIds: "deterministic",
+        chunkIds: "deterministic",
+        splitChunks: {
+          ...config.optimization?.splitChunks,
+          chunks: "all",
+          minSize: 20_000,
+          maxSize: 180_000,
+          cacheGroups: {
+            ...config.optimization?.splitChunks?.cacheGroups,
+            framework: {
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              name: "framework",
+              chunks: "all",
+              priority: 40,
+              enforce: true,
+            },
+            vendors: {
+              test: /[\\/]node_modules[\\/]/,
+              name(module) {
+                const match = module.context?.match(
+                  /[\\/]node_modules[\\/](.*?)([\\/]|$)/
+                );
+                const packageName = match?.[1]?.replace("@", "") || "vendor";
+                return `vendor.${packageName}`;
+              },
+              chunks: "all",
+              priority: 20,
+              reuseExistingChunk: true,
+            },
+            commons: {
+              name: "commons",
+              minChunks: 2,
+              priority: 10,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      };
+    }
+
+    return config;
   },
 };
 
