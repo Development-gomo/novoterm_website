@@ -41,7 +41,7 @@ export default function SingleService({ service, yoastHead, lang }) {
   return (
     <main>
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
-      <SpeakableSchema title={title} summary={summary} />
+      <SpeakableSchema heading={service.acf.heading} summary={service.acf.article_summary} />
       {sections.length > 0 ? (
         <>
           <StickyServiceNav sections={sections} />

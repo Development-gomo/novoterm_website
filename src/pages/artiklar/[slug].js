@@ -66,7 +66,7 @@ export default function BlogPost({ post, sections, currentSlug, yoastHead, lang 
   return (
     <>
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
-      <SpeakableSchema title={post?.title?.rendered || ""} summary={post?.acf?.article_summary || ""} />
+      <SpeakableSchema heading={post?.acf?.heading} summary={post?.acf?.article_summary} />
       {sections && <SectionRenderer sections={sections} currentSlug={currentSlug} />}
     </>
   );

@@ -177,7 +177,7 @@ export default function Page({ page, lang, yoastHead, initialArticles, initialDo
     <main className="w-full">
       <LcpHeroPreload sections={sections} />
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
-      <SpeakableSchema title={title} summary={summary} />
+      <SpeakableSchema heading={page?.acf?.heading} summary={page?.acf?.article_summary} />
 
       {/* RENDER SECTIONS */}
       {sections.length ? (

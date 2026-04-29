@@ -42,7 +42,7 @@ export default function CaseStudyPage({ caseStudy, currentSlug, yoastHead, lang 
   return (
     <>
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
-      <SpeakableSchema title={title} summary={summary} />
+      <SpeakableSchema heading={caseStudy?.acf?.heading} summary={caseStudy?.acf?.article_summary} />
       {caseStudy?.acf?.sections && (
         <>
           <StickyPageNav sections={caseStudy.acf.sections} />

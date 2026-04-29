@@ -34,7 +34,7 @@ export default function SingleIndustry({ industry, yoastHead, lang }) {
   return (
     <main>
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
-      <SpeakableSchema title={industry.title?.rendered || ""} summary={industry.acf?.article_summary || ""} />
+      <SpeakableSchema heading={industry.acf?.heading} summary={industry.acf?.article_summary} />
       {sections.length > 0 ? (
         <>
           <StickyIndustryNav sections={sections} />
