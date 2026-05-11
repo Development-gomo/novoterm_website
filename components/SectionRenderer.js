@@ -59,6 +59,9 @@ const ContactHeroSection = dynamic(() => import("./sections/Contact/ContactHeroS
 /* ===================== NEWSLETTER PAGE ===================== */
 const NewsletterSection = dynamic(() => import("./sections/Newsletter/NewsletterSection"));
 
+/* ===================== EVENT PAGE ===================== */
+const EventFormSection = dynamic(() => import("./sections/Event/EventFormSection"));
+
 /* ===================== INDUSTRY PAGE ===================== */
 const IndustryHeroSection = dynamic(() => import("./sections/Industry/IndustryHeroSection"));
 const IndustryIntroSection = dynamic(() => import("./sections/Industry/ServiceIntroFrontend"));
@@ -460,6 +463,17 @@ case "inner_hero_section":
         return (
           <NewsletterSection
             key={`newsletter-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
+          />
+        );
+
+      /* ===================== EVENT PAGE ===================== */
+      case "event_form_section":
+        return (
+          <EventFormSection
+            key={`event-form-${index}`}
             section={block}
             sectionId={`section-${index}`}
             index={index}

@@ -102,6 +102,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
   const placeholderColor = isParentLight ? "#061837" : "placeholder-white/70";
 
   const isNewsletter = mode === "newsletter_unsubscribe";
+  const isEvent = mode === "event";
   const newsletterTextColor = isParentLight ? "text-[#061837]" : "text-white";
   const newsletterBorderColor = isParentLight ? "border-[#061837]" : "border-white/50";
   const newsletterPlaceholderColor = isParentLight ? "placeholder-[#061837]/70" : "placeholder-white/70";
@@ -152,6 +153,138 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     }
 
     setLoading(false);
+  }
+
+  async function handleEventSubmit(e) {
+    e.preventDefault();
+    setStatus("");
+
+    const formData = new FormData(e.target);
+    const validationErrors = validateFields(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
+    formData.append("user_type", "company");
+    if (formId) formData.append("form_id", formId);
+
+    try {
+      const res = await fetch(`/wp-api/custom/v1/contact`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        const redirectPath = lang === "en" ? "/en/thank-you-company" : "/thank-you-company/";
+        router.push(redirectPath);
+        return;
+      }
+
+      setStatus(result.message || "Something went wrong.");
+    } catch (err) {
+      setStatus("Submission failed. Please try again later.");
+    }
+
+    setLoading(false);
+  }
+
+  if (isEvent) {
+    return (
+      <form
+        onSubmit={handleEventSubmit}
+        className={`w-full max-w-[620px] ${newsletterTextColor}`}
+        noValidate
+      >
+        <div className="mb-4">
+          <p className="text-[12px] opacity-60">
+            * {t("Obligatoriskt fält", "Mandatory field")}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {/* Name */}
+          <input
+            type="text"
+            name="full_name"
+            placeholder={t("NAMN*", "NAME*")}
+            required
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.full_name ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+            onKeyDown={(e) => { if (/^\d$/.test(e.key)) e.preventDefault(); }}
+            onChange={() => setErrors((prev) => ({ ...prev, full_name: undefined }))}
+          />
+
+          {/* Email */}
+          <input
+            type="email"
+            name="email"
+            placeholder={t("E-POST*", "EMAIL*")}
+            required
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.email ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+            onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
+          />
+
+          {/* Phone */}
+          <input
+            type="tel"
+            name="phone"
+            placeholder={t("TELEFONNUMMER*", "PHONE*")}
+            required
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.phone ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+            onKeyDown={(e) => {
+              const controlKeys = ["Backspace","Delete","Tab","ArrowLeft","ArrowRight","Home","End"];
+              if (!controlKeys.includes(e.key) && !/^[\d+\-() ]$/.test(e.key)) e.preventDefault();
+            }}
+            onChange={() => setErrors((prev) => ({ ...prev, phone: undefined }))}
+          />
+
+          {/* Company */}
+          <input
+            type="text"
+            name="company_name"
+            placeholder={t("FÖRETAG*", "COMPANY*")}
+            required
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.company_name ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+            onKeyDown={(e) => { if (/^\d$/.test(e.key)) e.preventDefault(); }}
+            onChange={() => setErrors((prev) => ({ ...prev, company_name: undefined }))}
+          />
+
+          {/* Designation */}
+          <input
+            type="text"
+            name="designation"
+            placeholder={t("BEFATTNING*", "DESIGNATION*")}
+            required
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+          />
+
+          {Object.keys(errors).length > 0 && (
+            <p className="text-red-500 text-[13px]">
+              {Object.values(errors).find(Boolean)}
+            </p>
+          )}
+
+          {status && (
+            <p className="text-red-500 text-[13px]">{status}</p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="btn-primary cursor-pointer disabled:opacity-50"
+          >
+            {loading
+              ? (lang === "sv" ? "Skickar..." : "Sending...")
+              : t("SKICKA", "Submit")}
+          </button>
+        </div>
+      </form>
+    );
   }
 
   if (isNewsletter) {
