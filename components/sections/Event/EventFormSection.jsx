@@ -73,6 +73,7 @@ export default function EventFormSection({ section, sectionId, index = 0 }) {
           </div>
         </div>
       </div>
+      
     </section>
   );
 }
