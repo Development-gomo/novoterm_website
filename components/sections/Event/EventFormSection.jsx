@@ -76,3 +76,4 @@ export default function EventFormSection({ section, sectionId, index = 0 }) {
     </section>
   );
 }
+
