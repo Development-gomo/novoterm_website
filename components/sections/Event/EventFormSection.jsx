@@ -7,6 +7,7 @@ export default function EventFormSection({ section, sectionId, index = 0 }) {
     heading,
     subheading,
     form_id,
+    event_name,
     section_theme = "light",
     section_label,
     acf_fc_layout,
@@ -69,11 +70,12 @@ export default function EventFormSection({ section, sectionId, index = 0 }) {
               sectionTheme={section_theme}
               formId={form_id}
               mode="event"
+              eventName={event_name || heading || ""}
             />
           </div>
         </div>
       </div>
-      
+
     </section>
   );
 }

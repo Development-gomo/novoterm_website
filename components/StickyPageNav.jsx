@@ -40,10 +40,17 @@ export default function StickyPageNav({ sections = [] }) {
       return {
         label,
         acf_fc_layout: section.acf_fc_layout,
+        page_type: section.page_type || null,
         index,
       };
     })
-    .filter((item) => item.label && !isHeroSection(item.acf_fc_layout));
+    .filter((item) => {
+      if (!item.label) return false;
+      if (isHeroSection(item.acf_fc_layout)) return false;
+      // If section has a page_type field, only show in sticky nav when set to innerpage
+      if (item.page_type && item.page_type !== "innerpage") return false;
+      return true;
+    });
 
   useEffect(() => {
     const handleScroll = () => {

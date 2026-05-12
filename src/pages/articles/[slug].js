@@ -54,6 +54,13 @@ export async function getServerSideProps({ params, locale }) {
           category: categories[0]?.name || "",
           category_id: categories[0]?.id || null,
           slug,
+          display_author_card: post.acf?.display_author_card === true || post.acf?.display_author_card === 1,
+          author_card_id: (() => {
+            const ac = post.acf?.author_card;
+            if (!ac) return null;
+            if (typeof ac === "object") return ac.ID || ac.id || null;
+            return Number(ac) || null;
+          })(),
         },
       ],
     },

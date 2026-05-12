@@ -16,6 +16,8 @@ const ArticlesSection = dynamic(() => import("./sections/Homepage/ArticlesSectio
 const FullContentSection = dynamic(() => import("./sections/Homepage/FullContentSection"));
 const NewHomeBanner = dynamic(() => import("./sections/Homepage/NewBanner"));
 const NewHomeBannerText = dynamic(() => import("./sections/Homepage/newbannertext"));
+const LogoSection = dynamic(() => import("./sections/Homepage/LogoSection"));
+const TranslatorQuoteSection = dynamic(() => import("./sections/Homepage/TranslatorQuoteSection"));
 
 /* ===================== SERVICE PAGE ===================== */
 const ServicesHeroSection = dynamic(() => import("./sections/Service/ServicesHeroSection"));
@@ -117,12 +119,15 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType, 
         return (
           <AboutSection
             key={`about-${index}`}
+            sectionId={`section-${index}`}
             section_label={block.section_label}
             heading={block.heading}
             description={block.description}
             button_text={block.button_text}
             button_link={block.button_link}
             image={mediaOrNull(block.image)}
+            video_url={block.video_url || ""}
+            page_type={block.page_type || "homepage"}
           />
         );
 
@@ -521,6 +526,24 @@ case "inner_hero_section":
         return (
           <IndustryInsightsSection
             key={`industry-insights-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+          />
+        );
+
+      case "logo_section":
+        return (
+          <LogoSection
+            key={`logo-section-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+          />
+        );
+
+      case "translator_quote_block":
+        return (
+          <TranslatorQuoteSection
+            key={`quote-block-${index}`}
             section={block}
             sectionId={`section-${index}`}
           />

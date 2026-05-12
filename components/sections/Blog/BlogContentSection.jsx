@@ -4,6 +4,7 @@ import Image from "next/image";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import AuthorCard from "./AuthorCard";
 
 const translations = {
   sv: {
@@ -30,6 +31,7 @@ export default function BlogContentSection({ section }) {
   const [promo, setPromo] = useState(null);
   const [processedContent, setProcessedContent] = useState("");
   const [pageUrl, setPageUrl] = useState("");
+  const [authorCards, setAuthorCards] = useState([]);
 
   useEffect(() => {
     setPageUrl(window.location.href);
@@ -46,9 +48,32 @@ export default function BlogContentSection({ section }) {
     category,
     category_id,
     slug,
+    display_author_card,
+    author_card_id,
   } = section || {};
 
   const bgUrl = pickWpImageUrl(featured_image, "heroNext");
+
+  /* =========================
+     AUTHOR CARD
+  ========================== */
+  useEffect(() => {
+    if (!display_author_card || !author_card_id) return;
+    async function fetchAuthorCard() {
+      try {
+        const res = await fetch(
+          `/wp-api/wp/v2/author-card/${author_card_id}?acf_format=standard`
+        );
+        const data = await res.json();
+        if (Array.isArray(data?.acf?.individual_author_card)) {
+          setAuthorCards(data.acf.individual_author_card);
+        }
+      } catch (err) {
+        console.error("Author card fetch error:", err);
+      }
+    }
+    fetchAuthorCard();
+  }, [author_card_id]);
 
   /* =========================
      TOC GENERATION
@@ -269,7 +294,7 @@ const res = await fetch(
 
             {/* PROMO MODULE */}
             {promo && (promo.title || promo.description) && (
-              <div className="bg-[#D1DAE8] rounded-[8px] p-[32px]">
+              <div className="bg-[#D1DAE8] rounded-[3px] p-[32px]">
                 {promo.title && (
                   <h3 className="text-[18px] font-semibold mb-2">
                     {promo.title}
@@ -299,8 +324,17 @@ const res = await fetch(
               dangerouslySetInnerHTML={{ __html: processedContent || content }}
             />
 
+            {/* AUTHOR CARD */}
+            {display_author_card && authorCards.length > 0 && (
+              <div className="mt-10 space-y-4">
+                {authorCards.map((card, i) => (
+                  <AuthorCard key={i} card={card} />
+                ))}
+              </div>
+            )}
+
             {/* SOCIAL */}
-            <div className="mt-10 p-6 bg-[#e9f1fb] rounded-[8px] flex justify-between items-center flex-wrap gap-4">
+            <div className="mt-10 p-6 bg-[#e9f1fb] rounded-[3px] flex justify-between items-center flex-wrap gap-4">
               <p className="font-semibold text-[#061837]">
                 {t.shareText}
               </p>

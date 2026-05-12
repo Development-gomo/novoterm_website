@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-export default function ContactForm({ sectionTheme = "light", formId, mode = "contact" }) {
+export default function ContactForm({ sectionTheme = "light", formId, mode = "contact", eventName = "" }) {
   const router = useRouter();
   const lang = router.locale || "sv";
 
@@ -102,7 +102,6 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
   const placeholderColor = isParentLight ? "#061837" : "placeholder-white/70";
 
   const isNewsletter = mode === "newsletter_unsubscribe";
-  const isEvent = mode === "event";
   const newsletterTextColor = isParentLight ? "text-[#061837]" : "text-white";
   const newsletterBorderColor = isParentLight ? "border-[#061837]" : "border-white/50";
   const newsletterPlaceholderColor = isParentLight ? "placeholder-[#061837]/70" : "placeholder-white/70";
@@ -123,13 +122,10 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     setErrors({});
     setLoading(true);
 
-    formData.append("company_name", "Newsletter Unsubscribe");
-    formData.append("full_name", "Newsletter Unsubscribe");
-    formData.append("phone", "0000000");
-    formData.append("user_type", "company");
-    formData.append("area", "Newsletter unsubscribe");
-    formData.append("message", "Newsletter unsubscribe request");
     if (formId) formData.append("form_id", formId);
+    // Temporary: route to /contact until /newsletter endpoint is deployed on server
+    formData.append("full_name", "Newsletter Subscriber");
+    formData.append("form_type", "Newsletter");
 
     try {
       const res = await fetch(`/wp-api/custom/v1/contact`, {
@@ -155,6 +151,8 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     setLoading(false);
   }
 
+  const isEvent = mode === "event";
+
   async function handleEventSubmit(e) {
     e.preventDefault();
     setStatus("");
@@ -169,8 +167,11 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
 
     setErrors({});
     setLoading(true);
+
+    if (eventName) formData.append("event_name", eventName);
+    // Temporary: route to /contact until /event endpoint is deployed on server
+    formData.append("area", eventName || "Event Registration");
     formData.append("user_type", "company");
-    if (formId) formData.append("form_id", formId);
 
     try {
       const res = await fetch(`/wp-api/custom/v1/contact`, {
@@ -181,7 +182,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       const result = await res.json();
 
       if (result.success) {
-        const redirectPath = lang === "en" ? "/en/thank-you-company" : "/thank-you-company/";
+        const redirectPath = lang === "en" ? "/en/event-thank-you" : "/event-thankyou/";
         router.push(redirectPath);
         return;
       }
@@ -198,80 +199,68 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     return (
       <form
         onSubmit={handleEventSubmit}
-        className={`w-full max-w-[620px] ${newsletterTextColor}`}
+        className={`w-full max-w-[520px] ${newsletterTextColor}`}
         noValidate
       >
         <div className="mb-4">
-          <p className="text-[12px] opacity-60">
+          <p className="text-[18px] font-montserrat font-medium">
+            {t("Registrera dig", "Register")}
+          </p>
+          <p className="text-[12px] opacity-60 mt-1">
             * {t("Obligatoriskt fält", "Mandatory field")}
           </p>
         </div>
 
         <div className="space-y-4">
-          {/* Name */}
           <input
             type="text"
             name="full_name"
-            placeholder={t("NAMN*", "NAME*")}
+            placeholder={t("FULLSTÄNDIGT NAMN*", "FULL NAME*")}
             required
             className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.full_name ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
             onKeyDown={(e) => { if (/^\d$/.test(e.key)) e.preventDefault(); }}
             onChange={() => setErrors((prev) => ({ ...prev, full_name: undefined }))}
           />
 
-          {/* Email */}
           <input
             type="email"
             name="email"
-            placeholder={t("E-POST*", "EMAIL*")}
+            placeholder={t("E-POST*", "E-MAIL*")}
             required
             className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.email ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
             onChange={() => setErrors((prev) => ({ ...prev, email: undefined }))}
           />
 
-          {/* Phone */}
           <input
             type="tel"
             name="phone"
-            placeholder={t("TELEFONNUMMER*", "PHONE*")}
-            required
+            placeholder={t("TELEFONNUMMER", "PHONE NUMBER")}
             className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.phone ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
             onKeyDown={(e) => {
-              const controlKeys = ["Backspace","Delete","Tab","ArrowLeft","ArrowRight","Home","End"];
-              if (!controlKeys.includes(e.key) && !/^[\d+\-() ]$/.test(e.key)) e.preventDefault();
+              const ctrl = ["Backspace","Delete","Tab","ArrowLeft","ArrowRight","Home","End"];
+              if (!ctrl.includes(e.key) && !/^[\d+\-() ]$/.test(e.key)) e.preventDefault();
             }}
             onChange={() => setErrors((prev) => ({ ...prev, phone: undefined }))}
           />
 
-          {/* Company */}
           <input
             type="text"
             name="company_name"
-            placeholder={t("FÖRETAG*", "COMPANY*")}
-            required
-            className={`w-full h-[48px] px-4 rounded-[3px] border ${errors.company_name ? "border-red-500" : newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+            placeholder={t("FÖRETAGSNAMN", "COMPANY NAME")}
+            className={`w-full h-[48px] px-4 rounded-[3px] border ${newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
             onKeyDown={(e) => { if (/^\d$/.test(e.key)) e.preventDefault(); }}
-            onChange={() => setErrors((prev) => ({ ...prev, company_name: undefined }))}
           />
 
-          {/* Designation */}
-          <input
-            type="text"
-            name="designation"
-            placeholder={t("BEFATTNING*", "DESIGNATION*")}
-            required
-            className={`w-full h-[48px] px-4 rounded-[3px] border ${newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none ${newsletterPlaceholderColor}`}
+          <textarea
+            name="message"
+            placeholder={t("MEDDELANDE", "MESSAGE")}
+            className={`w-full min-h-[105px] px-4 py-3 rounded-[3px] border ${newsletterBorderColor} bg-transparent ${newsletterTextColor} text-[14px] outline-none resize-none ${newsletterPlaceholderColor}`}
           />
 
           {Object.keys(errors).length > 0 && (
-            <p className="text-red-500 text-[13px]">
-              {Object.values(errors).find(Boolean)}
-            </p>
+            <p className="text-red-500 text-[13px]">{Object.values(errors).find(Boolean)}</p>
           )}
-
-          {status && (
-            <p className="text-red-500 text-[13px]">{status}</p>
-          )}
+          {status && <p className="text-red-500 text-[13px]">{status}</p>}
 
           <button
             type="submit"

@@ -98,7 +98,11 @@ font-family: var(--font-merriweather), serif;
   mask-repeat: no-repeat;
   cursor: pointer;
 }
-
+.wp-video,
+.wp-video video {
+    width: 100% !important;
+    height: auto !important;
+}
 .btn-primary::before {
   content: "";
   position: absolute;
