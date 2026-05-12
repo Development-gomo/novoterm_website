@@ -106,6 +106,7 @@ export default function AboutSection({
       <div className="web-width mx-auto px-6 md:px-0 flex flex-col md:flex-row">
 
         {/* LEFT COLUMN – 15% */}
+        
         <div className="md:w-[15%]">
           {page_type !== "innerpage" && (
             <div className="flex items-center gap-2 mb-4 md:mb-6">
