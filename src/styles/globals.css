@@ -102,6 +102,7 @@ font-family: var(--font-merriweather), serif;
 .wp-video video {
     width: 100% !important;
     height: auto !important;
+    
 }
 .btn-primary::before {
   content: "";
