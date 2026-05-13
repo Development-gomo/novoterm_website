@@ -87,7 +87,7 @@ export default function LogoSection({ section }) {
                     return (
                       <div
                         key={i}
-                        className={`flex-shrink-0 flex items-center justify-center mx-3 px-6 py-4 rounded-[3px] border ${
+                        className={`flex-shrink-0 flex items-center justify-center mx-1 px-6 py-4 rounded-[3px] border ${
                           isDark ? "bg-[#d7e5f5] border-[]" : "bg-[#CCD8EE] border-[#CCD8EE]"
                         }`}
                         style={{ minWidth: "180px", height: "90px" }}

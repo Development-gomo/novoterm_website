@@ -148,7 +148,7 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
                     src="/quotes-70x70.svg"
                     alt=""
                     aria-hidden="true"
-                    className="w-[70px] h-[70px] opacity-20 pointer-events-none"
+                    className="w-[130px] h-[130px] opacity-5 pointer-events-none"
                   />
 
                   {/* Person info */}
