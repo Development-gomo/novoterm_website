@@ -127,6 +127,8 @@ export default function SectionRenderer({ sections = [], currentSlug, pageType, 
             button_link={block.button_link}
             image={mediaOrNull(block.image)}
             video_url={block.video_url || ""}
+            video_thumbnail={mediaOrNull(block.video_thumbnail)}
+            media_type={block.media_type || "image"}
             page_type={block.page_type || "homepage"}
           />
         );

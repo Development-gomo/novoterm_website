@@ -15,11 +15,12 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
   const [swiperReady, setSwiperReady] = useState(false);
   const [personImgMap, setPersonImgMap] = useState({});
 
-  // Fetch media URLs for client_image IDs (ACF group sub-fields return raw IDs)
+  // client_image lives inside a group sub-field — ACF REST API returns raw integer IDs
+  // for group sub-fields regardless of Return Format setting. Fetch the URL separately.
   useEffect(() => {
     const ids = [...new Set(
       slides
-        .map(s => s.client_section?.client_image)
+        .map(s => (s.client_section || s.client || s)?.client_image)
         .filter(v => typeof v === "number")
     )];
     if (!ids.length) return;
@@ -121,6 +122,7 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
             slide.client ||
             (slide.client_image !== undefined ? slide : {});
           const rawClientImg = client.client_image;
+          // If integer → fetched via personImgMap; if object → resolveImg directly
           const personImg = typeof rawClientImg === "number"
             ? (personImgMap[rawClientImg] || "")
             : resolveImg(rawClientImg);

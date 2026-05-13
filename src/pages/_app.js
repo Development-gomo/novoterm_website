@@ -14,7 +14,7 @@ import {
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import DeferredGtm from "../../components/DeferredGtm";
-// DeferredCookiebot removed - GTM handles Cookiebot via its integration (implementation=gtm)
+import DeferredCookiebot from "../../components/DeferredCookiebot";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
@@ -151,8 +151,7 @@ export default function MyApp({
 
   return (
     <>
-      {/* Cookiebot is handled by GTM via its integration (implementation=gtm) */}
-      {/* GTM — consent-gated internally via GTM's Cookiebot integration */}
+      <DeferredCookiebot />
       <DeferredGtm />
 
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
