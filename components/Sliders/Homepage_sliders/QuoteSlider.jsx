@@ -16,20 +16,23 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
   const [personImgMap, setPersonImgMap] = useState({});
 
   // client_image lives inside a group sub-field — ACF REST API returns raw integer IDs
-  // for group sub-fields regardless of Return Format setting. Fetch the URL separately.
+  // for group sub-fields. Fetch the actual URL from the media endpoint.
   useEffect(() => {
     const ids = [...new Set(
       slides
         .map(s => (s.client_section || s.client || s)?.client_image)
-        .filter(v => typeof v === "number")
+        .filter(v => typeof v === "number" && v > 0)
     )];
     if (!ids.length) return;
     Promise.all(
       ids.map(id =>
-        fetch(`/wp-api/wp/v2/media/${id}?_fields=id,source_url`)
-          .then(r => r.json())
-          .then(d => [id, d.source_url || ""])
-          .catch(() => [id, ""])
+        fetch(`/wp-api/wp/v2/media/${id}`)
+          .then(r => {
+            if (!r.ok) throw new Error(`media ${id} status ${r.status}`);
+            return r.json();
+          })
+          .then(d => [id, d.source_url || d.url || ""])
+          .catch(err => { console.warn("QuoteSlider media fetch failed:", err); return [id, ""]; })
       )
     ).then(pairs => setPersonImgMap(Object.fromEntries(pairs)));
   }, [slides]);
@@ -59,9 +62,12 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
   const textSub     = isDark ? "text-[#9bb3cc]"   : "text-white/50";
 
   const resolveImg = (field) => {
+    if (!field) return "";
+    if (typeof field === "string") return field;
     const url = pickWpImageUrl(field, "card");
     if (url) return url;
-    if (typeof field === "object" && field?.url) return field.url;
+    if (field?.url) return field.url;
+    if (field?.source_url) return field.source_url;
     return "";
   };
 
@@ -122,7 +128,8 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
             slide.client ||
             (slide.client_image !== undefined ? slide : {});
           const rawClientImg = client.client_image;
-          // If integer → fetched via personImgMap; if object → resolveImg directly
+          // Integer ID → use fetched URL from personImgMap
+          // Object / string → resolve directly (handles acf_format=standard)
           const personImg = typeof rawClientImg === "number"
             ? (personImgMap[rawClientImg] || "")
             : resolveImg(rawClientImg);
