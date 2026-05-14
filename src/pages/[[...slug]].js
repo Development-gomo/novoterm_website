@@ -3,7 +3,7 @@
 import SectionRenderer from "../../components/SectionRenderer";
 import StickyPageNav from "../../components/StickyPageNav";
 import LcpHeroPreload from "../../components/LcpHeroPreload";
-import { buildSiteUrl, fetchPages, fetchPageBySlug, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
+import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 
 // Generate paths for both languages with locale so Next.js i18n
@@ -41,6 +41,9 @@ export async function getStaticProps({ params, locale }) {
   let initialArticles = null;
   let initialDocumentTypes = null;
   let initialCaseStudies = null;
+  let initialClientLogos = null;
+  let initialCustomerQuotes = null;
+  let initialTranslatorQuotes = null;
   const sections = page?.acf?.page_sections || [];
   const hasArticlesSection = sections.some(
     (s) => s?.acf_fc_layout === "articles_section"
@@ -51,6 +54,12 @@ export async function getStaticProps({ params, locale }) {
   const hasCaseStudySection = sections.some(
     (s) => s?.acf_fc_layout === "case_study_section"
   );
+  const hasLogoSection = sections.some(
+    (s) => s?.acf_fc_layout === "logo_section"
+  );
+  const quoteBlocks = sections.filter((s) => s?.acf_fc_layout === "translator_quote_block");
+  const needsCustomerQuotes = quoteBlocks.some((s) => s?.quote_source === "customer");
+  const needsTranslatorQuotes = quoteBlocks.some((s) => !s?.quote_source || s?.quote_source === "translator");
 
   // Prefetch articles
   if (hasArticlesSection) {
@@ -150,6 +159,25 @@ export async function getStaticProps({ params, locale }) {
     }
   }
 
+  // Prefetch client logos from options page
+  if (hasLogoSection) {
+    try {
+      initialClientLogos = await fetchClientLogos();
+    } catch (e) {
+      console.error("SSR client logos prefetch failed:", e);
+    }
+  }
+
+  // Prefetch quote blocks from options pages
+  if (needsCustomerQuotes) {
+    try { initialCustomerQuotes = await fetchQuoteBlock("customer", lang); }
+    catch (e) { console.error("SSR customer quotes prefetch failed:", e); }
+  }
+  if (needsTranslatorQuotes) {
+    try { initialTranslatorQuotes = await fetchQuoteBlock("translator", lang); }
+    catch (e) { console.error("SSR translator quotes prefetch failed:", e); }
+  }
+
   return {
     props: {
       page,
@@ -159,12 +187,15 @@ export async function getStaticProps({ params, locale }) {
       initialArticles,
       initialDocumentTypes,
       initialCaseStudies,
+      initialClientLogos,
+      initialCustomerQuotes,
+      initialTranslatorQuotes,
     },
     revalidate: 60
   };
 }
 
-export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies }) {
+export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
   const pagePath = page?.slug === "home" ? "/" : `/${page?.slug || ""}`;
@@ -183,7 +214,7 @@ export default function Page({ page, lang, yoastHead, initialArticles, initialDo
       {sections.length ? (
         <>
           {page?.slug !== "home" && <StickyPageNav sections={sections} />}
-          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} />
+          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} initialClientLogos={initialClientLogos} initialCustomerQuotes={initialCustomerQuotes} initialTranslatorQuotes={initialTranslatorQuotes} />
         </>
       ) : (
         <div>No sections found</div>

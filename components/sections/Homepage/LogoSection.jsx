@@ -3,7 +3,7 @@ import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 
-export default function LogoSection({ section }) {
+export default function LogoSection({ section, optionsLogos = [] }) {
   const {
     section_theme = "light",
     section_label,
@@ -28,7 +28,24 @@ export default function LogoSection({ section }) {
 
   /* ── CAROUSEL LAYOUT ───────────────────────────────────────── */
   if (select_layout === "carousel") {
-    const track = [...sorted, ...sorted];
+    // Logos load exclusively from options page (upload_logos repeater, field: logo)
+    const track = [...optionsLogos, ...optionsLogos];
+
+    const getLogoUrl = (item) => {
+      const field = item?.logo;
+      if (!field) return "";
+      if (typeof field === "string") return field;
+      return (
+        pickWpImageUrl(field, "card") ||
+        field?.url ||
+        field?.source_url ||
+        ""
+      );
+    };
+    const getLogoAlt = (item) => {
+      const field = item?.logo;
+      return typeof field === "object" ? field?.alt || "" : "";
+    };
 
     return (
       <section
@@ -80,9 +97,8 @@ export default function LogoSection({ section }) {
 
                 <div className="flex logo-carousel-track">
                   {track.map((item, i) => {
-                    const imgUrl = pickWpImageUrl(item.select_logo, "card") ||
-                      (typeof item.select_logo === "object" ? item.select_logo?.url : "");
-                    const imgAlt = typeof item.select_logo === "object" ? item.select_logo?.alt || "" : "";
+                    const imgUrl = getLogoUrl(item);
+                    const imgAlt = getLogoAlt(item);
 
                     return (
                       <div
@@ -93,7 +109,7 @@ export default function LogoSection({ section }) {
                         style={{ minWidth: "180px", height: "90px" }}
                       >
                         {imgUrl ? (
-                          <div className="relative w-[120px] h-[50px]">
+                          <div className="relative w-[120px] h-[70px]">
                             <Image src={imgUrl} alt={imgAlt} fill unoptimized className="object-contain" sizes="120px" loading="lazy" />
                           </div>
                         ) : (
@@ -180,14 +196,14 @@ export default function LogoSection({ section }) {
               />
             )}
 
-            {sorted.length > 0 && (
+            {optionsLogos.length > 0 && (
               <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-0 border-l rounded-[3px] border-t ${isDark ? "border-[#06183717]" : "border-[#06183717]"}`}>
-                {sorted.map((item, i) => {
-                  const imgUrl = pickWpImageUrl(item.select_logo, "card");
-                  const imgAlt =
-                    typeof item.select_logo === "object"
-                      ? item.select_logo?.alt || ""
-                      : "";
+                {optionsLogos.map((item, i) => {
+                  const field = item?.logo;
+                  const imgUrl = !field ? "" :
+                    typeof field === "string" ? field :
+                    pickWpImageUrl(field, "card") || field?.url || field?.source_url || "";
+                  const imgAlt = typeof field === "object" ? field?.alt || "" : "";
 
                   return (
                     <div
@@ -199,7 +215,7 @@ export default function LogoSection({ section }) {
                       }`}
                     >
                       {imgUrl ? (
-                        <div className="relative w-full max-w-[140px] h-[48px]">
+                        <div className="relative w-full max-w-[140px] h-[80px]">
                           <Image
                             src={imgUrl}
                             alt={imgAlt}

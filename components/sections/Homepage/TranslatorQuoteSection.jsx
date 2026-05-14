@@ -1,9 +1,14 @@
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 import QuoteSlider from "../../Sliders/Homepage_sliders/QuoteSlider";
 
-export default function TranslatorQuoteSection({ section }) {
+export default function TranslatorQuoteSection({ section, lang: langProp, optionsSlides = [] }) {
+  const router = useRouter();
+  // Prefer the server-side prop (from getStaticProps), fall back to router locale — same pattern as Footer
+  const lang = langProp || router?.locale || "sv";
+
   const {
     section_theme = "light",
     section_label,
@@ -11,8 +16,26 @@ export default function TranslatorQuoteSection({ section }) {
     description,
     cta_text,
     cta_url,
-    quote_block = [],
   } = section || {};
+
+  // PHP endpoint now returns language-specific slides (novoterm_switch_lang pattern, same as header/footer).
+  // Use server-prefetched slides directly; fall back to a client-side fetch with ?lang= for pages
+  // that don't run the prefetch (e.g. service/industry pages).
+  const [slides, setSlides] = useState(optionsSlides);
+
+  useEffect(() => {
+    if (optionsSlides.length > 0) {
+      setSlides(optionsSlides);
+      return;
+    }
+    // Client-side fallback — mirrors _app.js re-fetching footer on lang change
+    const source = section?.quote_source || "translator";
+    const endpoint = source === "customer" ? "customer-quote-block" : "translator-quote-block";
+    fetch(`/wp-api/theme/v1/${endpoint}?lang=${lang}`)
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => setSlides(Array.isArray(data) ? data : []))
+      .catch(() => {});
+  }, [lang]); // re-run if locale changes (client-side navigation)
 
   const isDark    = section_theme === "dark";
   const ctaHref   = typeof cta_url === "object" ? cta_url?.url || "#" : cta_url || "#";
@@ -67,7 +90,7 @@ export default function TranslatorQuoteSection({ section }) {
                   }`}
                   dangerouslySetInnerHTML={{ __html: description }}
                 />
-                {quote_block.length > 1 && (
+                {slides.length > 1 && (
                   <div className="flex gap-3 flex-shrink-0 pt-1">
                     <button
                       type="button"
@@ -103,9 +126,9 @@ export default function TranslatorQuoteSection({ section }) {
             )}
 
             {/* SLIDER */}
-            {quote_block.length > 0 && (
+            {slides.length > 0 && (
               <div>
-                <QuoteSlider slides={quote_block} isDark={isDark} prevRef={prevRef} nextRef={nextRef} />
+                <QuoteSlider slides={slides} isDark={isDark} prevRef={prevRef} nextRef={nextRef} />
               </div>
             )}
 

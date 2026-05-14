@@ -86,7 +86,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies }) {
+export default function SectionRenderer({ sections = [], lang = "sv", currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -539,17 +539,25 @@ case "inner_hero_section":
             key={`logo-section-${index}`}
             section={block}
             sectionId={`section-${index}`}
+            optionsLogos={initialClientLogos || []}
           />
         );
 
-      case "translator_quote_block":
+      case "translator_quote_block": {
+        const source = block.quote_source || "translator";
+        const optionsSlides = source === "customer"
+          ? (initialCustomerQuotes || [])
+          : (initialTranslatorQuotes || []);
         return (
           <TranslatorQuoteSection
             key={`quote-block-${index}`}
             section={block}
             sectionId={`section-${index}`}
+            lang={lang}
+            optionsSlides={optionsSlides}
           />
         );
+      }
 
       default:
         return null;

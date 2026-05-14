@@ -139,7 +139,7 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
 
           return (
             <SwiperSlide key={i} className="h-auto">
-              <div className={`flex flex-col md:flex-row rounded-[3px] overflow-hidden h-[350px] ${cardBg}`}>
+              <div className={`flex flex-col md:flex-row rounded-[3px] overflow-hidden min-h-[350px] ${cardBg}`}>
 
                 {/* ── LEFT PANEL ── */}
                 <div className={`md:w-[30%] flex flex-col justify-between p-8 md:p-10 ${leftBg}`}>
@@ -153,21 +153,17 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
 
                   {/* Person info */}
                   <div className="flex items-center gap-4">
-                    {personImg ? (
-                      <div className="relative w-[70px] h-[70px] rounded-full overflow-hidden flex-shrink-0 ring-1 ring-white/40">
-                        <Image
-                          src={personImg}
-                          alt={personAlt}
-                          fill
-                          unoptimized
-                          className="object-cover"
-                          sizes="64px"
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-[64px] h-[64px] rounded-full bg-[#B8CCDF] flex-shrink-0" />
-                    )}
+                    <div className="relative w-[70px] h-[70px] rounded-full overflow-hidden flex-shrink-0 ring-1 ring-white/40">
+                      <Image
+                        src={personImg || "/userfallback.webp"}
+                        alt={personAlt || ""}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                        sizes="64px"
+                        loading="lazy"
+                      />
+                    </div>
 
                     <div>
                       {client.client_name && (
@@ -191,7 +187,7 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
                 <div className="md:w-[70%] flex flex-col justify-between gap-6 p-8 md:p-10">
                   {slide.quote && (
                     <div
-                      className={`text-[20px] md:text-[22px] font-heading font-semibold leading-[1.5] text-[#061837] [&_p]:mb-0`}
+                      className={`text-[16px] md:text-[18px] font-heading font-semibold leading-[1.5] text-[#061837] [&_p]:mb-0`}
                       dangerouslySetInnerHTML={{ __html: slide.quote }}
                     />
                   )}
@@ -200,7 +196,7 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
                     {/* <hr className={`border-t ${isDark ? "border-[#0618374D]" : "border-[#0618374D]"} mb-6`} /> */}
 
                     {companyImg ? (
-                      <div className="relative h-[40px] w-[120px]">
+                      <div className="relative h-[70px] w-[120px]">
                         <Image
                           src={companyImg}
                           alt={logoAlt}
