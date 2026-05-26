@@ -5,6 +5,7 @@
     import LazyWhenVisible from "../../ui/LazyWhenVisible";
     import DotIndicator from "../../ui/DotIndicator";
     import { DEFAULT_LANG, localePath, wpToPath } from "../../../lib/api";
+    import { formatArticleDate } from "../../../lib/dateFormat";
 
     export default function InsightsSection({
     section_title,
@@ -40,12 +41,7 @@
                 fm?.media_details?.sizes?.medium_large?.source_url ||
                 "/default-blog.jpg";
 
-            // DATE
-            const date = new Date(post.date).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-            });
+            const date = formatArticleDate(post.date, lang);
 
             // READING TIME based on content
             const clean = post.content.rendered.replace(/<[^>]*>/g, "");

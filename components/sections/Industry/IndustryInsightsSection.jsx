@@ -5,6 +5,7 @@ import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
 import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath, wpToPath } from "../../../lib/api";
+import { formatArticleDate } from "../../../lib/dateFormat";
 import Link from "next/link";
 
 export default function IndustryInsightsSection({ section, sectionId }) {
@@ -35,11 +36,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
             fm?.media_details?.sizes?.medium_large?.source_url ||
             "/default-blog.jpg";
 
-          const date = new Date(post.date).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          });
+          const date = formatArticleDate(post.date, lang);
 
           const clean = post.content.rendered.replace(/<[^>]*>/g, "");
           const words = clean.split(/\s+/).length;

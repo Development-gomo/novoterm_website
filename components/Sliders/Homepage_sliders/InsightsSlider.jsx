@@ -6,6 +6,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { formatArticleDate } from "../../../lib/dateFormat";
 
 export default function InsightsSlider({ slides, lang = "sv" }) {
   const prevRef = useRef(null);
@@ -43,18 +44,7 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
         className="w-full [&>.swiper-wrapper]:items-stretch"
       >
         {limitedSlides.map((slide, index) => {
-          // Localize date
-          let dateLocale = lang === "en" ? "en-US" : "sv-SE";
-          let formattedDate = "";
-          try {
-            formattedDate = new Date(slide.date).toLocaleDateString(dateLocale, {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            });
-          } catch {
-            formattedDate = slide.date;
-          }
+          const formattedDate = formatArticleDate(slide.date, lang);
           // Localize read time
           let readTimeLabel = lang === "en" ? "MIN READ" : "MIN LÄSNING";
           let formattedReadTime = slide.readTime;

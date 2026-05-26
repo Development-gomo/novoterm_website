@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
+import { formatArticleDate } from "../../../lib/dateFormat";
 
 const POSTS_PER_PAGE = 6;
 
@@ -16,13 +17,7 @@ function formatPost(post, lang) {
     fm?.media_details?.sizes?.large?.source_url ||
     fm?.source_url ||
     "/default-blog.jpg";
-  // Use Swedish or English month names based on lang
-  const dateLocale = lang === "sv" ? "sv-SE" : "en-US";
-  const date = new Date(post.date).toLocaleDateString(dateLocale, {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
+  const date = formatArticleDate(post.date, lang);
   const clean = post.content.rendered.replace(/<[^>]*>/g, "");
   const words = clean.split(/\s+/).length;
   let readTimeLabel = "MIN READ";

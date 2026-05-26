@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { useRouter } from "next/router";
 import { DEFAULT_LANG } from "../../../lib/api";
+import { formatArticleDate } from "../../../lib/dateFormat";
 
 export default function BlogSlider({ slides }) {
   const router = useRouter();
@@ -94,7 +95,7 @@ export default function BlogSlider({ slides }) {
 
                 <div className="flex justify-between text-white text-[12px] font-light opacity-50">
                   <span>
-                    {lang === "sv" && slide.date_sv ? slide.date_sv : slide.date}
+                    {formatArticleDate(lang === "sv" && slide.date_sv ? slide.date_sv : slide.date, lang)}
                   </span>
                   <span>
                     {lang === "sv" && slide.readTime_sv ? slide.readTime_sv : slide.readTime}

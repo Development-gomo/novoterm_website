@@ -1,6 +1,7 @@
 ﻿import SectionRenderer from "../../../components/SectionRenderer";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { formatArticleDate } from "../../../lib/dateFormat";
 
 export async function getServerSideProps({ params, locale }) {
   const { slug } = params;
@@ -25,9 +26,7 @@ export async function getServerSideProps({ params, locale }) {
   const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "";
   const categories = post._embedded?.["wp:term"]?.[0] || [];
   const author = post._embedded?.author?.[0]?.name || "";
-  const publishedDate = new Date(post.date).toLocaleDateString("en-US", {
-    year: "numeric", month: "long", day: "numeric",
-  });
+  const publishedDate = formatArticleDate(post.date, lang);
   const wordCount = post.content?.rendered?.replace(/<[^>]*>/g, "").split(/\s+/).length || 0;
 
   if (post.acf?.sections && Array.isArray(post.acf.sections)) {

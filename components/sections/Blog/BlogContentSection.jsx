@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
+import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 import AuthorCard from "./AuthorCard";
 
@@ -162,7 +163,7 @@ const res = await fetch(
               "/default-blog.jpg",
             category:
               post._embedded?.["wp:term"]?.[0]?.[0]?.name || "General",
-            date: new Date(post.date).toLocaleDateString(),
+            date: formatArticleDate(post.date, lang),
             readTime: `${Math.max(
               1,
               Math.ceil(
@@ -209,16 +210,7 @@ const res = await fetch(
 
             {published_date && (
               <span className="text-[#2555C4] text-[18px] font-montserrat font-bold">
-                {lang === "sv"
-                  ? (() => {
-                      const dateObj = new Date(published_date);
-                      return dateObj.toLocaleDateString("sv-SE", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      });
-                    })()
-                  : published_date}
+                {formatArticleDate(published_date, lang)}
               </span>
             )}
 
