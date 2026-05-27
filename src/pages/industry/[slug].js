@@ -44,7 +44,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
     return { notFound: true };
   }
 
-  return { props: { industry, translations: industry.translations || null, yoastHead: industry.yoast_head || null } };
+  return { props: { industry, translations: industry.translations || null, yoastHead: industry.yoast_head || null, isPreview: Boolean(preview) } };
 }
 
 export default function SingleIndustry({ industry, yoastHead, lang }) {

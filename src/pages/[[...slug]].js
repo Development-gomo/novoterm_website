@@ -194,6 +194,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
       initialClientLogos,
       initialCustomerQuotes,
       initialTranslatorQuotes,
+      isPreview: Boolean(preview),
     },
     revalidate: 60
   };

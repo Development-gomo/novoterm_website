@@ -51,7 +51,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
   const currentSlug = post.slug || slug;
 
   if (post.acf?.sections && Array.isArray(post.acf.sections)) {
-    return { props: { post, sections: post.acf.sections, currentSlug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null } };
+    return { props: { post, sections: post.acf.sections, currentSlug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null, isPreview: Boolean(preview) } };
   }
 
   return {
@@ -61,6 +61,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
       lang,
       translations: post.translations || null,
       yoastHead: post.yoast_head || null,
+      isPreview: Boolean(preview),
       sections: [
         {
           acf_fc_layout: "blog_content",

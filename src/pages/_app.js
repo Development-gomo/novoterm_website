@@ -16,6 +16,7 @@ import Footer from "../../components/Footer/Footer";
 import DeferredGtm from "../../components/DeferredGtm";
 // DeferredCookiebot removed - GTM handles Cookiebot via its integration (implementation=gtm)
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
+import PreviewBanner from "../../components/PreviewBanner";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
@@ -164,6 +165,7 @@ export default function MyApp({
           translations={pageProps.translations || null}
         />
       )}
+      {pageProps.isPreview && <PreviewBanner />}
       <Component {...pageProps} lang={lang} />
       {footerData && <Footer data={footerData} />}
       <DelayedSpeedInsights />

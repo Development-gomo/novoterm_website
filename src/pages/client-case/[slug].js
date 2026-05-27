@@ -50,6 +50,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
       currentSlug: caseStudy.slug || slug,
       translations: caseStudy.translations || null,
       yoastHead: caseStudy.yoast_head || null,
+      isPreview: Boolean(preview),
     },
   };
 }

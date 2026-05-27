@@ -48,6 +48,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
       industry,
       translations: industry.translations || null,
       yoastHead: industry.yoast_head || null,
+      isPreview: Boolean(preview),
     },
   };
 }
