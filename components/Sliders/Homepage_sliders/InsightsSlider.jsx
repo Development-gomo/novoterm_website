@@ -46,7 +46,7 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
         {limitedSlides.map((slide, index) => {
           const formattedDate = formatArticleDate(slide.date, lang);
           // Localize read time
-          let readTimeLabel = lang === "en" ? "MIN READ" : "MIN LÄSNING";
+          let readTimeLabel = lang === "en" ? "Min read" : "Min läsning";
           let formattedReadTime = slide.readTime;
           if (slide.readTime && /\d+/.test(slide.readTime)) {
             let mins = slide.readTime.match(/\d+/)[0];

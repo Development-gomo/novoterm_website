@@ -12,13 +12,13 @@ const translations = {
     toc: "Innehållsförteckning",
     shareText: "Gillar du vad du ser? Dela denna artikel",
     relatedHeading: "Missa inte dessa",
-    minRead: "min läsning",
+    minRead: "Min läsning",
   },
   en: {
     toc: "Table of contents",
     shareText: "Like what you see? Share this article",
     relatedHeading: "Don't miss out on these",
-    minRead: "min read",
+    minRead: "Min read",
   },
 };
 
@@ -171,7 +171,7 @@ const res = await fetch(
                   .replace(/<[^>]*>/g, "")
                   .split(/\s+/).length / 200
               )
-            )} min read`,
+            )} Min read`,
           }));
 
         setRelatedPosts(formatted.slice(0, 3));

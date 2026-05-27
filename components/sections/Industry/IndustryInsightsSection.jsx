@@ -40,7 +40,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
 
           const clean = post.content.rendered.replace(/<[^>]*>/g, "");
           const words = clean.split(/\s+/).length;
-          const readTime = `${Math.max(1, Math.ceil(words / 200))} MIN READ`;
+          const readTime = `${Math.max(1, Math.ceil(words / 200))} Min read`;
 
           return {
             title: post.title.rendered,
