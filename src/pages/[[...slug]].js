@@ -5,6 +5,7 @@ import StickyPageNav from "../../components/StickyPageNav";
 import LcpHeroPreload from "../../components/LcpHeroPreload";
 import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
+import { fetchPreviewContentById } from "../../lib/wpPreview";
 
 // Generate paths for both languages with locale so Next.js i18n
 // routes each path to getStaticProps with the correct locale.
@@ -26,14 +27,17 @@ export async function getStaticPaths() {
 }
 
 // MULTILINGUAL PAGE FETCHER
-export async function getStaticProps({ params, locale }) {
+export async function getStaticProps({ params, locale, preview, previewData }) {
   const segments = params?.slug || [];
   const lang = resolveLang(locale);
   const slugPath = segments.join("/") || "home";
 
   // Only fetch the page in the requested language — a slug that belongs
   // to another locale (e.g. /en/kontakta-oss) must 404, not fall back.
-  const page = await fetchPageBySlug(slugPath, lang);
+  const page =
+    preview && previewData?.type === "page" && previewData?.postId
+      ? await fetchPreviewContentById(previewData.postId, "page", lang)
+      : await fetchPageBySlug(slugPath, lang);
 
   if (!page) return { notFound: true };
 

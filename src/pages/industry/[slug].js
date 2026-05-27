@@ -1,11 +1,25 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyIndustryNav from "../../../components/StickyIndustryNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale }) {
+export async function getServerSideProps({ params, locale, preview, previewData }) {
   const { slug } = params;
   const lang = resolveLang(locale);
+  const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
+
+  if (preview && previewLang && previewLang !== lang) {
+    return {
+      redirect: {
+        destination: withLocalePrefix(
+          localePath("industry", previewData.slug || slug, previewLang),
+          previewLang
+        ),
+        permanent: false,
+      },
+    };
+  }
 
   // Swedish visitors should use /branscher/:slug instead
   if (lang === "sv") {
@@ -14,17 +28,23 @@ export async function getServerSideProps({ params, locale }) {
     };
   }
 
-  const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`;
+  let industry = null;
 
   // Only fetch in the requested language — wrong-locale slugs must 404.
-  const res = await fetch(`${base}&lang=${lang}`);
-  const data = await res.json();
+  if (preview && previewData?.type === "industry" && previewData?.postId) {
+    industry = await fetchPreviewContentById(previewData.postId, "industry", lang);
+  } else {
+    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`;
+    const res = await fetch(`${base}&lang=${lang}`);
+    const data = await res.json();
+    industry = Array.isArray(data) && data.length ? data[0] : null;
+  }
 
-  if (!Array.isArray(data) || !data.length) {
+  if (!industry) {
     return { notFound: true };
   }
 
-  return { props: { industry: data[0], translations: data[0].translations || null, yoastHead: data[0].yoast_head || null } };
+  return { props: { industry, translations: industry.translations || null, yoastHead: industry.yoast_head || null } };
 }
 
 export default function SingleIndustry({ industry, yoastHead, lang }) {

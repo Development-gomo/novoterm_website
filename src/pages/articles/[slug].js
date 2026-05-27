@@ -28,7 +28,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
 
   let post = null;
 
-  if (preview && previewData?.postId) {
+  if (preview && previewData?.type === "post" && previewData?.postId) {
     post = await fetchPreviewPostById(previewData.postId, lang);
   } else {
     const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?slug=${slug}&acf_format=standard&_embed`;

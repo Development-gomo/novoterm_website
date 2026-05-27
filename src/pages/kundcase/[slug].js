@@ -1,10 +1,25 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyPageNav from "../../../components/StickyPageNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale }) {
+export async function getServerSideProps({ params, locale, preview, previewData }) {
   const lang = resolveLang(locale);
+  const { slug } = params;
+  const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
+
+  if (preview && previewLang && previewLang !== lang) {
+    return {
+      redirect: {
+        destination: withLocalePrefix(
+          localePath("caseStudy", previewData.slug || slug, previewLang),
+          previewLang
+        ),
+        permanent: false,
+      },
+    };
+  }
 
   // This route is only for Swedish — send English visitors to /en/client-case/:slug
   if (lang !== "sv") {
@@ -13,22 +28,27 @@ export async function getServerSideProps({ params, locale }) {
     };
   }
 
-  const { slug } = params;
-  const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?slug=${slug}&acf_format=standard`;
+  let caseStudy = null;
 
-  const res = await fetch(`${base}&lang=${lang}`);
-  const data = await res.json();
+  if (preview && previewData?.type === "case_study" && previewData?.postId) {
+    caseStudy = await fetchPreviewContentById(previewData.postId, "case_study", lang);
+  } else {
+    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?slug=${slug}&acf_format=standard`;
+    const res = await fetch(`${base}&lang=${lang}`);
+    const data = await res.json();
+    caseStudy = Array.isArray(data) && data.length ? data[0] : null;
+  }
 
-  if (!Array.isArray(data) || !data.length) {
+  if (!caseStudy) {
     return { notFound: true };
   }
 
   return {
     props: {
-      caseStudy: data[0],
-      currentSlug: slug,
-      translations: data[0].translations || null,
-      yoastHead: data[0].yoast_head || null,
+      caseStudy,
+      currentSlug: caseStudy.slug || slug,
+      translations: caseStudy.translations || null,
+      yoastHead: caseStudy.yoast_head || null,
     },
   };
 }

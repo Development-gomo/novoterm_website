@@ -1,11 +1,25 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale }) {
+export async function getServerSideProps({ params, locale, preview, previewData }) {
   const { slug } = params;
   const lang = resolveLang(locale);
+  const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
+
+  if (preview && previewLang && previewLang !== lang) {
+    return {
+      redirect: {
+        destination: withLocalePrefix(
+          localePath("service", previewData.slug || slug, previewLang),
+          previewLang
+        ),
+        permanent: false,
+      },
+    };
+  }
 
   // Swedish visitors should use /tjanster/:slug instead
   if (lang === "sv") {
@@ -14,21 +28,27 @@ export async function getServerSideProps({ params, locale }) {
     };
   }
 
-  const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`;
+  let service = null;
 
   // Only fetch in the requested language — wrong-locale slugs must 404.
-  const res = await fetch(`${base}&lang=${lang}`);
-  const data = await res.json();
+  if (preview && previewData?.type === "service" && previewData?.postId) {
+    service = await fetchPreviewContentById(previewData.postId, "service", lang);
+  } else {
+    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`;
+    const res = await fetch(`${base}&lang=${lang}`);
+    const data = await res.json();
+    service = Array.isArray(data) && data.length ? data[0] : null;
+  }
 
-  if (!Array.isArray(data) || !data.length) {
+  if (!service) {
     return { notFound: true };
   }
 
   return {
     props: {
-      service: data[0],
-      translations: data[0].translations || null,
-      yoastHead: data[0].yoast_head || null,
+      service,
+      translations: service.translations || null,
+      yoastHead: service.yoast_head || null,
     },
   };
 }

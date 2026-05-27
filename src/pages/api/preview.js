@@ -1,8 +1,9 @@
 import {
-  fetchPreviewPostById,
-  getArticlePreviewPath,
+  fetchPreviewContentById,
+  getPreviewPath,
   getPostLang,
   isValidPreviewSecret,
+  normalizePreviewType,
 } from "../../../lib/wpPreview";
 import { DEFAULT_LANG, resolveLang } from "../../../lib/api";
 
@@ -13,6 +14,9 @@ export default async function handler(req, res) {
   const postId = Array.isArray(req.query.id)
     ? req.query.id[0]
     : req.query.id || req.query.post_id || req.query.preview_id;
+  const previewType = normalizePreviewType(
+    Array.isArray(req.query.type) ? req.query.type[0] : req.query.type
+  );
   const requestedLang = resolveLang(
     Array.isArray(req.query.lang) ? req.query.lang[0] : req.query.lang || DEFAULT_LANG
   );
@@ -26,13 +30,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const post = await fetchPreviewPostById(postId, requestedLang);
+    const post = await fetchPreviewContentById(postId, previewType, requestedLang);
     const lang = getPostLang(post, requestedLang);
-    const destination = getArticlePreviewPath(post, lang);
+    const destination = getPreviewPath(post, previewType, lang);
 
     res.setPreviewData(
       {
         postId: post.id,
+        type: previewType,
         lang,
         slug: post.slug,
       },
