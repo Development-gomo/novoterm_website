@@ -241,7 +241,7 @@ const res = await fetch(
 
             {introHtml && (
               <div
-                className="text-[16px] md:text-[20px] text-[#3A3A3A] space-y-3 mt-2"
+                className="text-[16px] md:text-[18px] text-[#3A3A3A] space-y-3 mt-2"
                 dangerouslySetInnerHTML={{ __html: introHtml }}
               />
             )}
