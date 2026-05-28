@@ -53,6 +53,7 @@ export default function Header({
   const router = useRouter();
 // Blog/article single pages have a light hero, so header needs solid bg from the start
   const isBlogSingle = /^\/(blog|articles|artiklar)\/.+/.test(router.asPath);
+  const isWatchPage = /^\/watch\/.+/.test(router.asPath);
 
 
   useEffect(() => {
@@ -89,7 +90,7 @@ export default function Header({
     <header
       className={`fixed top-0 left-0 w-full z-[9999] transition-all duration-300
         ${
-          scrolled || isBlogSingle
+          scrolled || isBlogSingle || isWatchPage
             ? "bg-[#061837]/95 backdrop-blur-md shadow-lg"
             : "bg-transparent"
         }

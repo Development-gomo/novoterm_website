@@ -1,4 +1,5 @@
 import { DEFAULT_LANG, SUPPORTED_LANGS } from "../../lib/api";
+import { fetchHeadlessVideos, getWatchPath } from "../../lib/headlessVideo";
 
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://www.novoterm.se").replace(/\/$/, "");
 const WP_API = (process.env.NEXT_PUBLIC_WP_URL || "").replace(/\/$/, "");
@@ -34,7 +35,26 @@ function toW3CDate(dateStr) {
 }
 
 function escapeXml(str) {
-  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+  return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+}
+
+function videoSitemapBlock(video) {
+  const locationTag = video.content_url
+    ? `      <video:content_loc>${escapeXml(video.content_url)}</video:content_loc>`
+    : `      <video:player_loc>${escapeXml(video.embed_url)}</video:player_loc>`;
+  const durationTag = video.duration_seconds
+    ? `\n      <video:duration>${escapeXml(video.duration_seconds)}</video:duration>`
+    : "";
+  const publicationDateTag = video.upload_date
+    ? `\n      <video:publication_date>${escapeXml(video.upload_date)}</video:publication_date>`
+    : "";
+
+  return `    <video:video>
+      <video:thumbnail_loc>${escapeXml(video.thumbnail_url)}</video:thumbnail_loc>
+      <video:title>${escapeXml(video.title)}</video:title>
+      <video:description>${escapeXml(video.description)}</video:description>
+${locationTag}${durationTag}${publicationDateTag}
+    </video:video>`;
 }
 
 export async function getServerSideProps({ res }) {
@@ -84,8 +104,30 @@ export async function getServerSideProps({ res }) {
     }
   }
 
+  const videos = await fetchHeadlessVideos({ perPage: 100 });
+  const videoEntries = videos.filter(
+    (video) =>
+      video.indexing_enabled !== false &&
+      video.sitemap_enabled !== false &&
+      video.slug &&
+      video.thumbnail_url &&
+      video.title &&
+      video.description &&
+      (video.content_url || video.embed_url)
+  );
+
+  for (const video of videoEntries) {
+    urls.push({
+      loc: `${SITE_URL}${getWatchPath(video.slug)}`,
+      lastmod: toW3CDate(video.modified),
+      changefreq: "monthly",
+      priority: "0.8",
+      video,
+    });
+  }
+
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
 ${urls
   .map(
     (u) => `  <url>
@@ -93,6 +135,7 @@ ${urls
     <lastmod>${u.lastmod}</lastmod>
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
+${u.video ? videoSitemapBlock(u.video) : ""}
   </url>`
   )
   .join("\n")}
