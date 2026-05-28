@@ -240,7 +240,7 @@ const res = await fetch(
 
       {/* FEATURED IMAGE – parallax */}
       {bgUrl && (
-        <div className="relative w-full h-[400px] overflow-hidden">
+        <div className="relative w-full h-[500px] overflow-hidden">
           <Image
             src={bgUrl}
             alt={heading ? heading.replace(/<[^>]*>/g, "") : ""}
