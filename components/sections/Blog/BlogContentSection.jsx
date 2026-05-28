@@ -7,6 +7,22 @@ import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 import AuthorCard from "./AuthorCard";
 
+const excerptMarkerPattern =
+  /\s*(?:\[(?:\.{2,}|&hellip;|&#8230;|\u2026)\]|(?:&hellip;|&#8230;|\u2026))\s*<\/p>\s*$/i;
+
+function hasAutoExcerptMarker(html = "") {
+  return excerptMarkerPattern.test(html);
+}
+
+function cleanExcerptHtml(html = "") {
+  return html.replace(excerptMarkerPattern, "</p>").trim();
+}
+
+function getOpeningParagraphsHtml(html = "", limit = 2) {
+  const matches = html.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi);
+  return matches ? matches.slice(0, limit).join("").trim() : "";
+}
+
 const translations = {
   sv: {
     toc: "Innehållsförteckning",
@@ -54,6 +70,10 @@ export default function BlogContentSection({ section }) {
   } = section || {};
 
   const bgUrl = pickWpImageUrl(featured_image, "heroNext");
+  const introHtml =
+    hasAutoExcerptMarker(excerpt) && content
+      ? getOpeningParagraphsHtml(content) || cleanExcerptHtml(excerpt)
+      : cleanExcerptHtml(excerpt);
 
   /* =========================
      AUTHOR CARD
@@ -219,10 +239,10 @@ const res = await fetch(
               dangerouslySetInnerHTML={{ __html: heading }}
             />
 
-            {excerpt && (
+            {introHtml && (
               <div
-                className="text-[16px] md:text-[20px] text-[#3A3A3A] max-w-[980px] mt-2"
-                dangerouslySetInnerHTML={{ __html: excerpt }}
+                className="text-[16px] md:text-[20px] text-[#3A3A3A] space-y-3 mt-2"
+                dangerouslySetInnerHTML={{ __html: introHtml }}
               />
             )}
 
