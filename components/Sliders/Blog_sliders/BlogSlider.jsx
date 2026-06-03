@@ -60,12 +60,13 @@ export default function BlogSlider({ slides }) {
           640: { slidesPerView: 2, spaceBetween: 20 },
           1024: { slidesPerView: 3, spaceBetween: 24 },
         }}
+        className="[&>.swiper-wrapper]:items-stretch"
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={index}>
+          <SwiperSlide key={index} className="h-auto flex">
             <Link
               href={slide.url}
-              className="block rounded-[3px] overflow-hidden border border-[#D1D9E6] h-full transition hover:shadow-lg"
+              className="flex flex-col w-full h-full rounded-[3px] overflow-hidden border border-[#D1D9E6] transition hover:shadow-lg"
             >
               {/* IMAGE */}
               <div className="relative h-[240px]">
@@ -84,16 +85,16 @@ export default function BlogSlider({ slides }) {
               </div>
 
               {/* CONTENT */}
-              <div className="bg-[#081B33] text-white px-6 py-6">
-                <h3 className="text-[20px] leading-[28px] text-[#E3EDFF] font-semibold mb-4 min-h-[56px]">
+              <div className="bg-[#081B33] text-white px-6 py-6 flex flex-col flex-1">
+                <h3 className="text-[20px] leading-[28px] text-[#E3EDFF] font-semibold mb-4 min-h-[56px] line-clamp-2">
                   {slide.title}
                 </h3>
 
-                <p className="text-[14px] text-white/70 mb-6 line-clamp-2">
+                <p className="text-[14px] text-white/70 mb-6 min-h-[42px] line-clamp-2">
                   {slide.excerpt}
                 </p>
 
-                <div className="flex justify-between text-white text-[12px] font-light opacity-50">
+                <div className="flex justify-between gap-4 text-white text-[12px] font-light opacity-50 mt-auto">
                   <span>
                     {formatArticleDate(lang === "sv" && slide.date_sv ? slide.date_sv : slide.date, lang)}
                   </span>
