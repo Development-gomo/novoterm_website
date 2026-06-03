@@ -46,7 +46,7 @@
             // READING TIME based on content
             const clean = post.content.rendered.replace(/<[^>]*>/g, "");
             const words = clean.split(/\s+/).length;
-            const readTime = `${Math.max(1, Math.ceil(words / 200))} Min read`;
+            const readTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
 
             return {
                 title: post.title.rendered,

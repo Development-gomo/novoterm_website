@@ -20,9 +20,9 @@ function formatPost(post, lang) {
   const date = formatArticleDate(post.date, lang);
   const clean = post.content.rendered.replace(/<[^>]*>/g, "");
   const words = clean.split(/\s+/).length;
-  let readTimeLabel = "Min read";
-  if (lang === "sv") readTimeLabel = "Min läsning";
-  else if (lang === "en") readTimeLabel = "Min read";
+  let readTimeLabel = "min read";
+  if (lang === "sv") readTimeLabel = "min läsning";
+  else if (lang === "en") readTimeLabel = "min read";
   const readTime = `${Math.max(1, Math.ceil(words / 200))} ${readTimeLabel}`;
 
   return {
