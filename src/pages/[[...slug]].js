@@ -41,7 +41,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
 
   if (!page) return { notFound: true };
 
-  // Pre-fetch initial articles if any articles_section exists on this page
+  // Pre-fetch initial posts if any article-driven section exists on this page.
   let initialArticles = null;
   let initialDocumentTypes = null;
   let initialCaseStudies = null;
@@ -51,6 +51,9 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   const sections = page?.acf?.page_sections || [];
   const hasArticlesSection = sections.some(
     (s) => s?.acf_fc_layout === "articles_section"
+  );
+  const hasInsightsSection = sections.some(
+    (s) => s?.acf_fc_layout === "insights_section"
   );
   const hasDocumentTypesSection = sections.some(
     (s) => s?.acf_fc_layout === "document_types"
@@ -65,8 +68,8 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   const needsCustomerQuotes = quoteBlocks.some((s) => s?.quote_source === "customer");
   const needsTranslatorQuotes = quoteBlocks.some((s) => !s?.quote_source || s?.quote_source === "translator");
 
-  // Prefetch articles
-  if (hasArticlesSection) {
+  // Prefetch posts for article grids and insight sliders.
+  if (hasArticlesSection || hasInsightsSection) {
     try {
       const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
       const res = await fetch(

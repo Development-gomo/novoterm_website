@@ -5,7 +5,34 @@
     import LazyWhenVisible from "../../ui/LazyWhenVisible";
     import DotIndicator from "../../ui/DotIndicator";
     import { DEFAULT_LANG, localePath, wpToPath } from "../../../lib/api";
-    import { formatArticleDate } from "../../../lib/dateFormat";
+
+    function formatPostToSlide(post, lang) {
+    const category =
+        post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+
+    const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
+    const image =
+        fm?.media_details?.sizes?.large?.source_url ||
+        fm?.source_url ||
+        fm?.media_details?.sizes?.medium_large?.source_url ||
+        "/default-blog.jpg";
+
+    const clean = post?.content?.rendered?.replace(/<[^>]*>/g, "") || "";
+    const words = clean.trim() ? clean.trim().split(/\s+/).length : 0;
+    const readTimeLabel = lang === "en" ? "min read" : "min läsning";
+
+    return {
+        title: post?.title?.rendered || "",
+        excerpt:
+        (post?.excerpt?.rendered || "").replace(/<[^>]*>/g, "").slice(0, 120) +
+        "...",
+        url: localePath("article", post?.slug, lang),
+        image,
+        category,
+        date: post?.date,
+        readTime: `${Math.max(1, Math.ceil(words / 200))} ${readTimeLabel}`,
+    };
+    }
 
     export default function InsightsSection({
     section_title,
@@ -13,61 +40,43 @@
     paragraph,
     button,
     button_url,
+    initialSlides = null,
     }) {
     const router = useRouter();
     const lang = router.locale || DEFAULT_LANG;
-    const [slides, setSlides] = useState([]);
+    const [slides, setSlides] = useState(
+        Array.isArray(initialSlides)
+        ? initialSlides.map((post) => formatPostToSlide(post, lang))
+        : []
+    );
 
     useEffect(() => {
+        let cancelled = false;
         async function loadPosts() {
         try {
             const res = await fetch(
-            `/wp-api/wp/v2/posts?_embed&lang=${lang}`
+            `/wp-api/wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=7&page=1&orderby=date&order=desc`
             );
 
-        let data = await res.json();
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-            data = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const data = await res.json();
+            if (!Array.isArray(data)) return;
 
-            const formatted = data.map((post) => {
-            // CATEGORY (fallback to General)
-            const category =
-                post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+            const formatted = data.map((post) => formatPostToSlide(post, lang));
 
-            const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
-            const image =
-                fm?.media_details?.sizes?.large?.source_url ||
-                fm?.source_url ||
-                fm?.media_details?.sizes?.medium_large?.source_url ||
-                "/default-blog.jpg";
-
-            const date = formatArticleDate(post.date, lang);
-
-            // READING TIME based on content
-            const clean = post.content.rendered.replace(/<[^>]*>/g, "");
-            const words = clean.split(/\s+/).length;
-            const readTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
-
-            return {
-                title: post.title.rendered,
-                excerpt:
-                post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) +
-                "...",
-                url: localePath("article", post.slug, lang),
-                image,
-                category,
-                date,
-                readTime,
-            };
-            });
-
+            if (!cancelled && formatted.length > 0) {
             setSlides(formatted);
+            }
         } catch (e) {
             console.log("INSIGHTS FETCH ERROR:", e);
         }
         }
 
         loadPosts();
+        return () => {
+        cancelled = true;
+        };
     }, [lang]);
 
     return (

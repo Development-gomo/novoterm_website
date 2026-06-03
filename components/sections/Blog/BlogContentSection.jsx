@@ -191,7 +191,7 @@ const res = await fetch(
                   .replace(/<[^>]*>/g, "")
                   .split(/\s+/).length / 200
               )
-            )} min read`,
+            )} ${t.minRead}`,
           }));
 
         setRelatedPosts(formatted.slice(0, 3));
@@ -268,7 +268,7 @@ const res = await fetch(
             sizes="100vw"
             quality={72}
             loading="lazy"
-            className="object-cover object-center"
+            className="object-cover object-[0px_-50px]"
           />
         </div>
       )}
