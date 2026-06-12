@@ -5,10 +5,13 @@ import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG, localePath } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import CF7ContactForm from "../../ui/CF7ContactForm";
 import AuthorCard from "./AuthorCard";
 
 const excerptMarkerPattern =
   /\s*(?:\[(?:\.{2,}|&hellip;|&#8230;|\u2026)\]|(?:&hellip;|&#8230;|\u2026))\s*<\/p>\s*$/i;
+const contactFormShortcodePattern =
+  /(?:<p\b[^>]*>\s*)?\[(?:contact_form|contact-form-7)\b([^\]]*)\](?:\s*<\/p>)?/gi;
 
 function hasAutoExcerptMarker(html = "") {
   return excerptMarkerPattern.test(html);
@@ -21,6 +24,62 @@ function cleanExcerptHtml(html = "") {
 function getOpeningParagraphsHtml(html = "", limit = 2) {
   const matches = html.match(/<p\b[^>]*>[\s\S]*?<\/p>/gi);
   return matches ? matches.slice(0, limit).join("").trim() : "";
+}
+
+function getShortcodeAttributes(value = "") {
+  const attributes = {};
+  const attributePattern = /([\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s]+))/g;
+  let match;
+
+  while ((match = attributePattern.exec(value))) {
+    attributes[match[1].toLowerCase()] = match[2] ?? match[3] ?? match[4] ?? "";
+  }
+
+  return attributes;
+}
+
+function ArticleContent({ html = "" }) {
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  contactFormShortcodePattern.lastIndex = 0;
+
+  while ((match = contactFormShortcodePattern.exec(html))) {
+    const beforeForm = html.slice(lastIndex, match.index);
+    const attributes = getShortcodeAttributes(match[1]);
+    const formId = attributes.id || attributes.form_id || attributes.formid;
+    const sectionTheme = attributes.theme === "dark" ? "dark" : "light";
+
+    if (beforeForm) {
+      parts.push(
+        <div
+          key={`article-html-${lastIndex}`}
+          dangerouslySetInnerHTML={{ __html: beforeForm }}
+        />
+      );
+    }
+
+    parts.push(
+      <div key={`article-form-${match.index}`} className="my-10 not-prose">
+        <CF7ContactForm formId={formId} sectionTheme={sectionTheme} />
+      </div>
+    );
+
+    lastIndex = contactFormShortcodePattern.lastIndex;
+  }
+
+  const afterForm = html.slice(lastIndex);
+  if (afterForm) {
+    parts.push(
+      <div
+        key={`article-html-${lastIndex}`}
+        dangerouslySetInnerHTML={{ __html: afterForm }}
+      />
+    );
+  }
+
+  return parts.length ? parts : null;
 }
 
 const translations = {
@@ -331,10 +390,9 @@ const res = await fetch(
 
           {/* RIGHT CONTENT */}
           <div className="flex-1">
-            <div
-              className="prose max-w-none [&_h2]:font-montserrat [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:leading-snug [&_h2]:mb-4 [&_h3]:font-montserrat [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:mb-3 [&_p]:font-cabin [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-2 [&_li]:font-cabin [&_li]:text-[16px] [&_li::marker]:text-[#2555C4] [&_a]:text-[#2555C4] [&_a:hover]:underline [&_a:hover]:text-[#2555C4]"
-              dangerouslySetInnerHTML={{ __html: processedContent || content }}
-            />
+            <div className="prose max-w-none [&_h2]:font-montserrat [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:leading-snug [&_h2]:mb-4 [&_h3]:font-montserrat [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:leading-snug [&_h3]:mb-3 [&_p]:font-cabin [&_p]:text-[16px] [&_p]:leading-[1.7] [&_p]:mb-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_li]:mb-2 [&_li]:font-cabin [&_li]:text-[16px] [&_li::marker]:text-[#2555C4] [&_a]:text-[#2555C4] [&_a:hover]:underline [&_a:hover]:text-[#2555C4]">
+              <ArticleContent html={processedContent || content} />
+            </div>
 
             {/* AUTHOR CARD */}
             {display_author_card && authorCards.length > 0 && (

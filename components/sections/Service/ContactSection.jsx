@@ -106,7 +106,7 @@ export default function ContactSection({ section, sectionId, index = 0 }) {
 
               {/* FORM */}
               <div className="w-full lg:flex-1">
-                <CF7ContactForm formId={form_id} />
+                <CF7ContactForm formId={form_id} sectionTheme={section_theme} />
               </div>
 
             </div>
