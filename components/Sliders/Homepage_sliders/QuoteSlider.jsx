@@ -5,6 +5,7 @@ import "swiper/css/navigation";
 import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import { wpRestUrl } from "../../../lib/api";
 
 export default function QuoteSlider({ slides = [], isDark = false, prevRef: extPrevRef, nextRef: extNextRef }) {
   const internalPrevRef = useRef(null);
@@ -26,7 +27,7 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
     if (!ids.length) return;
     Promise.all(
       ids.map(id =>
-        fetch(`/wp-api/wp/v2/media/${id}`)
+        fetch(wpRestUrl(`wp/v2/media/${id}`))
           .then(r => {
             if (!r.ok) throw new Error(`media ${id} status ${r.status}`);
             return r.json();

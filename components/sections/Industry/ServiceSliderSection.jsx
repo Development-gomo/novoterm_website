@@ -2,7 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
 
 // Module-level cache to persist data between renders and page navigations
 const dataCache = {};
@@ -24,7 +24,7 @@ async function fetchDocumentTypesData(lang) {
   fetchPromiseCache[lang] = (async () => {
     try {
       const res = await fetch(
-        `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`
+        wpRestUrl(`wp/v2/document_type?acf_format=standard&lang=${lang}`)
       );
       
       if (!res.ok) {

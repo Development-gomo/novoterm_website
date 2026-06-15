@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
 
 const formatLabel = (layout) => {
   if (!layout) return null;
@@ -32,7 +32,7 @@ export default function CaseStudyRelatedSection({
   useEffect(() => {
     async function getData() {
       const res = await fetch(
-        `/wp-api/wp/v2/case_study?acf_format=standard&lang=${lang}`
+        wpRestUrl(`wp/v2/case_study?acf_format=standard&lang=${lang}`)
       );
       const data = await res.json();
 

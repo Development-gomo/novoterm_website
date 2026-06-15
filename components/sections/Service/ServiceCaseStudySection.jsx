@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
 
 export default function ServiceCaseStudySection({
   heading,
@@ -28,7 +28,7 @@ export default function ServiceCaseStudySection({
     async function getData() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/case_study?acf_format=standard&per_page=10&lang=${lang}`
+          wpRestUrl(`wp/v2/case_study?acf_format=standard&per_page=10&lang=${lang}`)
         );
         const data = await res.json();
 

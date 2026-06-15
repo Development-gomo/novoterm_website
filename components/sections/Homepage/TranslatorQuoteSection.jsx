@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
 import QuoteSlider from "../../Sliders/Homepage_sliders/QuoteSlider";
+import { wpRestUrl } from "../../../lib/api";
 
 export default function TranslatorQuoteSection({ section, lang: langProp, optionsSlides = [] }) {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function TranslatorQuoteSection({ section, lang: langProp, option
     // Client-side fallback — mirrors _app.js re-fetching footer on lang change
     const source = section?.quote_source || "translator";
     const endpoint = source === "customer" ? "customer-quote-block" : "translator-quote-block";
-    fetch(`/wp-api/theme/v1/${endpoint}?lang=${lang}`)
+    fetch(wpRestUrl(`theme/v1/${endpoint}?lang=${lang}`))
       .then((r) => (r.ok ? r.json() : []))
       .then((data) => setSlides(Array.isArray(data) ? data : []))
       .catch(() => {});

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
 import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG, localePath, wpToPath } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpToPath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
   useEffect(() => {
     async function loadPosts() {
       try {
-        const res = await fetch(`/wp-api/wp/v2/posts?_embed&lang=${lang}`);
+        const res = await fetch(wpRestUrl(`wp/v2/posts?_embed&lang=${lang}`));
         let data = await res.json();
 
         data = data.sort((a, b) => new Date(b.date) - new Date(a.date));

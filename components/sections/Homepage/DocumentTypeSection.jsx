@@ -5,7 +5,7 @@ import Link from "next/link";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
 import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
-import { wpToPath, DEFAULT_LANG } from "../../../lib/api";
+import { wpToPath, DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
 
 export default function DocumentTypeSection({
   section_title,
@@ -29,7 +29,7 @@ export default function DocumentTypeSection({
     async function getData() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`
+          wpRestUrl(`wp/v2/document_type?acf_format=standard&lang=${lang}`)
         );
 
         let data = await res.json();

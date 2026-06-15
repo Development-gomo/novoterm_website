@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
-import { DEFAULT_LANG, localePath } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 import CF7ContactForm from "../../ui/CF7ContactForm";
@@ -142,7 +142,7 @@ export default function BlogContentSection({ section }) {
     async function fetchAuthorCard() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/author-card/${author_card_id}?acf_format=standard`
+          wpRestUrl(`wp/v2/author-card/${author_card_id}?acf_format=standard`)
         );
         const data = await res.json();
         if (Array.isArray(data?.acf?.individual_author_card)) {
@@ -197,7 +197,7 @@ export default function BlogContentSection({ section }) {
 
       try {
 const res = await fetch(
-  `/wp-api/wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`
+  wpRestUrl(`wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`)
 );
         const data = await res.json();
 
@@ -224,7 +224,7 @@ const res = await fetch(
     async function loadRelatedPosts() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/posts?_embed&per_page=6&categories=${category_id}&lang=${lang}`
+          wpRestUrl(`wp/v2/posts?_embed&per_page=6&categories=${category_id}&lang=${lang}`)
         );
         const data = await res.json();
 

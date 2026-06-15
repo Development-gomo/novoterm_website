@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
-import { wpToPath, DEFAULT_LANG } from "../../../lib/api";
+import { wpToPath, DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
 
 const formatLabel = (layout) => {
   if (!layout) return null;
@@ -27,7 +27,7 @@ export default function InnerDocumentTypeSection({ section, sectionId, index = 0
     async function getData() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/document_type?acf_format=standard&lang=${lang}`
+          wpRestUrl(`wp/v2/document_type?acf_format=standard&lang=${lang}`)
         );
         let data = await res.json();
 

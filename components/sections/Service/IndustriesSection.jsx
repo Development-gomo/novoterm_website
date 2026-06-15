@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { DEFAULT_LANG, localePath } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { Navigation, Pagination } from "swiper/modules";
 
 import "swiper/css";
@@ -30,7 +30,7 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
   useEffect(() => {
     async function fetchIndustries() {
       try {
-        const res = await fetch(`/wp-api/wp/v2/industry?_embed&per_page=20&lang=${lang}`);
+        const res = await fetch(wpRestUrl(`wp/v2/industry?_embed&per_page=20&lang=${lang}`));
         const json = await res.json();
 
         const HIDDEN_SLUGS = ["vara-huvudomraden", "main-areas"];

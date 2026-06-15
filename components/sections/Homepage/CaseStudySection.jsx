@@ -7,7 +7,7 @@ import CaseStudySlider from "../../Sliders/Homepage_sliders/CaseStudySlider";
 import CaseStudyCardSlider from "../../Sliders/Casestudy_sliders/CaseStudyCardSlider";
 import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG, localePath } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 
 
 export default function CaseStudySection({
@@ -33,7 +33,7 @@ export default function CaseStudySection({
     async function getData() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/case_study?acf_format=standard&lang=${lang}`
+          wpRestUrl(`wp/v2/case_study?acf_format=standard&lang=${lang}`)
         );
 
         const data = await res.json();

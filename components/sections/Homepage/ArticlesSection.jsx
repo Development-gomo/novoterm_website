@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG, localePath } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 
 const POSTS_PER_PAGE = 6;
@@ -107,7 +107,7 @@ export default function ArticlesSection({
     async function loadCategories() {
       try {
         const res = await fetch(
-          `/wp-api/wp/v2/categories?per_page=100&hide_empty=false&lang=${lang}`
+          wpRestUrl(`wp/v2/categories?per_page=100&hide_empty=false&lang=${lang}`)
         );
         const data = await res.json();
         let filtered = data;
@@ -141,7 +141,7 @@ export default function ArticlesSection({
         // Keep per_page identical on every request: 1 featured slot + 6 grid slots
         const PER_PAGE = POSTS_PER_PAGE + 1; // 7
         // Only embed what we actually need (featured media + terms), skip author embed for speed
-        let endpoint = `/wp-api/wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`;
+        let endpoint = wpRestUrl(`wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`);
 
         if (selectedCategories.length > 0) {
           endpoint += `&categories=${selectedCategories.join(",")}`;

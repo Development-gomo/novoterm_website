@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
-import { DEFAULT_LANG } from "../../../lib/api";
+import { DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
 
 /* normalize image */
 const getImage = (img) => {
@@ -27,7 +27,7 @@ export default function TeamSection({ section, sectionId, index = 0 }) {
   useEffect(() => {
     async function fetchTeam() {
       const res = await fetch(
-        `/wp-api/wp/v2/our-team?_embed&per_page=50&lang=${lang}`
+        wpRestUrl(`wp/v2/our-team?_embed&per_page=50&lang=${lang}`)
       );
       const data = await res.json();
 

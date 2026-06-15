@@ -4,7 +4,7 @@
     import InsightsSlider from "../../Sliders/Homepage_sliders/InsightsSlider";
     import LazyWhenVisible from "../../ui/LazyWhenVisible";
     import DotIndicator from "../../ui/DotIndicator";
-    import { DEFAULT_LANG, localePath, wpToPath } from "../../../lib/api";
+    import { DEFAULT_LANG, localePath, wpToPath, wpRestUrl } from "../../../lib/api";
 
     function formatPostToSlide(post, lang) {
     const category =
@@ -55,7 +55,7 @@
         async function loadPosts() {
         try {
             const res = await fetch(
-            `/wp-api/wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=7&page=1&orderby=date&order=desc`
+            wpRestUrl(`wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=7&page=1&orderby=date&order=desc`)
             );
 
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
