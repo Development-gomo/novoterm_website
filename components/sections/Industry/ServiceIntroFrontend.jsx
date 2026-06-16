@@ -3,8 +3,10 @@ import ReadMoreContent from "./ReadMoreContent";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import DotIndicator from "../../ui/DotIndicator";
+import MarketingConsentVideoEmbed from "../../ui/MarketingConsentVideoEmbed";
 import { wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import { getYouTubeNoCookieEmbedUrl, isYouTubeUrl } from "../../../lib/videoEmbed";
 
 export default function IndustryIntro({
   section,
@@ -50,20 +52,11 @@ const getEmbedUrl = (url) => {
   if (!url) return null;
 
   try {
-    // Normal YouTube URL
-    if (url.includes("youtube.com/watch")) {
-      const videoId = new URL(url).searchParams.get("v");
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
+    const youtubeEmbedUrl = getYouTubeNoCookieEmbedUrl(url);
+    if (youtubeEmbedUrl) return youtubeEmbedUrl;
 
-    // Short youtu.be URL
-    if (url.includes("youtu.be")) {
-      const videoId = url.split("youtu.be/")[1]?.split("?")[0];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-
-    // Already an embed/iframe URL (e.g. youtube.com/embed/..., vimeo, etc.)
-    if (url.includes("youtube.com/embed") || url.includes("vimeo.com") || url.startsWith("http")) {
+    // Already an embed/iframe URL (e.g. Vimeo)
+    if (url.includes("vimeo.com") || url.startsWith("http")) {
       // Local video files — let <video> tag handle them
       if (/\.(mp4|webm|ogg|mov)(\?|$)/i.test(url)) return null;
       return url;
@@ -74,6 +67,8 @@ const getEmbedUrl = (url) => {
     return url;
   }
 };
+  const embedUrl = getEmbedUrl(video_url);
+  const isYouTubeEmbed = isYouTubeUrl(video_url);
 
   return (
     <section id={sectionId} className={`w-full ${sectionBg} ${removeBottomPadding ? 'pt-[60px] md:pt-[80px] lg:pt-[100px] pb-0' : 'py-[60px] sm:py-[80px] lg:py-[100px]'}`}>
@@ -156,9 +151,16 @@ const getEmbedUrl = (url) => {
                 {/* VIDEO */}
                 {layout_type === "video" && video_url && (
                   <div className="aspect-video w-full mb-6 relative rounded-[3px] overflow-hidden">
-                    {getEmbedUrl(video_url) ? (
+                    {embedUrl && isYouTubeEmbed ? (
+                      <MarketingConsentVideoEmbed
+                        src={embedUrl}
+                        title="Video"
+                        className="w-full h-full"
+                        iframeClassName="w-full h-full"
+                      />
+                    ) : embedUrl ? (
                       <iframe
-                        src={getEmbedUrl(video_url)}
+                        src={embedUrl}
                         title="Video"
                         className="w-full h-full"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

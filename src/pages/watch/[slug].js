@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
+import MarketingConsentVideoEmbed from "../../../components/ui/MarketingConsentVideoEmbed";
 import { buildSiteUrl } from "../../../lib/api";
 import {
   fetchHeadlessVideoBySlug,
@@ -251,12 +252,11 @@ export default function WatchPage({ video, canonicalUrl, noindex }) {
                 </span>
               </button>
             ) : hasEmbed ? (
-              <iframe
+              <MarketingConsentVideoEmbed
                 src={embedSrc}
                 title={title}
                 className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
+                iframeClassName="h-full w-full"
               />
             ) : (
               <div

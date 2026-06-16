@@ -2,17 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import DotIndicator from "../../ui/DotIndicator";
+import MarketingConsentVideoEmbed from "../../ui/MarketingConsentVideoEmbed";
 import { wpToPath } from "../../../lib/api";
-
-/** Convert any YouTube URL to an embed URL, return null for non-YouTube */
-function toYouTubeEmbed(url) {
-  if (!url) return null;
-  const match = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/
-  );
-  if (!match) return null;
-  return `https://www.youtube.com/embed/${match[1]}?rel=0&modestbranding=1&autoplay=1`;
-}
+import { getYouTubeNoCookieEmbedUrl } from "../../../lib/videoEmbed";
 
 /** Detect if a URL is a local/direct video file */
 function isVideoFile(url) {
@@ -43,7 +35,11 @@ export default function AboutSection({
 
   const imgUrl        = resolveImageUrl(image);
   const thumbUrl      = resolveImageUrl(video_thumbnail);
-  const youtubeEmbed  = toYouTubeEmbed(video_url);
+  const youtubeEmbed  = getYouTubeNoCookieEmbedUrl(video_url, {
+    rel: 0,
+    modestbranding: 1,
+    autoplay: thumbUrl ? videoPlaying : 1,
+  });
   const isLocalVideo  = !youtubeEmbed && isVideoFile(video_url);
 
   const isVideo = media_type === "video" && !!(youtubeEmbed || isLocalVideo);
@@ -97,12 +93,11 @@ export default function AboutSection({
       if (youtubeEmbed) {
         return (
           <div className="relative w-full rounded-[3px] overflow-hidden" style={{ aspectRatio: "16 / 9" }}>
-            <iframe
+            <MarketingConsentVideoEmbed
               src={youtubeEmbed}
               title="About video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
               className="absolute inset-0 w-full h-full border-0"
+              iframeClassName="absolute inset-0 w-full h-full border-0"
             />
           </div>
         );

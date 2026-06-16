@@ -28,13 +28,13 @@ async function fetchDocumentTypesData(lang) {
       );
       
       if (!res.ok) {
-        console.error("DOCUMENT TYPE SLIDER FETCH FAILED:", res.status, res.statusText);
+        console.warn("DOCUMENT TYPE SLIDER FETCH FAILED:", res.status, res.statusText);
         return [];
       }
       
       const data = await res.json();
       if (!Array.isArray(data)) {
-        console.error("DOCUMENT TYPE SLIDER: Invalid data format", data);
+        console.warn("DOCUMENT TYPE SLIDER: Invalid data format");
         return [];
       }
 
@@ -68,7 +68,7 @@ async function fetchDocumentTypesData(lang) {
       dataCache[lang] = formatted;
       return formatted;
     } catch (e) {
-      console.error("DOCUMENT TYPE SLIDER FETCH ERROR:", e);
+      console.warn("DOCUMENT TYPE SLIDER FETCH ERROR");
       return [];
     } finally {
       delete fetchPromiseCache[lang];
@@ -99,21 +99,26 @@ export default function ServiceSliderSection({ section, sectionId }) {
   
   // Initialize with cached data if available
   const [slides, setSlides] = useState(() => dataCache[lang] || []);
+  const [isLoading, setIsLoading] = useState(() => !dataCache[lang]);
   const hasFetched = useRef(false);
 
   useEffect(() => {
     // Skip if we already have cached data and haven't re-fetched
     if (dataCache[lang] && slides.length > 0) {
+      setIsLoading(false);
       return;
     }
     
     if (hasFetched.current) return;
     hasFetched.current = true;
+    setIsLoading(true);
 
     fetchDocumentTypesData(lang).then((data) => {
-      if (data.length > 0) {
-        setSlides(data);
-      }
+      setSlides(data);
+      setIsLoading(false);
+    }).catch(() => {
+      setSlides([]);
+      setIsLoading(false);
     });
   }, [lang, slides.length]);
 
@@ -166,15 +171,17 @@ export default function ServiceSliderSection({ section, sectionId }) {
             )}
 
             {/* SLIDER */}
+            {(isLoading || slides.length > 0) && (
             <div style={{ minHeight: 200 }}>
               {slides.length > 0 ? (
                 <DocumentTypeSlider slides={slides} isDark={isDark} desktopSlides={3} />
-              ) : (
+              ) : isLoading ? (
                 <div className="flex items-center justify-center w-full h-[200px]">
                   <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#2655C4]" />
                 </div>
-              )}
+              ) : null}
             </div>
+            )}
 
           </div>
         </div>

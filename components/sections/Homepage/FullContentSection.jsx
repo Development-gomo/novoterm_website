@@ -1,4 +1,6 @@
 import Link from "next/link";
+import MarketingConsentVideoEmbed from "../../ui/MarketingConsentVideoEmbed";
+import { getYouTubeNoCookieEmbedUrl } from "../../../lib/videoEmbed";
 
 export default function FullContentSection({ section, sectionId }) {
   if (!section) return null;
@@ -20,6 +22,7 @@ export default function FullContentSection({ section, sectionId }) {
   const headingColor = isDark ? "text-white" : "text-[#061837]";
   const labelColor = isDark ? "text-white/70" : "text-[#061837]";
   const paragraphColor = isDark ? "text-white/85" : "text-[#061837]/85";
+  const youtubeEmbedUrl = getYouTubeNoCookieEmbedUrl(full_width_video);
 
   return (
     <section id={sectionId} className={`w-full ${sectionBg} py-10 md:py-16 lg:py-24`}>
@@ -59,17 +62,12 @@ export default function FullContentSection({ section, sectionId }) {
         {/* Full Width Video */}
         {full_width_video && (
           <div className="w-full mb-8">
-            {/^https?:\/\/(www\.)?youtube\.com|youtu\.be/.test(full_width_video) ? (
-              <iframe
-                src={
-                  full_width_video.includes("youtube.com")
-                    ? full_width_video.replace("watch?v=", "embed/")
-                    : full_width_video.replace("youtu.be/", "youtube.com/embed/")
-                }
+            {youtubeEmbedUrl ? (
+              <MarketingConsentVideoEmbed
+                src={youtubeEmbedUrl}
                 className="w-full rounded-lg"
+                iframeClassName="w-full rounded-lg"
                 height="600"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
                 frameBorder="0"
                 title="YouTube Video"
               />
