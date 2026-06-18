@@ -13,9 +13,12 @@ export default function LogoSection({ section, optionsLogos = [] }) {
     cta_url,
     logos = [],
     select_layout = "grid",
+    page_type = "inner",
   } = section || {};
 
   const isDark = section_theme === "dark";
+  const isHomeLayout = page_type === "home";
+  const contentWidthClass = isHomeLayout ? "w-full" : "md:w-[85%]";
 
   const sorted = [...logos].sort(
     (a, b) => (Number(a.logo_sequence) || 0) - (Number(b.logo_sequence) || 0)
@@ -57,19 +60,27 @@ export default function LogoSection({ section, optionsLogos = [] }) {
           <div className="flex flex-col md:flex-row">
 
             {/* LEFT – 15% */}
-            <div className="md:w-[15%] relative">
+            {!isHomeLayout && <div className="md:w-[15%] relative">
               {section_label && (
                 <div className="flex items-center gap-2 mb-6 md:mb-0 lg:hidden">
                   <DotIndicator />
-                  <span className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${isDark ? "text-white" : "text-black"}`}>
+                  <span className={`uppercase font-montserrat font-medium text-[12px] tracking-wider ${isDark ? "text-white" : "text-black"}`}>
                     {section_label}
                   </span>
                 </div>
               )}
-            </div>
+            </div>}
 
             {/* RIGHT – 85% */}
-            <div className="md:w-[85%]">
+            <div className={contentWidthClass}>
+              {isHomeLayout && section_label && (
+                <div className="flex items-center gap-2 mb-6">
+                  <DotIndicator />
+                  <span className={`uppercase font-montserrat font-medium text-[12px] tracking-wider ${isDark ? "text-white" : "text-black"}`}>
+                    {section_label}
+                  </span>
+                </div>
+              )}
 
               {heading && (
                 <h2
@@ -159,12 +170,12 @@ export default function LogoSection({ section, optionsLogos = [] }) {
         <div className="flex flex-col md:flex-row">
 
           {/* LEFT – 15% */}
-          <div className="md:w-[15%] relative">
+          {!isHomeLayout && <div className="md:w-[15%] relative">
             {section_label && (
               <div className="flex items-center gap-2 mb-6 md:mb-0 lg:hidden">
                 <DotIndicator />
                 <span
-                  className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${
+                  className={`uppercase font-montserrat font-medium text-[12px] tracking-wider ${
                     isDark ? "text-white" : "text-black"
                   }`}
                 >
@@ -172,10 +183,22 @@ export default function LogoSection({ section, optionsLogos = [] }) {
                 </span>
               </div>
             )}
-          </div>
+          </div>}
 
           {/* RIGHT – 85% */}
-          <div className="md:w-[85%]">
+          <div className={contentWidthClass}>
+            {isHomeLayout && section_label && (
+              <div className="flex items-center gap-2 mb-6">
+                <DotIndicator />
+                <span
+                  className={`uppercase font-montserrat font-medium text-[12px] tracking-wider ${
+                    isDark ? "text-white" : "text-black"
+                  }`}
+                >
+                  {section_label}
+                </span>
+              </div>
+            )}
 
             {heading && (
               <h2

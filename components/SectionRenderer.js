@@ -555,6 +555,7 @@ case "inner_hero_section":
             section={block}
             sectionId={`section-${index}`}
             lang={lang}
+            quoteSource={source}
             optionsSlides={optionsSlides}
           />
         );

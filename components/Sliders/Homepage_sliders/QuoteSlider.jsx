@@ -143,17 +143,17 @@ export default function QuoteSlider({ slides = [], isDark = false, prevRef: extP
               <div className={`flex flex-col md:flex-row rounded-[3px] overflow-hidden min-h-[350px] ${cardBg}`}>
 
                 {/* ── LEFT PANEL ── */}
-                <div className={`md:w-[30%] flex flex-col justify-between p-8 md:p-10 ${leftBg}`}>
+                <div className={`md:w-[30%] relative flex flex-col justify-end p-8 md:p-10 ${leftBg}`}>
                   {/* Quote icon – top */}
                   <img
-                    src="/quotes-70x70.svg"
+                    src="/quote-testimonial.png"
                     alt=""
                     aria-hidden="true"
-                    className="w-[130px] h-[130px] opacity-5 pointer-events-none"
+                    className="absolute top-0 left-0 w-[200px] pointer-events-none"
                   />
 
                   {/* Person info */}
-                  <div className="flex items-center gap-4">
+                  <div className="relative z-10 flex items-center gap-4">
                     <div className="relative w-[70px] h-[70px] rounded-full overflow-hidden flex-shrink-0 ring-1 ring-white/40">
                       <Image
                         src={personImg || "/userfallback.webp"}
