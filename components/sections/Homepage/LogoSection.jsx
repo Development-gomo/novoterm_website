@@ -2,10 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import DotIndicator from "../../ui/DotIndicator";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import { getSectionBackground, isDarkSectionColor } from "../../../lib/sectionTheme";
 
-export default function LogoSection({ section, optionsLogos = [] }) {
+export default function LogoSection({ section, sectionId, optionsLogos = [] }) {
   const {
-    section_theme = "light",
+    section_theme = "#E3EDFF",
     section_label,
     heading,
     description,
@@ -16,7 +17,8 @@ export default function LogoSection({ section, optionsLogos = [] }) {
     page_type = "inner",
   } = section || {};
 
-  const isDark = section_theme === "dark";
+  const sectionBackground = getSectionBackground(section_theme);
+  const isDark = isDarkSectionColor(section_theme);
   const isHomeLayout = page_type === "home";
   const contentWidthClass = isHomeLayout ? "w-full" : "md:w-[85%]";
 
@@ -52,9 +54,9 @@ export default function LogoSection({ section, optionsLogos = [] }) {
 
     return (
       <section
-        className={`w-full py-[60px] sm:py-[80px] lg:py-[100px] overflow-hidden ${
-          isDark ? "bg-[#061837]" : "bg-[#E3EDFF]"
-        }`}
+        id={sectionId}
+        className="w-full py-[60px] sm:py-[80px] lg:py-[100px] overflow-hidden"
+        style={{ backgroundColor: sectionBackground }}
       >
         <div className="web-width mx-auto px-6 md:px-0">
           <div className="flex flex-col md:flex-row">
@@ -103,8 +105,14 @@ export default function LogoSection({ section, optionsLogos = [] }) {
 
               {/* Infinite scroll track scoped to 85% column */}
               <div className="relative overflow-hidden">
-                <div className={`pointer-events-none absolute left-0 top-0 h-full w-16 z-10 ${isDark ? "bg-gradient-to-r from-[#061837]" : "bg-gradient-to-r from-[#E3EDFF]"} to-transparent`} />
-                <div className={`pointer-events-none absolute right-0 top-0 h-full w-16 z-10 ${isDark ? "bg-gradient-to-l from-[#061837]" : "bg-gradient-to-l from-[#E3EDFF]"} to-transparent`} />
+                <div
+                  className="pointer-events-none absolute left-0 top-0 h-full w-16 z-10"
+                  style={{ background: `linear-gradient(to right, ${sectionBackground}, transparent)` }}
+                />
+                <div
+                  className="pointer-events-none absolute right-0 top-0 h-full w-16 z-10"
+                  style={{ background: `linear-gradient(to left, ${sectionBackground}, transparent)` }}
+                />
 
                 <div className="flex logo-carousel-track">
                   {track.map((item, i) => {
@@ -164,7 +172,9 @@ export default function LogoSection({ section, optionsLogos = [] }) {
   /* ── GRID LAYOUT (default) ─────────────────────────────────── */
   return (
     <section
-      className={`w-full py-[60px] sm:py-[80px] lg:py-[100px] ${isDark ? "bg-[#061837]" : "bg-[#E3EDFF]"}`}
+      id={sectionId}
+      className="w-full py-[60px] sm:py-[80px] lg:py-[100px]"
+      style={{ backgroundColor: sectionBackground }}
     >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col md:flex-row">

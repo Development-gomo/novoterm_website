@@ -10,14 +10,15 @@ import DotIndicator from "../../ui/DotIndicator";
 import QuoteSlider from "../../Sliders/Homepage_sliders/QuoteSlider";
 import { wpRestUrl } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import { getSectionBackground, isDarkSectionColor } from "../../../lib/sectionTheme";
 
-export default function TranslatorQuoteSection({ section, lang: langProp, quoteSource: quoteSourceProp, optionsSlides = [] }) {
+export default function TranslatorQuoteSection({ section, sectionId, lang: langProp, quoteSource: quoteSourceProp, optionsSlides = [] }) {
   const router = useRouter();
   // Prefer the server-side prop (from getStaticProps), fall back to router locale — same pattern as Footer
   const lang = langProp || router?.locale || "sv";
 
   const {
-    section_theme = "light",
+    section_theme = "#E3EDFF",
     section_label,
     heading,
     description,
@@ -45,7 +46,8 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
       .catch(() => {});
   }, [lang, quoteSource, optionsSlides]); // re-run if locale changes (client-side navigation)
 
-  const isDark    = section_theme === "dark";
+  const sectionBackground = getSectionBackground(section_theme);
+  const isDark = isDarkSectionColor(section_theme);
   const isCustomerQuote = quoteSource === "customer";
   const isHomeLayout = page_type === "home";
   const contentWidthClass = isHomeLayout ? "w-full" : "md:w-[85%]";
@@ -56,6 +58,7 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
   const nextRef = useRef(null);
   const customerSwiperRef = useRef(null);
   const [customerSwiperReady, setCustomerSwiperReady] = useState(false);
+  const [customerImageMap, setCustomerImageMap] = useState({});
 
   useEffect(() => {
     if (!isCustomerQuote || slides.length <= 1) return;
@@ -74,9 +77,34 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
     }
   }, [customerSwiperReady, isCustomerQuote, slides.length]);
 
+  useEffect(() => {
+    if (!isCustomerQuote) return;
+
+    const imageIds = [...new Set(
+      slides
+        .map((slide) => getClient(slide)?.client_image)
+        .filter((image) => typeof image === "number" && image > 0)
+    )];
+
+    if (!imageIds.length) {
+      setCustomerImageMap({});
+      return;
+    }
+
+    Promise.all(
+      imageIds.map((id) =>
+        fetch(wpRestUrl(`wp/v2/media/${id}`))
+          .then((response) => (response.ok ? response.json() : null))
+          .then((media) => [id, media?.source_url || media?.url || ""])
+          .catch(() => [id, ""])
+      )
+    ).then((images) => setCustomerImageMap(Object.fromEntries(images)));
+  }, [isCustomerQuote, slides]);
+
   const resolveImage = (field, size = "heroNext") => {
     if (!field) return "";
     if (typeof field === "string") return field;
+    if (size === "original") return field?.url || field?.source_url || "";
     return pickWpImageUrl(field, size) || field?.url || field?.source_url || "";
   };
 
@@ -88,11 +116,11 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
   const getCustomerBackground = (slide) => {
     const client = getClient(slide);
     return (
-      resolveImage(slide?.background_image, "heroNext") ||
-      resolveImage(slide?.image, "heroNext") ||
-      resolveImage(slide?.testimonial_image, "heroNext") ||
-      resolveImage(section?.background_image, "heroNext") ||
-      resolveImage(client?.client_image, "heroNext")
+      resolveImage(slide?.background_image, "original") ||
+      resolveImage(slide?.image, "original") ||
+      resolveImage(slide?.testimonial_image, "original") ||
+      resolveImage(section?.background_image, "original") ||
+      resolveImage(client?.client_image, "original")
     );
   };
 
@@ -100,11 +128,15 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
     if (!slides.length) return null;
 
     const staticBgUrl =
-      resolveImage(section?.background_image, "heroNext") ||
+      resolveImage(section?.background_image, "original") ||
       getCustomerBackground(slides[0]);
 
     return (
-      <section className="relative z-[60] w-full flex items-end h-auto min-h-[520px] lg:min-h-[660px] py-6 md:py-8 lg:py-[80px] overflow-hidden bg-[#061837]">
+      <section
+        id={sectionId}
+        className="relative z-[60] w-full flex items-end h-auto min-h-[520px] lg:min-h-[660px] py-6 md:py-8 lg:py-[80px] overflow-hidden"
+        style={{ backgroundColor: sectionBackground }}
+      >
         {staticBgUrl ? (
           <>
             <div className="absolute inset-0 z-0">
@@ -113,7 +145,7 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
                 alt=""
                 fill
                 sizes="100vw"
-                quality={70}
+                quality={75}
                 loading="lazy"
                 className="object-cover object-top"
               />
@@ -185,6 +217,18 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
               const authorName = client?.client_name || slide?.client_name || "";
               const authorTitle = client?.position || slide?.position || "";
               const authorCompany = client?.company_name || slide?.company_name || "";
+              const rawUserImage = client?.client_image ?? slide?.client_image;
+              const userImage = typeof rawUserImage === "number"
+                ? customerImageMap[rawUserImage] || ""
+                : resolveImage(rawUserImage, "card");
+              const companyLogoField = slide?.company_logo ?? slide?.company_Logo;
+              const companyLogo = resolveImage(companyLogoField, "card");
+              const userAlt = typeof rawUserImage === "object"
+                ? rawUserImage?.alt || authorName
+                : authorName;
+              const logoAlt = typeof companyLogoField === "object"
+                ? companyLogoField?.alt || authorCompany
+                : authorCompany;
 
               return (
                 <SwiperSlide key={i} className="!h-auto">
@@ -198,18 +242,47 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
                       </div>
                     )}
 
+                    {companyLogo && (
+                      <div className="relative w-[112px] sm:w-[128px] h-[48px] sm:h-[54px] mb-5 sm:mb-6 rounded-[3px] bg-white/90 px-3 py-2">
+                        <Image
+                          src={companyLogo}
+                          alt={logoAlt}
+                          fill
+                          unoptimized
+                          className="object-contain p-2"
+                          sizes="128px"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+
                     {slide?.quote && (
                       <div
-                        className="text-white font-heading max-w-full lg:max-w-[1280px] text-[20px] sm:text-[24px] md:text-[26px] lg:text-[28px] font-medium leading-[1.5] mb-[20px] sm:mb-[24px] [&_em]:italic [&_em]:font-bold [&_em]:text-[#5C83DD] [&_p]:mb-0"
+                        className="text-white font-heading max-w-full lg:max-w-[1280px] text-[18px] sm:text-[20px] md:text-[22px] lg:text-[24px] font-medium leading-[1.5] mb-[20px] sm:mb-[24px] [&_em]:italic [&_em]:font-bold [&_em]:text-[#5C83DD] [&_p]:mb-0"
                         dangerouslySetInnerHTML={{ __html: slide.quote }}
                       />
                     )}
 
-                    {(authorName || authorTitle || authorCompany) && (
-                      <div className="text-white text-[12px] sm:text-[14px] uppercase font-heading font-medium tracking-widest pr-[120px]">
-                        {authorName}
-                        {authorTitle && ` | ${authorTitle}`}
-                        {authorCompany && `, ${authorCompany}`}
+                    {(userImage || authorName || authorTitle || authorCompany) && (
+                      <div className="flex items-center gap-3 sm:gap-4 pr-[120px]">
+                        {userImage && (
+                          <div className="relative w-[52px] h-[52px] sm:w-[60px] sm:h-[60px] shrink-0 overflow-hidden rounded-full ring-1 ring-white/50">
+                            <Image
+                              src={userImage}
+                              alt={userAlt}
+                              fill
+                              unoptimized
+                              className="object-cover"
+                              sizes="60px"
+                              loading="lazy"
+                            />
+                          </div>
+                        )}
+                        <div className="text-white text-[12px] sm:text-[14px] uppercase font-heading font-medium tracking-widest">
+                          {authorName}
+                          {authorTitle && ` | ${authorTitle}`}
+                          {authorCompany && `, ${authorCompany}`}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -232,9 +305,9 @@ export default function TranslatorQuoteSection({ section, lang: langProp, quoteS
 
   return (
     <section
-      className={`w-full py-[60px] sm:py-[80px] lg:py-[100px] ${
-        isDark ? "bg-[#061837]" : "bg-[#E3EDFF]"
-      }`}
+      id={sectionId}
+      className="w-full py-[60px] sm:py-[80px] lg:py-[100px]"
+      style={{ backgroundColor: sectionBackground }}
     >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col md:flex-row">
