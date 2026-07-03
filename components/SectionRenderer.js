@@ -18,6 +18,7 @@ const NewHomeBanner = dynamic(() => import("./sections/Homepage/NewBanner"));
 const NewHomeBannerText = dynamic(() => import("./sections/Homepage/newbannertext"));
 const LogoSection = dynamic(() => import("./sections/Homepage/LogoSection"));
 const TranslatorQuoteSection = dynamic(() => import("./sections/Homepage/TranslatorQuoteSection"));
+const GeoAgentSection = dynamic(() => import("./sections/Homepage/GeoAgentSection"));
 
 /* ===================== SERVICE PAGE ===================== */
 const ServicesHeroSection = dynamic(() => import("./sections/Service/ServicesHeroSection"));
@@ -247,6 +248,18 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
             section={block}
             sectionId={`section-${index}`}
             index={index}
+          />
+        );
+
+      case "geo_agent_section":
+        return (
+          <GeoAgentSection
+            key={`geo-agent-${index}`}
+            content={block.content}
+            bg_color={block.bg_color}
+            font_color={block.font_color}
+            section_label={block.section_label}
+            sectionId={`section-${index}`}
           />
         );
 
