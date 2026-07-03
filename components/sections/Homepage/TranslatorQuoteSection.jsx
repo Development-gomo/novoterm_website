@@ -258,7 +258,7 @@ export default function TranslatorQuoteSection({ section, sectionId, lang: langP
 
                     {slide?.quote && (
                       <div
-                        className="text-white font-heading max-w-full lg:max-w-[1280px] text-[18px] sm:text-[20px] md:text-[22px] lg:text-[24px] font-medium leading-[1.5] mb-[20px] sm:mb-[24px] [&_em]:italic [&_em]:font-bold [&_em]:text-[#5C83DD] [&_p]:mb-0"
+                        className="text-white font-heading max-w-full lg:max-w-[920px] text-[16px] sm:text-[18px] md:text-[20px] tracking-wide lg:text-[22px] font-medium leading-[1.5] mb-[20px] sm:mb-[24px] [&_em]:italic [&_em]:font-bold [&_em]:text-[#5C83DD] [&_p]:mb-0"
                         dangerouslySetInnerHTML={{ __html: slide.quote }}
                       />
                     )}
@@ -281,7 +281,7 @@ export default function TranslatorQuoteSection({ section, sectionId, lang: langP
                         <div className="text-white text-[12px] sm:text-[14px] uppercase font-heading font-medium tracking-widest">
                           {authorName}
                           {authorTitle && ` | ${authorTitle}`}
-                          {authorCompany && `, ${authorCompany}`}
+                          {authorCompany && `${authorName || authorTitle ? ', ' : ''}${authorCompany}`}
                         </div>
                       </div>
                     )}
