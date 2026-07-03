@@ -138,7 +138,7 @@ export default function AboutSection({
   };
 
   return (
-    <section id={sectionId} className="relative bg-[#E3EDFF] py-15 md:py-[100px]">
+    <section id={sectionId} className="relative bg-[#E3EDFF] py-15 md:pb-[100px] md:pt-[50px] ">
 
       <style>{`
         .about-section-content em {

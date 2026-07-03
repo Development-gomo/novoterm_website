@@ -14,7 +14,7 @@ export default function GeoAgentSection({
         backgroundColor: bg_color,
         color: font_color,
       }}
-      className="geo-agent-section -mb-[70px] md:-mb-[50px]"
+      className="geo-agent-section"
     >
       <div className="max-w-4xl mx-auto">
         {section_label && (
@@ -24,7 +24,7 @@ export default function GeoAgentSection({
         )}
         {content && (
           <div
-            className="prose prose-lg max-w-none text-xs md:text-base"
+            className="prose prose-lg max-w-none text-xs md:text-base text-center"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         )}
