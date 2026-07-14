@@ -2,9 +2,11 @@ import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
 import MarketingConsentVideoEmbed from "../../../components/ui/MarketingConsentVideoEmbed";
-import { buildSiteUrl, resolveLang } from "../../../lib/api";
+import { buildSiteUrl, resolveLang, SUPPORTED_LANGS } from "../../../lib/api";
+import { formatArticleDate } from "../../../lib/dateFormat";
 import {
   fetchHeadlessVideoBySlug,
+  fetchHeadlessVideoTranslationsBySlug,
   getWatchPath,
   secondsToReadableDuration,
 } from "../../../lib/headlessVideo";
@@ -15,31 +17,6 @@ function safeJsonLd(schema) {
 
 function stripHtml(value = "") {
   return value.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
-}
-
-function formatDate(value) {
-  if (!value) return "";
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return new Intl.DateTimeFormat("sv-SE", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }).format(date);
-}
-
-function formatTime(value) {
-  if (!value) return "";
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return new Intl.DateTimeFormat("sv-SE", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
 }
 
 function versionedUrl(url, version) {
@@ -94,10 +71,10 @@ function MetaSeparator() {
   return <span className="text-[#B8C0CC]" aria-hidden="true">|</span>;
 }
 
-function formatViews(count) {
-  const value = Number(count) || 0;
-  if (value <= 0) return "";
-  return new Intl.NumberFormat("sv-SE").format(value);
+function formatViews(count, lang = "sv") {
+  const value = Number(count);
+  if (!Number.isFinite(value) || value < 0) return "";
+  return new Intl.NumberFormat(lang === "en" ? "en-GB" : "sv-SE").format(value);
 }
 
 export async function getServerSideProps({ params, locale }) {
@@ -108,10 +85,27 @@ export async function getServerSideProps({ params, locale }) {
     return { notFound: true };
   }
 
+  const translatedWatchPaths =
+    (await fetchHeadlessVideoTranslationsBySlug(video.slug, lang)) ||
+    (video?.translations && typeof video.translations === "object"
+      ? video.translations
+      : null);
+
+  const translations = translatedWatchPaths
+    ? translatedWatchPaths
+    : Object.fromEntries(
+        SUPPORTED_LANGS.map((localeCode) => [
+          localeCode,
+          buildSiteUrl(getWatchPath(video.slug, localeCode)),
+        ])
+      );
+
   if (video.indexing_enabled === false) {
     return {
       props: {
         video,
+        translations,
+        lang,
         canonicalUrl: buildSiteUrl(getWatchPath(video.slug, lang)),
         noindex: true,
       },
@@ -121,20 +115,23 @@ export async function getServerSideProps({ params, locale }) {
   return {
     props: {
       video,
+      translations,
+      lang,
       canonicalUrl: buildSiteUrl(getWatchPath(video.slug, lang)),
       noindex: false,
     },
   };
 }
 
-export default function WatchPage({ video, canonicalUrl, noindex }) {
+export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" }) {
   const [embedStarted, setEmbedStarted] = useState(false);
   const title = stripHtml(video.title);
   const description = stripHtml(video.description || video.description_html);
-  const duration = secondsToReadableDuration(video.duration_seconds);
-  const uploadDate = formatDate(video.upload_date);
-  const uploadTime = formatTime(video.upload_date);
-  const views = formatViews(video.interaction_count);
+  const duration =
+    secondsToReadableDuration(video.duration_seconds) ||
+    stripHtml(video.duration || "");
+  const uploadDate = formatArticleDate(video.upload_date, lang);
+  const views = formatViews(video.interaction_count, lang);
   const hasDirectVideo = Boolean(video.content_url);
   const hasEmbed = Boolean(video.embed_url);
   const thumbnailUrl = versionedUrl(video.thumbnail_url, video.modified);
@@ -181,32 +178,25 @@ export default function WatchPage({ video, canonicalUrl, noindex }) {
 
       <main className="bg-white">
         <article className="mx-auto w-full max-w-[980px] px-6 pt-[150px] pb-[90px]">
-          <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-3 text-[13px] font-montserrat font-semibold uppercase tracking-[0.08em] text-[#606164]">
+          <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-3 text-[13px] font-montserrat font-semibold tracking-[0.08em] text-[#606164]">
             {uploadDate && (
               <div className="flex items-center gap-2">
                 <CalendarIcon />
                 <time dateTime={video.upload_date}>{uploadDate}</time>
               </div>
             )}
-            {uploadDate && uploadTime && <MetaSeparator />}
-            {uploadTime && (
-              <div className="flex items-center gap-2">
-                <ClockIcon />
-                <time dateTime={video.upload_date}>{uploadTime}</time>
-              </div>
-            )}
-            {(uploadDate || uploadTime) && duration && <MetaSeparator />}
+            {uploadDate && duration && <MetaSeparator />}
             {duration && (
               <div className="flex items-center gap-2">
                 <ClockIcon />
                 <span>{duration}</span>
               </div>
             )}
-            {(uploadDate || uploadTime || duration) && views && <MetaSeparator />}
+            {(uploadDate || duration) && views && <MetaSeparator />}
             {views && (
               <div className="flex items-center gap-2">
                 <EyeIcon />
-                <span>{views} views</span>
+                <span>{views} {lang === "en" ? "views" : "visningar"}</span>
               </div>
             )}
           </div>
