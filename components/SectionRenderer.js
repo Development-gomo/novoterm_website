@@ -19,6 +19,7 @@ const NewHomeBannerText = dynamic(() => import("./sections/Homepage/newbannertex
 const LogoSection = dynamic(() => import("./sections/Homepage/LogoSection"));
 const TranslatorQuoteSection = dynamic(() => import("./sections/Homepage/TranslatorQuoteSection"));
 const GeoAgentSection = dynamic(() => import("./sections/Homepage/GeoAgentSection"));
+const VideosListingSection = dynamic(() => import("./sections/Homepage/VideosListingSection"));
 
 /* ===================== SERVICE PAGE ===================== */
 const ServicesHeroSection = dynamic(() => import("./sections/Service/ServicesHeroSection"));
@@ -87,7 +88,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], lang = "sv", currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes }) {
+export default function SectionRenderer({ sections = [], lang = "sv", currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -260,6 +261,15 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
             font_color={block.font_color}
             section_label={block.section_label}
             sectionId={`section-${index}`}
+          />
+        );
+
+      case "videos_listing":
+        return (
+          <VideosListingSection
+            key={`videos-listing-${index}`}
+            section={block}
+            initialVideos={initialHeadlessVideos || []}
           />
         );
 

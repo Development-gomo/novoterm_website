@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
 import MarketingConsentVideoEmbed from "../../../components/ui/MarketingConsentVideoEmbed";
-import { buildSiteUrl } from "../../../lib/api";
+import { buildSiteUrl, resolveLang } from "../../../lib/api";
 import {
   fetchHeadlessVideoBySlug,
   getWatchPath,
@@ -100,8 +100,9 @@ function formatViews(count) {
   return new Intl.NumberFormat("sv-SE").format(value);
 }
 
-export async function getServerSideProps({ params }) {
-  const video = await fetchHeadlessVideoBySlug(params.slug);
+export async function getServerSideProps({ params, locale }) {
+  const lang = resolveLang(locale);
+  const video = await fetchHeadlessVideoBySlug(params.slug, lang);
 
   if (!video) {
     return { notFound: true };
@@ -111,7 +112,7 @@ export async function getServerSideProps({ params }) {
     return {
       props: {
         video,
-        canonicalUrl: buildSiteUrl(getWatchPath(video.slug)),
+        canonicalUrl: buildSiteUrl(getWatchPath(video.slug, lang)),
         noindex: true,
       },
     };
@@ -120,7 +121,7 @@ export async function getServerSideProps({ params }) {
   return {
     props: {
       video,
-      canonicalUrl: buildSiteUrl(getWatchPath(video.slug)),
+      canonicalUrl: buildSiteUrl(getWatchPath(video.slug, lang)),
       noindex: false,
     },
   };
@@ -138,6 +139,11 @@ export default function WatchPage({ video, canonicalUrl, noindex }) {
   const hasEmbed = Boolean(video.embed_url);
   const thumbnailUrl = versionedUrl(video.thumbnail_url, video.modified);
   const highlightsHtml = highlightItemsHtml(video.highlights_html);
+  const ctaTitle = stripHtml(video.cta_title || "");
+  const ctaDescriptionHtml = video.cta_description_html;
+  const ctaButtonText = stripHtml(video.cta_button_text || "");
+  const ctaButtonUrl = video.cta_button_url;
+  const hasCta = Boolean(ctaTitle || ctaDescriptionHtml || (ctaButtonText && ctaButtonUrl));
   const showEmbedCover = hasEmbed && thumbnailUrl && !embedStarted;
   const embedSrc =
     hasEmbed && embedStarted
@@ -288,6 +294,27 @@ export default function WatchPage({ video, canonicalUrl, noindex }) {
                 className="prose max-w-none [&_p]:text-[17px] [&_p]:leading-[1.75] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_li]:text-[#061837] [&_li::marker]:text-[#2555C4]"
                 dangerouslySetInnerHTML={{ __html: highlightsHtml }}
               />
+            </section>
+          )}
+
+          {hasCta && (
+            <section className="mt-10 border-t border-[#D1D9E6] pt-8">
+              {ctaTitle && (
+                <h2 className="text-[#061837] text-[24px] md:text-[30px] font-heading font-semibold mb-4">
+                  {ctaTitle}
+                </h2>
+              )}
+              {ctaDescriptionHtml && (
+                <div
+                  className="prose max-w-none [&_p]:text-[17px] [&_p]:leading-[1.75] [&_p]:text-[#061837] [&_a]:text-[#2555C4] [&_a:hover]:underline"
+                  dangerouslySetInnerHTML={{ __html: ctaDescriptionHtml }}
+                />
+              )}
+              {ctaButtonText && ctaButtonUrl && (
+                <a href={ctaButtonUrl} className="btn-primary mt-6 w-fit">
+                  {ctaButtonText}
+                </a>
+              )}
             </section>
           )}
         </article>

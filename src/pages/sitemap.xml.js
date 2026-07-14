@@ -104,26 +104,28 @@ export async function getServerSideProps({ res }) {
     }
   }
 
-  const videos = await fetchHeadlessVideos({ perPage: 100 });
-  const videoEntries = videos.filter(
-    (video) =>
-      video.indexing_enabled !== false &&
-      video.sitemap_enabled !== false &&
-      video.slug &&
-      video.thumbnail_url &&
-      video.title &&
-      video.description &&
-      (video.content_url || video.embed_url)
-  );
+  for (const lang of SUPPORTED_LANGS) {
+    const videos = await fetchHeadlessVideos({ perPage: 100, lang });
+    const videoEntries = videos.filter(
+      (video) =>
+        video.indexing_enabled !== false &&
+        video.sitemap_enabled !== false &&
+        video.slug &&
+        video.thumbnail_url &&
+        video.title &&
+        video.description &&
+        (video.content_url || video.embed_url)
+    );
 
-  for (const video of videoEntries) {
-    urls.push({
-      loc: `${SITE_URL}${getWatchPath(video.slug)}`,
-      lastmod: toW3CDate(video.modified),
-      changefreq: "monthly",
-      priority: "0.8",
-      video,
-    });
+    for (const video of videoEntries) {
+      urls.push({
+        loc: `${SITE_URL}${getWatchPath(video.slug, lang)}`,
+        lastmod: toW3CDate(video.modified),
+        changefreq: "monthly",
+        priority: "0.8",
+        video,
+      });
+    }
   }
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

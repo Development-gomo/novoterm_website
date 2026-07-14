@@ -6,6 +6,7 @@ import LcpHeroPreload from "../../components/LcpHeroPreload";
 import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 import { fetchPreviewContentById } from "../../lib/wpPreview";
+import { fetchHeadlessVideos } from "../../lib/headlessVideo";
 
 // Generate paths for both languages with locale so Next.js i18n
 // routes each path to getStaticProps with the correct locale.
@@ -48,6 +49,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   let initialClientLogos = null;
   let initialCustomerQuotes = null;
   let initialTranslatorQuotes = null;
+  let initialHeadlessVideos = null;
   const sections = page?.acf?.page_sections || [];
   const hasArticlesSection = sections.some(
     (s) => s?.acf_fc_layout === "articles_section"
@@ -65,6 +67,9 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
     (s) => s?.acf_fc_layout === "logo_section"
   );
   const quoteBlocks = sections.filter((s) => s?.acf_fc_layout === "translator_quote_block");
+  const hasVideosListingSection = sections.some(
+    (s) => s?.acf_fc_layout === "videos_listing"
+  );
   const needsCustomerQuotes = quoteBlocks.some((s) => s?.quote_source === "customer");
   const needsTranslatorQuotes = quoteBlocks.some((s) => !s?.quote_source || s?.quote_source === "translator");
 
@@ -185,6 +190,14 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
     catch (e) { console.error("SSR translator quotes prefetch failed:", e); }
   }
 
+  if (hasVideosListingSection) {
+    try {
+      initialHeadlessVideos = await fetchHeadlessVideos({ perPage: 100, lang });
+    } catch (e) {
+      console.error("SSR headless videos prefetch failed:", e);
+    }
+  }
+
   return {
     props: {
       page,
@@ -197,13 +210,14 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
       initialClientLogos,
       initialCustomerQuotes,
       initialTranslatorQuotes,
+      initialHeadlessVideos,
       isPreview: Boolean(preview),
     },
     revalidate: 60
   };
 }
 
-export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes }) {
+export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
   const pagePath = page?.slug === "home" ? "/" : `/${page?.slug || ""}`;
@@ -222,7 +236,7 @@ export default function Page({ page, lang, yoastHead, initialArticles, initialDo
       {sections.length ? (
         <>
           {page?.slug !== "home" && <StickyPageNav sections={sections} />}
-          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} initialClientLogos={initialClientLogos} initialCustomerQuotes={initialCustomerQuotes} initialTranslatorQuotes={initialTranslatorQuotes} />
+          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} initialClientLogos={initialClientLogos} initialCustomerQuotes={initialCustomerQuotes} initialTranslatorQuotes={initialTranslatorQuotes} initialHeadlessVideos={initialHeadlessVideos} />
         </>
       ) : (
         <div>No sections found</div>
