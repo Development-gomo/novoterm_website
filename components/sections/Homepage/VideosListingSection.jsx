@@ -5,8 +5,9 @@ import { DEFAULT_LANG } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { fetchHeadlessVideos, getWatchPath, secondsToReadableDuration } from "../../../lib/headlessVideo";
 
-function stripHtml(value = "") {
-  return value.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+function stripHtml(value) {
+  if (!value) return "";
+  return String(value).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 }
 
 function clampDescription(value = "") {

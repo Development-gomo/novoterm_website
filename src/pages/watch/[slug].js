@@ -15,8 +15,9 @@ function safeJsonLd(schema) {
   return JSON.stringify(schema || {}).replace(/</g, "\\u003c");
 }
 
-function stripHtml(value = "") {
-  return value.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+function stripHtml(value) {
+  if (!value) return "";
+  return String(value).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 }
 
 function versionedUrl(url, version) {
