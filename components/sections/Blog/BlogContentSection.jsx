@@ -5,6 +5,7 @@ import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
 import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import { plainTextFromHtml } from "../../../lib/html";
 import CF7ContactForm from "../../ui/CF7ContactForm";
 import AuthorCard from "./AuthorCard";
 
@@ -230,28 +231,23 @@ const res = await fetch(
 
         const formatted = data
           .filter((post) => post.slug !== slug)
-          .map((post) => ({
-            title: post.title?.rendered || "",
-            excerpt:
-              post.excerpt?.rendered
-                ?.replace(/<[^>]*>/g, "")
-                .slice(0, 100) + "..." || "",
-            url: localePath("article", post.slug, lang),
-            image:
-              post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
-              "/default-blog.jpg",
-            category:
-              post._embedded?.["wp:term"]?.[0]?.[0]?.name || "General",
-            date: formatArticleDate(post.date, lang),
-            readTime: `${Math.max(
-              1,
-              Math.ceil(
-                post.content.rendered
-                  .replace(/<[^>]*>/g, "")
-                  .split(/\s+/).length / 200
-              )
-            )} ${t.minRead}`,
-          }));
+          .map((post) => {
+            const cleanContent = plainTextFromHtml(post.content?.rendered || "");
+            const wordCount = cleanContent ? cleanContent.split(/\s+/).length : 0;
+
+            return {
+              title: plainTextFromHtml(post.title?.rendered || ""),
+              excerpt: plainTextFromHtml(post.excerpt?.rendered || "").slice(0, 100) + "...",
+              url: localePath("article", post.slug, lang),
+              image:
+                post._embedded?.["wp:featuredmedia"]?.[0]?.source_url ||
+                "/default-blog.jpg",
+              category:
+                plainTextFromHtml(post._embedded?.["wp:term"]?.[0]?.[0]?.name || "General"),
+              date: formatArticleDate(post.date, lang),
+              readTime: `${Math.max(1, Math.ceil(wordCount / 200))} ${t.minRead}`,
+            };
+          });
 
         setRelatedPosts(formatted.slice(0, 3));
       } catch (error) {

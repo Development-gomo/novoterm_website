@@ -6,6 +6,7 @@ import LazyWhenVisible from "../../ui/LazyWhenVisible";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath, wpToPath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
+import { plainTextFromHtml } from "../../../lib/html";
 import Link from "next/link";
 
 export default function IndustryInsightsSection({ section, sectionId }) {
@@ -27,7 +28,7 @@ export default function IndustryInsightsSection({ section, sectionId }) {
 
         const formatted = data.map((post) => {
           const category =
-            post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+            plainTextFromHtml(post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General");
 
           const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
           const image =
@@ -38,15 +39,13 @@ export default function IndustryInsightsSection({ section, sectionId }) {
 
           const date = formatArticleDate(post.date, lang);
 
-          const clean = post.content.rendered.replace(/<[^>]*>/g, "");
+          const clean = plainTextFromHtml(post.content.rendered);
           const words = clean.split(/\s+/).length;
           const readTime = `${Math.max(1, Math.ceil(words / 200))} min read`;
 
           return {
-            title: post.title.rendered,
-            excerpt:
-              post.excerpt.rendered.replace(/<[^>]*>/g, "").slice(0, 120) +
-              "...",
+            title: plainTextFromHtml(post.title.rendered),
+            excerpt: plainTextFromHtml(post.excerpt.rendered).slice(0, 120) + "...",
             url: localePath("article", post.slug, lang),
             image,
             category,

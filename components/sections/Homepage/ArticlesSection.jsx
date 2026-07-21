@@ -5,12 +5,24 @@ import Image from "next/image";
 import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
+import { plainTextFromHtml } from "../../../lib/html";
 
 const POSTS_PER_PAGE = 6;
 
+function normalizeTerm(term) {
+  if (!term || typeof term !== "object") return null;
+  const id = term.id ?? term.term_id;
+  if (!id || !term.name) return null;
+
+  return {
+    id,
+    name: plainTextFromHtml(term.name),
+  };
+}
+
 function formatPost(post, lang) {
   const category =
-    post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+    plainTextFromHtml(post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General");
   const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
   const image =
     fm?.media_details?.sizes?.medium_large?.source_url ||
@@ -18,7 +30,7 @@ function formatPost(post, lang) {
     fm?.source_url ||
     "/default-blog.jpg";
   const date = formatArticleDate(post.date, lang);
-  const clean = post.content.rendered.replace(/<[^>]*>/g, "");
+  const clean = plainTextFromHtml(post.content.rendered);
   const words = clean.split(/\s+/).length;
   let readTimeLabel = "min read";
   if (lang === "sv") readTimeLabel = "min läsning";
@@ -27,10 +39,8 @@ function formatPost(post, lang) {
 
   return {
     id: post.id,
-    title: post.title.rendered,
-    excerpt:
-      post.excerpt.rendered.replace(/<[^>]*>/g, "").trim().slice(0, 120) +
-      "...",
+    title: plainTextFromHtml(post.title.rendered),
+    excerpt: plainTextFromHtml(post.excerpt.rendered).slice(0, 120) + "...",
     url: localePath("article", post.slug, lang),
     image,
     category,
@@ -48,13 +58,19 @@ export default function ArticlesSection({
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
+  const categoryFilterTerms = Array.isArray(category_filter)
+    ? category_filter
+    : category_filter
+    ? [category_filter]
+    : [];
+  const seededCategories = categoryFilterTerms
+    .map(normalizeTerm)
+    .filter(Boolean);
 
   // category_filter from ACF can be a single term or an array of terms
-  const allowedCategoryIds = Array.isArray(category_filter)
-    ? category_filter.map((t) => String(t.term_id || t))
-    : category_filter
-    ? [String(category_filter.term_id || category_filter)]
-    : [];
+  const allowedCategoryIds = categoryFilterTerms.map((t) =>
+    String(t?.term_id || t?.id || t)
+  );
 
   // Pre-process SSR data for instant initial render
   const ssrData = (() => {
@@ -67,7 +83,7 @@ export default function ArticlesSection({
     };
   })();
 
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(seededCategories);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -105,10 +121,16 @@ export default function ArticlesSection({
   // Fetch categories for dropdown — only show ones selected in backend
   useEffect(() => {
     async function loadCategories() {
+      if (seededCategories.length > 0) {
+        setCategories(seededCategories);
+        return;
+      }
+
       try {
         const res = await fetch(
           wpRestUrl(`wp/v2/categories?per_page=100&hide_empty=false&lang=${lang}`)
         );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         let filtered = data;
         // If ACF specifies allowed categories, only show those
@@ -117,13 +139,21 @@ export default function ArticlesSection({
             allowedCategoryIds.includes(String(c.id))
           );
         }
-        setCategories(filtered);
+        setCategories(
+          filtered
+            .map((cat) => ({
+              ...cat,
+              name: plainTextFromHtml(cat.name),
+            }))
+            .filter((cat) => cat.id && cat.name)
+        );
       } catch (e) {
-        console.error("CATEGORIES FETCH ERROR:", e);
+        setCategories(seededCategories);
+        console.warn("Categories unavailable; showing articles without filter options.");
       }
     }
     loadCategories();
-  }, [lang]);
+  }, [lang, category_filter]);
 
   const toggleCategory = (catId) => {
     setSelectedCategories((prev) =>
@@ -313,10 +343,9 @@ export default function ArticlesSection({
                 </span>
                 <h3
                   className="text-[24px] md:text-[32px] leading-[1.25] font-semibold text-[#E3EDFF] mb-4 group-hover:text-white transition"
-                  dangerouslySetInnerHTML={{
-                    __html: featuredPost.title,
-                  }}
-                />
+                >
+                  {featuredPost.title}
+                </h3>
                 <p className="text-[15px] leading-[1.7] text-white/70 mb-6">
                   {featuredPost.excerpt}
                 </p>

@@ -5,10 +5,11 @@
     import LazyWhenVisible from "../../ui/LazyWhenVisible";
     import DotIndicator from "../../ui/DotIndicator";
     import { DEFAULT_LANG, localePath, wpToPath, wpRestUrl } from "../../../lib/api";
+    import { plainTextFromHtml } from "../../../lib/html";
 
     function formatPostToSlide(post, lang) {
     const category =
-        post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General";
+        plainTextFromHtml(post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General");
 
     const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
     const image =
@@ -17,15 +18,13 @@
         fm?.media_details?.sizes?.medium_large?.source_url ||
         "/default-blog.jpg";
 
-    const clean = post?.content?.rendered?.replace(/<[^>]*>/g, "") || "";
+    const clean = plainTextFromHtml(post?.content?.rendered || "");
     const words = clean.trim() ? clean.trim().split(/\s+/).length : 0;
     const readTimeLabel = lang === "en" ? "min read" : "min läsning";
 
     return {
-        title: post?.title?.rendered || "",
-        excerpt:
-        (post?.excerpt?.rendered || "").replace(/<[^>]*>/g, "").slice(0, 120) +
-        "...",
+        title: plainTextFromHtml(post?.title?.rendered || ""),
+        excerpt: plainTextFromHtml(post?.excerpt?.rendered || "").slice(0, 120) + "...",
         url: localePath("article", post?.slug, lang),
         image,
         category,
