@@ -35,9 +35,15 @@ export async function getServerSideProps({ params, locale, preview, previewData 
     caseStudy = await fetchPreviewContentById(previewData.postId, "case_study", lang);
   } else {
     const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?slug=${slug}&acf_format=standard`;
-    const res = await fetch(`${base}&lang=${lang}`);
-    const data = await res.json();
-    caseStudy = Array.isArray(data) && data.length ? data[0] : null;
+    try {
+      const res = await fetch(`${base}&lang=${lang}`);
+      if (res.ok) {
+        const data = await res.json();
+        caseStudy = Array.isArray(data) && data.length ? data[0] : null;
+      }
+    } catch (e) {
+      console.error("Failed to fetch case study:", e);
+    }
   }
 
   if (!caseStudy) {
