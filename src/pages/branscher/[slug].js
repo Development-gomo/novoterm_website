@@ -34,15 +34,9 @@ export async function getServerSideProps({ params, locale, preview, previewData 
     industry = await fetchPreviewContentById(previewData.postId, "industry", lang);
   } else {
     const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`;
-    try {
-      const res = await fetch(`${base}&lang=${lang}`);
-      if (res.ok) {
-        const data = await res.json();
-        industry = Array.isArray(data) && data.length ? data[0] : null;
-      }
-    } catch (e) {
-      console.error("Failed to fetch industry:", e);
-    }
+    const res = await fetch(`${base}&lang=${lang}`);
+    const data = await res.json();
+    industry = Array.isArray(data) && data.length ? data[0] : null;
   }
 
   if (!industry) {

@@ -34,15 +34,9 @@ export async function getServerSideProps({ params, locale, preview, previewData 
     const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?slug=${slug}&acf_format=standard&_embed`;
 
     // Only fetch in the requested language — wrong-locale slugs must 404.
-    try {
-      const res = await fetch(`${base}&lang=${lang}`);
-      if (res.ok) {
-        const data = await res.json();
-        post = Array.isArray(data) && data.length ? data[0] : null;
-      }
-    } catch (e) {
-      console.error("Failed to fetch post:", e);
-    }
+    const res = await fetch(`${base}&lang=${lang}`);
+    const data = await res.json();
+    post = Array.isArray(data) && data.length ? data[0] : null;
   }
 
   if (!post) {

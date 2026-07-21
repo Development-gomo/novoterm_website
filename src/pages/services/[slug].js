@@ -35,15 +35,9 @@ export async function getServerSideProps({ params, locale, preview, previewData 
     service = await fetchPreviewContentById(previewData.postId, "service", lang);
   } else {
     const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`;
-    try {
-      const res = await fetch(`${base}&lang=${lang}`);
-      if (res.ok) {
-        const data = await res.json();
-        service = Array.isArray(data) && data.length ? data[0] : null;
-      }
-    } catch (e) {
-      console.error("Failed to fetch service:", e);
-    }
+    const res = await fetch(`${base}&lang=${lang}`);
+    const data = await res.json();
+    service = Array.isArray(data) && data.length ? data[0] : null;
   }
 
   if (!service) {

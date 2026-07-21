@@ -61,15 +61,23 @@ function buildHeaderData(header, menu) {
 export default function MyApp({
   Component,
   pageProps,
+  initialHeader,
+  initialFooter,
+  initialHamburgerMenu,
+  initialMegaMenu,
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
 
-  const [headerData, setHeaderData] = useState(null);
-  const [footerData, setFooterData] = useState(null);
-  const [hamburgerMenuData, setHamburgerMenuData] = useState(null);
-  const [megaMenuData, setMegaMenuData] = useState(null);
+  const [headerData, setHeaderData] = useState(initialHeader || null);
+  const [footerData, setFooterData] = useState(initialFooter || null);
+  const [hamburgerMenuData, setHamburgerMenuData] = useState(initialHamburgerMenu || null);
+  const [megaMenuData, setMegaMenuData] = useState(initialMegaMenu || null);
   useEffect(() => {
+    if (initialMegaMenu) {
+      setMegaMenuData(initialMegaMenu);
+      return;
+    }
     async function loadMegaMenu() {
       try {
         const data = await getMegaMenu(lang);
@@ -79,7 +87,7 @@ export default function MyApp({
       }
     }
     loadMegaMenu();
-  }, [lang]);
+  }, [lang, initialMegaMenu]);
 
   // Keep <html lang> in sync with the active locale
   useEffect(() => {
@@ -88,6 +96,13 @@ export default function MyApp({
 
   // Re-fetch header + menu on client-side locale changes
   useEffect(() => {
+    // Prefer server-provided data for each route/locale transition.
+    // This avoids stale menu state while waiting for client fetches.
+    if (initialHeader) {
+      setHeaderData(initialHeader);
+      return;
+    }
+
     async function loadHeader() {
       try {
         const [header, menu] = await Promise.all([
@@ -100,9 +115,14 @@ export default function MyApp({
       }
     }
     loadHeader();
-  }, [lang]);
+  }, [lang, initialHeader]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (initialFooter) {
+      setFooterData(initialFooter);
+      return;
+    }
+
     async function loadFooter() {
       try {
         const footer = await getFooterData(lang);
@@ -112,9 +132,13 @@ export default function MyApp({
       }
     }
     loadFooter();
-  }, [lang]);
+  }, [lang, initialFooter]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (initialHamburgerMenu) {
+      setHamburgerMenuData(initialHamburgerMenu);
+      return;
+    }
     async function loadHamburgerMenu() {
       try {
         const data = await getHamburgerMenu(lang);
@@ -124,7 +148,7 @@ export default function MyApp({
       }
     }
     loadHamburgerMenu();
-  }, [lang]);
+  }, [lang, initialHamburgerMenu]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
@@ -149,3 +173,29 @@ export default function MyApp({
     </>
   );
 }
+
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  const lang = ctx.locale || DEFAULT_LANG;
+
+  // Fetch header, menu, footer, hamburger menu, mega menu in parallel on the server
+  const [header, menu, footer, hamburgerMenu, megaMenu] = await Promise.all([
+    getHeaderData(lang).catch(() => null),
+    getMainMenu(lang).catch(() => null),
+    getFooterData(lang).catch(() => null),
+    getHamburgerMenu(lang).catch(() => null),
+    getMegaMenu(lang).catch(() => null),
+  ]);
+
+  let pageProps = {};
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx);
+  }
+
+  return {
+    pageProps,
+    initialHeader: header && menu ? buildHeaderData(header, menu) : null,
+    initialFooter: footer,
+    initialHamburgerMenu: hamburgerMenu,
+    initialMegaMenu: megaMenu?.items || [],
+  };
+};
