@@ -270,7 +270,7 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
           {video.description_html && (
             <section className="mt-12">
               <div
-                className="prose max-w-none [&_p]:text-[18px] [&_p]:leading-[1.8] [&_p]:text-[#061837] [&_a]:text-[#2555C4] [&_a:hover]:underline"
+                className="prose max-w-none space-y-4 [&_p]:text-[18px] [&_p]:leading-[1.8] [&_p]:text-[#061837] [&_a]:text-[#2555C4] [&_a:hover]:underline"
                 dangerouslySetInnerHTML={{ __html: video.description_html }}
               />
             </section>
@@ -297,7 +297,7 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
               )}
               {ctaDescriptionHtml && (
                 <div
-                  className="prose max-w-none [&_p]:text-[17px] [&_p]:leading-[1.75] [&_p]:text-[#061837] [&_a]:text-[#2555C4] [&_a:hover]:underline"
+                  className="prose max-w-none space-y-4 [&_p]:text-[17px] [&_p]:leading-[1.75] [&_p]:text-[#061837] [&_a]:text-[#2555C4] [&_a:hover]:underline"
                   dangerouslySetInnerHTML={{ __html: ctaDescriptionHtml }}
                 />
               )}
