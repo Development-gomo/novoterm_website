@@ -20,6 +20,41 @@ function stripHtml(value) {
   return String(value).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
 }
 
+function findYoastMetaContent(yoastHead = "", attrName, attrValue) {
+  if (!yoastHead || !attrName || !attrValue) return "";
+
+  const tagPattern = /<meta\s+[^>]*>/gi;
+  const attrPattern = new RegExp(`${attrName}=["']${attrValue}["']`, "i");
+  const contentPattern = /content=["']([^"']*)["']/i;
+  const tags = yoastHead.match(tagPattern) || [];
+  const tag = tags.find((item) => attrPattern.test(item));
+
+  return tag?.match(contentPattern)?.[1] || "";
+}
+
+function getYoastTitle(video) {
+  const jsonTitle = video?.yoast_head_json?.title;
+  if (jsonTitle) return stripHtml(jsonTitle);
+
+  const htmlTitle = video?.yoast_head?.match(/<title>([\s\S]*?)<\/title>/i)?.[1];
+  return stripHtml(htmlTitle || "");
+}
+
+function getYoastDescription(video) {
+  const jsonDescription =
+    video?.yoast_head_json?.description ||
+    video?.yoast_head_json?.og_description ||
+    video?.yoast_head_json?.twitter_description;
+
+  if (jsonDescription) return stripHtml(jsonDescription);
+
+  return stripHtml(
+    findYoastMetaContent(video?.yoast_head, "name", "description") ||
+    findYoastMetaContent(video?.yoast_head, "property", "og:description") ||
+    findYoastMetaContent(video?.yoast_head, "name", "twitter:description")
+  );
+}
+
 function versionedUrl(url, version) {
   if (!url || !version) return url || "";
   const separator = url.includes("?") ? "&" : "?";
@@ -128,6 +163,10 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
   const [embedStarted, setEmbedStarted] = useState(false);
   const title = stripHtml(video.title);
   const description = stripHtml(video.description || video.description_html);
+  const seoTitle = getYoastTitle(video) || title;
+  const seoDescription = getYoastDescription(video) || description;
+  const ogTitle = stripHtml(video.yoast_head_json?.og_title) || seoTitle;
+  const ogDescription = stripHtml(video.yoast_head_json?.og_description) || seoDescription;
   const duration =
     secondsToReadableDuration(video.duration_seconds) ||
     stripHtml(video.duration || "");
@@ -157,18 +196,20 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
   return (
     <>
       <Head>
-        <title>{title}</title>
-        {description && <meta name="description" content={description} />}
+        <title>{seoTitle}</title>
+        {seoDescription && <meta name="description" content={seoDescription} />}
         {noindex && <meta name="robots" content="noindex, follow" />}
         <link rel="canonical" href={canonicalUrl} />
         <meta property="og:type" content="video.other" />
-        <meta property="og:title" content={title} />
-        {description && <meta property="og:description" content={description} />}
+        <meta property="og:title" content={ogTitle} />
+        {ogDescription && <meta property="og:description" content={ogDescription} />}
         <meta property="og:url" content={canonicalUrl} />
         {thumbnailUrl && (
           <meta property="og:image" content={thumbnailUrl} />
         )}
         {hasEmbed && <meta property="og:video" content={video.embed_url} />}
+        <meta name="twitter:title" content={ogTitle} />
+        {ogDescription && <meta name="twitter:description" content={ogDescription} />}
         {videoSchema && (
           <script
             type="application/ld+json"
