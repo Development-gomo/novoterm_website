@@ -46,6 +46,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
   return {
     props: {
       service,
+      lang,
       translations: service.translations || null,
       yoastHead: service.yoast_head || null,
       isPreview: Boolean(preview),
@@ -66,7 +67,7 @@ export default function SingleService({ service, yoastHead, lang }) {
       {sections.length > 0 ? (
         <>
           <StickyServiceNav sections={sections} />
-          <SectionRenderer sections={sections} />
+          <SectionRenderer sections={sections} lang={lang} />
         </>
       ) : (
         <div className="max-w-5xl mx-auto p-10">

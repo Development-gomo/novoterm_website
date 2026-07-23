@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import DocumentTypeSlider from "../../Sliders/Homepage_sliders/DocumentTypeSlider";
-import { wpToPath, DEFAULT_LANG, wpRestUrl } from "../../../lib/api";
+import { wpToPath, DEFAULT_LANG, resolveLang } from "../../../lib/api";
 
 const formatLabel = (layout) => {
   if (!layout) return null;
@@ -13,47 +13,47 @@ const formatLabel = (layout) => {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 };
 
-export default function InnerDocumentTypeSection({ section, sectionId, index = 0 }) {
+export default function InnerDocumentTypeSection({
+  section,
+  sectionId,
+  index = 0,
+  lang: sectionLang,
+  initialSlides = null,
+}) {
   if (!section) return null;
 
   const { section_label, heading, paragraph, button, button_url } = section;
   const router = useRouter();
-  const lang = router.locale || DEFAULT_LANG;
-  const [slides, setSlides] = useState([]);
+  const lang = resolveLang(sectionLang || router.locale || DEFAULT_LANG);
+  const [slides, setSlides] = useState(initialSlides || []);
 
   const mobileLabel = section_label || formatLabel(section.acf_fc_layout);
 
   useEffect(() => {
+    if (initialSlides && initialSlides.length > 0) {
+      setSlides(initialSlides);
+      return;
+    }
+
     async function getData() {
       try {
-        const res = await fetch(
-          wpRestUrl(`wp/v2/document_type?acf_format=standard&lang=${lang}`)
-        );
-        let data = await res.json();
+        const res = await fetch(`/api/document-types?lang=${encodeURIComponent(lang)}`);
 
-        let formatted = data.map((post) => ({
-          slug: post.slug,
-          heading: post.acf.heading,
-          subtext: post.acf.subtext,
-          cs_image: post.acf.cs_image,
-          button_url: post.acf.button_url || "", // always from ACF
-          slider_sequence: parseInt(post.acf.slider_sequence, 10) || 0,
-        }));
-
-        formatted = formatted.sort((a, b) => a.slider_sequence - b.slider_sequence);
-
-        if (formatted.length > 0) {
-          formatted[formatted.length - 1].last_block = true;
+        if (!res.ok) {
+          throw new Error(`Document types request failed: ${res.status}`);
         }
 
-        setSlides(formatted);
+        const data = await res.json();
+
+        setSlides(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("INNER DOCUMENT TYPE FETCH ERROR:", error);
+        setSlides([]);
       }
     }
 
     getData();
-  }, [lang]);
+  }, [lang, initialSlides]);
 
   return (
     <section
@@ -100,7 +100,7 @@ export default function InnerDocumentTypeSection({ section, sectionId, index = 0
             {/* CTA BUTTON */}
             {button && button_url && (
               <div className="flex justify-center mt-8 md:mt-10">
-                <Link href={wpToPath(typeof button_url === "object" ? button_url.url : button_url) || "#"} className="btn-primary">
+                <Link href={wpToPath(typeof button_url === "object" ? button_url.url : button_url, lang) || "#"} className="btn-primary">
                   {button}
                 </Link>
               </div>

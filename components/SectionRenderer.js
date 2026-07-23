@@ -323,7 +323,16 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
         );
 
       case "inner_document_types":
-        return <InnerDocumentTypeSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+        return (
+          <InnerDocumentTypeSection
+            key={index}
+            section={block}
+            sectionId={`section-${index}`}
+            index={index}
+            lang={lang}
+            initialSlides={initialDocumentTypes}
+          />
+        );
 
       case "inner_service_section":
         return <InnerServiceSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
