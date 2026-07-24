@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import Link from "next/link";
 import { DEFAULT_LANG } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
@@ -163,15 +164,31 @@ export default function VideosListingSection({
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {videos.map((video) => (
             <article key={video.id} className="flex h-full flex-col overflow-hidden rounded-[3px] border border-[#D1D9E6] bg-white">
-              {/* <div className="relative aspect-[16/10] w-full bg-[#E3EDFF]">
+              <Link
+                href={getWatchPath(video.slug, lang)}
+                className="group relative aspect-video w-full overflow-hidden bg-[#E3EDFF]"
+                aria-label={video.title}
+              >
                 <Image
                   src={video.image}
                   alt={video.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-              </div> */}
+                <span className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-90" />
+                <span className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#2655C4] text-white shadow-lg transition-transform duration-300 group-hover:scale-105">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5 translate-x-[1px]"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </span>
+              </Link>
 
               <div className="flex flex-1 flex-col px-6 py-6 bg-[#F9FAFB]">
                 {(() => {

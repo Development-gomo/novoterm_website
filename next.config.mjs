@@ -2,7 +2,7 @@
 const WP_URL = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, '') || '';
 
 // next/image only loads remotes from these hosts (see https://nextjs.org/docs/messages/next-image-unconfigured-host)
-const imageHostnames = new Set(["backend.novoterm.se", "gomostaging.com"]);
+const imageHostnames = new Set(["backend.novoterm.se", "gomostaging.com", "i.ytimg.com"]);
 if (WP_URL) {
   try {
     imageHostnames.add(new URL(WP_URL).hostname);
