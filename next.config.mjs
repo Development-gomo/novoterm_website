@@ -11,6 +11,8 @@ if (WP_URL) {
   }
 }
 
+const AGENT_ORIGIN = "https://novoterm-agent.vercel.app";
+
 const nextConfig = {
   reactStrictMode: true,
   bundlePagesRouterDependencies: true,
@@ -55,12 +57,53 @@ const nextConfig = {
   },
 
   async rewrites() {
-    return [
-      {
-        source: '/wp-api/:path*',
-        destination: `${WP_URL}/wp-json/:path*`,
-      },
-    ];
+    return {
+      beforeFiles: [
+        {
+          source: "/agent",
+          destination: `${AGENT_ORIGIN}/agent`,
+        },
+        {
+          source: "/agent/:path*",
+          destination: `${AGENT_ORIGIN}/agent/:path*`,
+        },
+        {
+          source: "/llms.txt",
+          destination: `${AGENT_ORIGIN}/llms.txt`,
+        },
+        {
+          source: "/llms-full.txt",
+          destination: `${AGENT_ORIGIN}/llms-full.txt`,
+        },
+        {
+          source: "/ai.txt",
+          destination: `${AGENT_ORIGIN}/ai.txt`,
+        },
+        {
+          source: "/openapi.json",
+          destination: `${AGENT_ORIGIN}/openapi.json`,
+        },
+        {
+          source: "/api-catalog.json",
+          destination: `${AGENT_ORIGIN}/api-catalog.json`,
+        },
+        {
+          source: "/mcp",
+          destination: `${AGENT_ORIGIN}/mcp`,
+        },
+        {
+          source: "/mcp/:path*",
+          destination: `${AGENT_ORIGIN}/mcp/:path*`,
+        },
+      ],
+      afterFiles: [
+        {
+          source: "/wp-api/:path*",
+          destination: `${WP_URL}/wp-json/:path*`,
+        },
+      ],
+      fallback: [],
+    };
   },
 
   async redirects() {
