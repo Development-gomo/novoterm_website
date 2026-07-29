@@ -1,30 +1,16 @@
-# Training and dataset crawlers - blocked
+# AI search, retrieval, training and discovery crawlers
 User-agent: GPTBot
-User-agent: ClaudeBot
-User-agent: Anthropic-ai
-User-agent: Google-Extended
-User-agent: CCBot
-User-agent: Bytespider
-User-agent: DataForSeoBot
-User-agent: FacebookBot
-User-agent: AwarioRssBot
-User-agent: AwarioSmartBot
-User-agent: ImagesiftBot
-User-agent: Magpie-crawler
-User-agent: Omgili
-User-agent: Omgilibot
-User-agent: Peer39_crawler
-User-agent: Peer39_crawler/1.0
-Disallow: /
-
-
-# AI search, discovery and user-requested retrieval
 User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
+User-agent: ClaudeBot
 User-agent: Claude-SearchBot
 User-agent: Claude-User
+User-agent: Anthropic-ai
+User-agent: Google-Extended
 User-agent: PerplexityBot
 User-agent: Perplexity-User
+User-agent: CCBot
+User-agent: Bytespider
 User-agent: YouBot
 User-agent: Cohere-ai
 Allow: /
@@ -41,7 +27,32 @@ Disallow: /feed/
 Disallow: /*/feed/
 
 
-# All other crawlers, including normal search engines
+# Other commercial and data crawlers
+User-agent: DataForSeoBot
+User-agent: FacebookBot
+User-agent: AwarioRssBot
+User-agent: AwarioSmartBot
+User-agent: ImagesiftBot
+User-agent: Magpie-crawler
+User-agent: Omgili
+User-agent: Omgilibot
+User-agent: Peer39_crawler
+User-agent: Peer39_crawler/1.0
+Allow: /
+
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+Disallow: /*?s=
+Disallow: /*&s=
+Disallow: /*?post_type=
+Disallow: /*&post_type=
+
+Disallow: /feed/
+Disallow: /*/feed/
+
+
+# All other crawlers, including standard search engines
 User-agent: *
 Allow: /
 
@@ -58,8 +69,12 @@ Disallow: /*/feed/
 
 
 # AI-readable resources
+# These are informational custom directives and may be
+# ignored by crawlers that do not recognise them.
 LLM-Readable: https://www.novoterm.se/agent/
 LLM-Text: https://www.novoterm.se/llms.txt
 LLM-Full: https://www.novoterm.se/llms-full.txt
 
+
+# XML sitemap
 Sitemap: https://www.novoterm.se/sitemap.xml
