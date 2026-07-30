@@ -55,6 +55,10 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
 
     return {
       ...video,
+      image:
+        existing.image && existing.image !== "/userfallback.webp"
+          ? existing.image
+          : video.image,
       durationSeconds: video.durationSeconds > 0 ? video.durationSeconds : existing.durationSeconds || 0,
       duration: video.duration || existing.duration || "",
       views:
