@@ -16,6 +16,7 @@ const POST_TYPES = [
   ["case_study",  { sv: "/kundcase",  en: "/client-case" }],
 ];
 
+
 const STATIC_SITEMAP_URLS = [
   {
     path: "/agent",
