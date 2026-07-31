@@ -71,7 +71,7 @@ Disallow: /*/feed/
 # AI-readable resources
 # These are informational custom directives and may be
 # ignored by crawlers that do not recognise them.
-LLM-Readable: https://www.novoterm.se/agent/
+LLM-Readable: https://www.novoterm.se/agent
 LLM-Text: https://www.novoterm.se/llms.txt
 LLM-Full: https://www.novoterm.se/llms-full.txt
 

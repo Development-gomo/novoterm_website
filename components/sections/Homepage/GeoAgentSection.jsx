@@ -16,7 +16,7 @@ export default function GeoAgentSection({
       }}
       className="geo-agent-section"
     >
-      <div className="max-w-4xl mx-auto">
+      <div className="w-full mx-auto">
         {section_label && (
           <p className="text-sm font-semibold uppercase tracking-wide mb-4 opacity-80">
             {section_label}
