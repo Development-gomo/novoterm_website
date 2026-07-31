@@ -16,6 +16,30 @@ const POST_TYPES = [
   ["case_study",  { sv: "/kundcase",  en: "/client-case" }],
 ];
 
+const STATIC_SITEMAP_URLS = [
+  {
+    path: "/agent",
+    lastmod: "2026-07-31",
+    changefreq: "weekly",
+    priority: "0.9",
+  },
+  {
+    path: "/llms.txt",
+    changefreq: "weekly",
+    priority: "0.8",
+  },
+  {
+    path: "/llms-full.txt",
+    changefreq: "weekly",
+    priority: "0.8",
+  },
+  {
+    path: "/ai.txt",
+    changefreq: "weekly",
+    priority: "0.8",
+  },
+];
+
 async function fetchAllPosts(endpoint, lang) {
   const url = `${WP_API}/wp-json/wp/v2/${endpoint}?per_page=100&lang=${lang}&_fields=slug,modified,yoast_head_json`;
   try {
@@ -59,6 +83,15 @@ ${locationTag}${durationTag}${publicationDateTag}
 
 export async function getServerSideProps({ res }) {
   const urls = [];
+
+  urls.push(
+    ...STATIC_SITEMAP_URLS.map((url) => ({
+      loc: `${SITE_URL}${url.path}`,
+      lastmod: url.lastmod,
+      changefreq: url.changefreq,
+      priority: url.priority,
+    }))
+  );
 
   for (const lang of SUPPORTED_LANGS) {
     const langPrefix = lang === DEFAULT_LANG ? "" : `/${lang}`;
@@ -134,7 +167,7 @@ ${urls
   .map(
     (u) => `  <url>
     <loc>${escapeXml(u.loc)}</loc>
-    <lastmod>${u.lastmod}</lastmod>
+${u.lastmod ? `    <lastmod>${u.lastmod}</lastmod>` : ""}
     <changefreq>${u.changefreq}</changefreq>
     <priority>${u.priority}</priority>
 ${u.video ? videoSitemapBlock(u.video) : ""}
