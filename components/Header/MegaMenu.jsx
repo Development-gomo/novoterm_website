@@ -75,6 +75,19 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
     };
   };
 
+  const hasContent = (value) =>
+    typeof value === "string"
+      ? value.replace(/<[^>]*>/g, "").trim().length > 0
+      : Boolean(value);
+
+  const hasUsableLink = (link) => getLinkData(link).url !== "#";
+
+  const hasRenderableCard = (card) =>
+    !!card &&
+    (hasContent(card.title) ||
+      hasContent(card.description) ||
+      hasUsableLink(card.button_link));
+
   // ===== MOBILE MODE =====
   if (mobileMode) {
     return (
@@ -181,12 +194,10 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                     {hasDropdown && isExpanded && (
                       <div className="bg-[#061837] border-t border-white/10">
                         {/* Cards row */}
-                        {menu.columns.some(
-                          (col) => col.card && (col.card.title || col.card.description || col.card.button_link)
-                        ) && (
+                        {menu.columns.some((col) => hasRenderableCard(col.card)) && (
                           <div className="px-4 pt-4 flex flex-col gap-3">
                             {menu.columns.map((col, cIdx) =>
-                              col.card && (col.card.title || col.card.description || col.card.button_link) ? (
+                              hasRenderableCard(col.card) ? (
                                 <div
                                   key={cIdx}
                                   className="bg-[#D0D5DD33] rounded-[3px] p-4 flex flex-col"
@@ -222,10 +233,7 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                         {/* Links — all columns stacked vertically */}
                         <div className="px-4 pb-4">
                           {menu.columns.map((col, cIdx) => {
-                            const hasCard = !!(
-                              col.card &&
-                              (col.card.title || col.card.description || col.card.button_link)
-                            );
+                            const hasCard = hasRenderableCard(col.card);
                             const linkFontStyle = hasCard ? "italic" : "normal";
                             return (
                               <ul key={cIdx} className={cIdx > 0 ? "mt-2" : "mt-4"}>
@@ -394,10 +402,10 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                     style={{ width: `${linksWidth}px` }}
                   >
                     {/* CARDS ROW */}
-                    {menu.columns && menu.columns.some(col => col.card && (col.card.title || col.card.description || col.card.button_link)) && (
+                    {menu.columns && menu.columns.some((col) => hasRenderableCard(col.card)) && (
                       <div className="flex mb-6" style={{ gap: '20px' }}>
                         {menu.columns.map((col, cIdx) => (
-                          col.card && (col.card.title || col.card.description || col.card.button_link) ? (
+                          hasRenderableCard(col.card) ? (
                             <div
                               key={cIdx}
                               className="bg-[#D0D5DD33] rounded-[3px] p-5 flex flex-col"
@@ -435,7 +443,7 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                     {/* LINKS ROW — columns side by side */}
                     <div className="flex" style={{ gap: isOne ? '0px' : '20px' }}>
                       {menu.columns && menu.columns.map((col, cIdx) => {
-                        const hasCard = !!(col.card && (col.card.title || col.card.description || col.card.button_link));
+                        const hasCard = hasRenderableCard(col.card);
                         const linkFontStyle = hasCard ? 'italic' : 'normal';
                         return (
                         <div className="px-5" key={cIdx} style={{ flex: '1 1 0', minWidth: '0' }}>
