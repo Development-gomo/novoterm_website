@@ -46,6 +46,12 @@ function getViewsLabel(video, lang = "sv") {
   return "";
 }
 
+function versionedUrl(url, version) {
+  if (!url || !version) return url || "";
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${encodeURIComponent(version)}`;
+}
+
 function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
   const existingById = new Map(existingVideos.map((video) => [video.id, video]));
 
@@ -56,9 +62,9 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
     return {
       ...video,
       image:
-        existing.image && existing.image !== "/userfallback.webp"
-          ? existing.image
-          : video.image,
+        video.image && video.image !== "/userfallback.webp"
+          ? video.image
+          : existing.image,
       durationSeconds: video.durationSeconds > 0 ? video.durationSeconds : existing.durationSeconds || 0,
       duration: video.duration || existing.duration || "",
       views:
@@ -109,7 +115,7 @@ function formatVideos(videos = []) {
       slug: video.slug,
       title: stripHtml(video.title),
       description: clampDescription(video.description || video.description_html),
-      image: video.thumbnail_url || "/userfallback.webp",
+      image: versionedUrl(video.thumbnail_url, video.modified) || "/userfallback.webp",
       uploadDate: video.upload_date || "",
       durationSeconds: video.duration_seconds || 0,
       duration: video.duration || "",
