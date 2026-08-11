@@ -61,6 +61,7 @@ function getYouTubeVideoId(url) {
     const pathParts = parsed.pathname.split("/").filter(Boolean);
 
     if (hostname === "youtu.be") {
+      
       return pathParts[0] || "";
     }
 
