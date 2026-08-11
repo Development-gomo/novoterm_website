@@ -88,17 +88,30 @@ function normalizeYouTubeThumbnailUrl(url) {
   const videoId = getYouTubeVideoId(url);
   if (!videoId) return url;
 
+  const preferredUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+  const fallbackUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
   try {
     const parsed = new URL(url);
+    const hostname = parsed.hostname.replace(/^www\./, "");
     const pathParts = parsed.pathname.split("/").filter(Boolean);
-    if (pathParts[0] === "vi" && pathParts[1] === videoId && pathParts[2]) {
-      return `https://i.ytimg.com/vi/${videoId}/${pathParts[2]}`;
+
+    if (hostname === "i.ytimg.com" || hostname === "img.youtube.com" || hostname === "i3.ytimg.com") {
+      return preferredUrl;
+    }
+
+    if (hostname === "youtube.com" || hostname === "youtube-nocookie.com" || hostname === "youtu.be") {
+      return preferredUrl;
+    }
+
+    if (pathParts[0] === "vi" && pathParts[1] === videoId) {
+      return preferredUrl;
     }
   } catch {
-    // Ignore invalid URL; fallback to normalized YouTube thumbnail format.
+    // Ignore invalid URL and fallback to default YouTube thumbnail.
   }
 
-  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+  return preferredUrl || fallbackUrl;
 }
 
 function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
