@@ -52,6 +52,55 @@ function versionedUrl(url, version) {
   return `${url}${separator}v=${encodeURIComponent(version)}`;
 }
 
+function getYouTubeVideoId(url) {
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url);
+    const hostname = parsed.hostname.replace(/^www\./, "");
+    const pathParts = parsed.pathname.split("/").filter(Boolean);
+
+    if (hostname === "youtu.be") {
+      return pathParts[0] || "";
+    }
+
+    if (hostname === "youtube.com" || hostname === "youtube-nocookie.com") {
+      if (parsed.pathname === "/watch") {
+        return parsed.searchParams.get("v") || "";
+      }
+
+      if (["embed", "shorts", "live"].includes(pathParts[0])) {
+        return pathParts[1] || "";
+      }
+    }
+  } catch {
+    const match = String(url).match(
+      /(?:youtu\.be\/(?:[^?&\/]+)|youtube(?:-nocookie)?\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{11})/
+    );
+    return match?.[1] || "";
+  }
+
+  return "";
+}
+
+function normalizeYouTubeThumbnailUrl(url) {
+  if (!url) return "";
+  const videoId = getYouTubeVideoId(url);
+  if (!videoId) return url;
+
+  try {
+    const parsed = new URL(url);
+    const pathParts = parsed.pathname.split("/").filter(Boolean);
+    if (pathParts[0] === "vi" && pathParts[1] === videoId && pathParts[2]) {
+      return `https://i.ytimg.com/vi/${videoId}/${pathParts[2]}`;
+    }
+  } catch {
+    // Ignore invalid URL; fallback to normalized YouTube thumbnail format.
+  }
+
+  return `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+}
+
 function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
   const existingById = new Map(existingVideos.map((video) => [video.id, video]));
 
@@ -110,17 +159,20 @@ function MetaSeparator() {
 function formatVideos(videos = []) {
   return videos
     .filter((video) => video?.slug && video?.title)
-    .map((video) => ({
-      id: video.id || video.slug,
-      slug: video.slug,
-      title: stripHtml(video.title),
-      description: clampDescription(video.description || video.description_html),
-      image: versionedUrl(video.thumbnail_url, video.modified) || "/userfallback.webp",
-      uploadDate: video.upload_date || "",
-      durationSeconds: video.duration_seconds || 0,
-      duration: video.duration || "",
-      views: video.interaction_count || 0,
-    }));
+    .map((video) => {
+      const thumbnail = versionedUrl(video.thumbnail_url, video.modified) || video.thumbnail_url || "";
+      return {
+        id: video.id || video.slug,
+        slug: video.slug,
+        title: stripHtml(video.title),
+        description: clampDescription(video.description || video.description_html),
+        image: normalizeYouTubeThumbnailUrl(thumbnail) || "/userfallback.webp",
+        uploadDate: video.upload_date || "",
+        durationSeconds: video.duration_seconds || 0,
+        duration: video.duration || "",
+        views: video.interaction_count || 0,
+      };
+    });
 }
 
 export default function VideosListingSection({
