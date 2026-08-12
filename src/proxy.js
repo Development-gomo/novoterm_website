@@ -55,6 +55,16 @@ function stripTrailingSlash(value) {
   return `${path.replace(/\/$/, "")}${query}`;
 }
 
+function isDestinationForLocale(destination, lang) {
+  if (destination.startsWith("http")) return true;
+
+  const normalizedDestination = normalizeSourcePath(destination);
+  return (
+    normalizedDestination === `/${lang}` ||
+    normalizedDestination.startsWith(`/${lang}/`)
+  );
+}
+
 function matchRedirect(redirects, pathname, search = "") {
   const requestPath = pathname;
   const requestTarget = `${pathname}${search}`;
@@ -128,11 +138,17 @@ export async function proxy(request) {
     // 1. Check WordPress redirects
     const redirects = await getRedirects(origin);
 
-    // WP stores some rules with locale prefix (/en/about) and some without (/hallbarhet)
-    // Try both: stripped path first, then full raw path
-    let hit = matchRedirect(redirects, strippedPath, rawSearch);
+    // Prefer exact raw-path rules for localized URLs. Only fall back to a
+    // stripped-path match when its destination explicitly belongs to that locale.
+    let hit = isNonDefaultLocale
+      ? matchRedirect(redirects, rawPath, rawSearch)
+      : matchRedirect(redirects, strippedPath, rawSearch);
+
     if (!hit && isNonDefaultLocale) {
-      hit = matchRedirect(redirects, rawPath, rawSearch);
+      const strippedHit = matchRedirect(redirects, strippedPath, rawSearch);
+      if (strippedHit && isDestinationForLocale(strippedHit.destination, lang)) {
+        hit = strippedHit;
+      }
     }
 
     if (hit) {
