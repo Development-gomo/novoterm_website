@@ -40,11 +40,29 @@ function decode(str) {
   try { return decodeURIComponent(str); } catch { return str; }
 }
 
-function matchRedirect(redirects, pathname) {
-  const decodedPathname = decode(pathname);
+function normalizeSourcePath(source) {
+  if (!source || source.startsWith("/") || source.startsWith("http")) {
+    return source;
+  }
+
+  return `/${source}`;
+}
+
+function stripTrailingSlash(value) {
+  const queryIndex = value.indexOf("?");
+  const path = queryIndex === -1 ? value : value.slice(0, queryIndex);
+  const query = queryIndex === -1 ? "" : value.slice(queryIndex);
+  return `${path.replace(/\/$/, "")}${query}`;
+}
+
+function matchRedirect(redirects, pathname, search = "") {
+  const requestPath = pathname;
+  const requestTarget = `${pathname}${search}`;
 
   for (const r of redirects) {
-    const source = r.url;
+    if (r.enabled === false) continue;
+
+    const source = normalizeSourcePath(r.url);
     const destination = r.action_data?.url;
     const code = r.action_code || 301;
     const matchType = r.match_type || "url";
@@ -52,19 +70,24 @@ function matchRedirect(redirects, pathname) {
     if (!source || !destination) continue;
 
     const ignoreTrailing = r.match_data?.source?.flag_trailing ?? false;
-    const norm = (p) => (ignoreTrailing ? p.replace(/\/$/, "") : p);
+    const queryMode = r.match_data?.source?.flag_query;
+    const sourceHasQuery = source.includes("?");
+    const shouldMatchQuery = sourceHasQuery && queryMode === "exact";
+    const requestValue = shouldMatchQuery ? requestTarget : requestPath;
+    const norm = (p) => (ignoreTrailing ? stripTrailingSlash(p) : p);
 
+    const decodedRequestValue = decode(requestValue);
     const decodedSource = decode(source);
 
     if (matchType === "url") {
-      if (norm(decodedPathname) === norm(decodedSource)) return { destination, code };
+      if (norm(decodedRequestValue) === norm(decodedSource)) return { destination, code };
     } else if (matchType === "url-nocase") {
-      if (norm(decodedPathname).toLowerCase() === norm(decodedSource).toLowerCase())
+      if (norm(decodedRequestValue).toLowerCase() === norm(decodedSource).toLowerCase())
         return { destination, code };
     } else if (matchType === "regex") {
       try {
-        const re = new RegExp(source, "i");
-        const match = pathname.match(re);
+        const re = new RegExp(r.url, "i");
+        const match = requestValue.match(re);
         if (match) {
           const resolved = destination.replace(
             /\$(\d+)/g,
@@ -86,7 +109,9 @@ export async function proxy(request) {
 
     // In Next.js 16, nextUrl.locale may not exist.
     // Detect locale from the raw URL path instead.
-    const rawPath = new URL(request.url).pathname;
+    const requestUrl = new URL(request.url);
+    const rawPath = requestUrl.pathname;
+    const rawSearch = requestUrl.search;
     const firstSegment = rawPath.split("/")[1] || "";
     const lang = SUPPORTED_LANGS.includes(firstSegment)
       ? firstSegment
@@ -105,9 +130,9 @@ export async function proxy(request) {
 
     // WP stores some rules with locale prefix (/en/about) and some without (/hallbarhet)
     // Try both: stripped path first, then full raw path
-    let hit = matchRedirect(redirects, strippedPath);
+    let hit = matchRedirect(redirects, strippedPath, rawSearch);
     if (!hit && isNonDefaultLocale) {
-      hit = matchRedirect(redirects, rawPath);
+      hit = matchRedirect(redirects, rawPath, rawSearch);
     }
 
     if (hit) {
