@@ -107,18 +107,28 @@ function MetaSeparator() {
   return <span className="text-[#B8C0CC]" aria-hidden="true">|</span>;
 }
 
-function formatViews(count, lang = "sv") {
+function formatYouTubeViews(count, lang = "sv") {
   const value = Number(count);
-  if (!Number.isFinite(value) || value < 0) return "";
+  if (!Number.isFinite(value) || value <= 0) return "";
   return new Intl.NumberFormat(lang === "en" ? "en-GB" : "sv-SE").format(value);
 }
 
-export async function getServerSideProps({ params, locale }) {
+export async function getServerSideProps({ params, locale, resolvedUrl }) {
   const lang = resolveLang(locale);
   const video = await fetchHeadlessVideoBySlug(params.slug, lang);
 
   if (!video) {
     return { notFound: true };
+  }
+
+  const currentPath = (resolvedUrl || "").split(/[?#]/)[0];
+  if (/^\/(?:en\/)?watch\//.test(currentPath)) {
+    return {
+      redirect: {
+        destination: getWatchPath(video.slug, lang),
+        permanent: true,
+      },
+    };
   }
 
   const translatedWatchPaths =
@@ -168,10 +178,12 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
   const ogTitle = stripHtml(video.yoast_head_json?.og_title) || seoTitle;
   const ogDescription = stripHtml(video.yoast_head_json?.og_description) || seoDescription;
   const duration =
-    secondsToReadableDuration(video.duration_seconds) ||
+    secondsToReadableDuration(video.duration_seconds, lang) ||
     stripHtml(video.duration || "");
   const uploadDate = formatArticleDate(video.upload_date, lang);
-  const views = formatViews(video.interaction_count, lang);
+  const views = video.interaction_count_source === "youtube"
+    ? formatYouTubeViews(video.interaction_count, lang)
+    : "";
   const hasDirectVideo = Boolean(video.content_url);
   const hasEmbed = Boolean(video.embed_url);
   const thumbnailUrl = versionedUrl(video.thumbnail_url, video.modified);

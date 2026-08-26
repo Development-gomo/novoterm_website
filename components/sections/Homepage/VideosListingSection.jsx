@@ -17,15 +17,9 @@ function clampDescription(value = "") {
   return clean;
 }
 
-function formatViews(count, lang = "sv") {
-  const value = Number(count);
-  if (!Number.isFinite(value) || value < 0) return "";
-  return new Intl.NumberFormat(lang === "en" ? "en-GB" : "sv-SE").format(value);
-}
-
 function getDurationLabel(video, lang = "sv") {
   const derived = video.durationSeconds
-    ? secondsToReadableDuration(video.durationSeconds)
+    ? secondsToReadableDuration(video.durationSeconds, lang)
     : "";
 
   if (derived) return derived;
@@ -34,16 +28,31 @@ function getDurationLabel(video, lang = "sv") {
   return "";
 }
 
-function getViewsLabel(video, lang = "sv") {
-  const derived = formatViews(video.views, lang);
-  if (derived) return `${derived} ${lang === "en" ? "views" : "visningar"}`;
+function formatYouTubeViews(count, lang = "sv") {
+  const value = Number(count);
+  if (!Number.isFinite(value) || value <= 0) return "";
+  return new Intl.NumberFormat(lang === "en" ? "en-GB" : "sv-SE").format(value);
+}
 
-  const numericViews = Number(video.views);
-  if (Number.isFinite(numericViews) && numericViews === 0) {
-    return `0 ${lang === "en" ? "views" : "visningar"}`;
+function getViewsLabel(video, lang = "sv") {
+  if (video.viewsSource !== "youtube") return "";
+
+  const views = formatYouTubeViews(video.views, lang);
+  if (!views) return "";
+
+  return `${views} ${lang === "en" ? "views" : "visningar"}`;
+}
+
+function getCtaButtonTitle(section, lang = "sv") {
+  const fallback = lang === "en" ? "Watch video" : "Titta på videon";
+  const title = String(section?.cta_button_title || "").trim();
+
+  if (!title) return fallback;
+  if (lang === "sv" && ["Titta på video", "Titta pa video"].includes(title)) {
+    return "Titta på videon";
   }
 
-  return "";
+  return title;
 }
 
 function versionedUrl(url, version) {
@@ -130,12 +139,8 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
           : existing.image,
       durationSeconds: video.durationSeconds > 0 ? video.durationSeconds : existing.durationSeconds || 0,
       duration: video.duration || existing.duration || "",
-      views:
-        video.views > 0
-          ? video.views
-          : existing.views > 0 || Number(existing.views) === 0
-            ? existing.views
-            : video.views,
+      views: video.viewsSource === "youtube" ? video.views : existing.viewsSource === "youtube" ? existing.views : 0,
+      viewsSource: video.viewsSource === "youtube" ? video.viewsSource : existing.viewsSource || "",
     };
   });
 }
@@ -185,6 +190,7 @@ function formatVideos(videos = []) {
         durationSeconds: video.duration_seconds || 0,
         duration: video.duration || "",
         views: video.interaction_count || 0,
+        viewsSource: video.interaction_count_source || "",
       };
     });
 }
@@ -225,7 +231,7 @@ export default function VideosListingSection({
   if (!videos.length) return null;
 
   const heading = section?.heading || "";
-  const ctaButtonTitle = section?.cta_button_title || (lang === "en" ? "Watch video" : "Titta pa video");
+  const ctaButtonTitle = getCtaButtonTitle(section, lang);
 
   return (
     <section className="w-full bg-white py-15 md:py-[100px]">

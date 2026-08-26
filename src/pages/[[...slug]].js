@@ -8,6 +8,73 @@ import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData"
 import { fetchPreviewContentById } from "../../lib/wpPreview";
 import { fetchHeadlessVideos } from "../../lib/headlessVideo";
 
+const PAGE_SLUG_ALIASES = {
+  sv: {
+    videos: "videor",
+  },
+};
+
+const WP_PAGE_SLUG_ALIASES = {
+  sv: {
+    videor: "videos",
+  },
+};
+
+function pageSlugToPath(slug = "", lang = DEFAULT_LANG) {
+  const aliases = PAGE_SLUG_ALIASES[lang] || {};
+  return aliases[slug] || slug;
+}
+
+function pathToWpPageSlug(path = "", lang = DEFAULT_LANG) {
+  const aliases = WP_PAGE_SLUG_ALIASES[lang] || {};
+  return aliases[path] || path;
+}
+
+function normalizeSwedishVideoListingString(value = "") {
+  let result = value
+    .split("https://backend.novoterm.se/videos/").join("https://backend.novoterm.se/videor/")
+    .split("https:\\/\\/backend.novoterm.se\\/videos\\/").join("https:\\/\\/backend.novoterm.se\\/videor\\/");
+
+  if (result === "Videos") return "Videor";
+  if (["Titta på video", "Titta pa video"].includes(result.trim())) {
+    return "Titta på videon";
+  }
+
+  return result
+    .replace(/"name":"Videos"/g, '"name":"Videor"')
+    .replace(/"name": "Videos"/g, '"name": "Videor"');
+}
+
+function normalizeSwedishVideoListingData(value) {
+  if (Array.isArray(value)) {
+    return value.map(normalizeSwedishVideoListingData);
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        normalizeSwedishVideoListingData(item),
+      ])
+    );
+  }
+
+  if (typeof value === "string") {
+    return normalizeSwedishVideoListingString(value);
+  }
+
+  return value;
+}
+
+function normalizePageForRoute(page, lang, slugPath) {
+  if (lang !== "sv" || slugPath !== "videor") return page;
+
+  return {
+    ...normalizeSwedishVideoListingData(page),
+    slug: "videor",
+  };
+}
+
 // Generate paths for both languages with locale so Next.js i18n
 // routes each path to getStaticProps with the correct locale.
 export async function getStaticPaths() {
@@ -19,7 +86,7 @@ export async function getStaticPaths() {
     (allPages[i] || [])
       .filter((p) => p?.slug && p.slug !== "home") // "home" is served at "/" by the catch-all root
       .map((p) => ({
-        params: { slug: p.slug.split("/").filter(Boolean) },
+        params: { slug: pageSlugToPath(p.slug, locale).split("/").filter(Boolean) },
         locale,
       }))
   );
@@ -32,15 +99,26 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   const segments = params?.slug || [];
   const lang = resolveLang(locale);
   const slugPath = segments.join("/") || "home";
+  const wpSlugPath = pathToWpPageSlug(slugPath, lang);
+
+  if (lang === "sv" && slugPath === "videos") {
+    return {
+      redirect: {
+        destination: "/videor",
+        permanent: true,
+      },
+    };
+  }
 
   // Only fetch the page in the requested language — a slug that belongs
   // to another locale (e.g. /en/kontakta-oss) must 404, not fall back.
   const page =
     preview && previewData?.type === "page" && previewData?.postId
       ? await fetchPreviewContentById(previewData.postId, "page", lang)
-      : await fetchPageBySlug(slugPath, lang);
+      : await fetchPageBySlug(wpSlugPath, lang);
 
   if (!page) return { notFound: true };
+  const routePage = normalizePageForRoute(page, lang, slugPath);
 
   // Pre-fetch initial posts if any article-driven section exists on this page.
   let initialArticles = null;
@@ -50,7 +128,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   let initialCustomerQuotes = null;
   let initialTranslatorQuotes = null;
   let initialHeadlessVideos = null;
-  const sections = page?.acf?.page_sections || [];
+  const sections = routePage?.acf?.page_sections || [];
   const hasArticlesSection = sections.some(
     (s) => s?.acf_fc_layout === "articles_section"
   );
@@ -200,10 +278,10 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
 
   return {
     props: {
-      page,
+      page: routePage,
       lang,
-      translations: page.translations || null,
-      yoastHead: page.yoast_head || null,
+      translations: routePage.translations || null,
+      yoastHead: routePage.yoast_head || null,
       initialArticles,
       initialDocumentTypes,
       initialCaseStudies,
@@ -220,7 +298,8 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
 export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
-  const pagePath = page?.slug === "home" ? "/" : `/${page?.slug || ""}`;
+  const localizedSlug = pageSlugToPath(page?.slug || "", lang);
+  const pagePath = page?.slug === "home" ? "/" : `/${localizedSlug}`;
   const canonicalUrl = buildSiteUrl(withLocalePrefix(pagePath, lang));
 
   // Unified page builder field - all pages use page_sections

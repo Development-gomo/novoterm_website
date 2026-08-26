@@ -53,7 +53,7 @@ export default function Header({
   const router = useRouter();
 // Blog/article single pages have a light hero, so header needs solid bg from the start
   const isBlogSingle = /^\/(blog|articles|artiklar)\/.+/.test(router.asPath);
-  const isWatchPage = /^\/watch\/.+/.test(router.asPath);
+  const isWatchPage = /^\/(?:(?:en|sv)\/)?(?:watch|videos|videor)\/.+/.test(router.asPath);
 
 
   useEffect(() => {

@@ -109,6 +109,24 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/en/watch/:slug*',
+        destination: '/en/videos/:slug*',
+        permanent: true,
+        locale: false,
+      },
+      {
+        source: '/watch/:slug*',
+        destination: '/videor/:slug*',
+        permanent: true,
+        locale: false,
+      },
+      {
+        source: '/videos',
+        destination: '/videor',
+        permanent: true,
+        locale: false,
+      },
+      {
         source: '/home',
         destination: '/',
         permanent: true,

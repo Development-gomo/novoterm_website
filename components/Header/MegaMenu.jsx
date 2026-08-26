@@ -1,8 +1,35 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
+
+function normalizeSwedishVideoMenuTitle(title, lang) {
+  return lang === "sv" && String(title).trim() === "Videos" ? "Videor" : title;
+}
+
+function normalizeSwedishVideoMenuUrl(url, lang) {
+  if (lang !== "sv" || !url || typeof url !== "string" || url === "#") return url;
+
+  const isAbsolute = /^https?:\/\//i.test(url);
+
+  try {
+    const parsed = new URL(url, "https://www.novoterm.se");
+    const parts = parsed.pathname.split("/").filter(Boolean);
+    const hasLocalePrefix = parts[0] === "sv";
+    const pathParts = hasLocalePrefix ? parts.slice(1) : parts;
+
+    if (pathParts.length !== 1 || pathParts[0] !== "videos") return url;
+
+    parsed.pathname = hasLocalePrefix ? "/sv/videor" : "/videor";
+    return isAbsolute ? parsed.toString() : `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    return url;
+  }
+}
 
 export default function MegaMenu({ menuData, logo, mobileMode = false }) {
+  const router = useRouter();
+  const lang = router.locale || "sv";
   const [activeIdx, setActiveIdx] = useState(null);
   const closeTimer = useRef(null);
 
@@ -62,11 +89,15 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
     }
 
     return {
-      url,
+      url: normalizeSwedishVideoMenuUrl(url, lang),
       title:
-        link?.title ||
-        link?.label ||
-        link?.link?.title ||
+        normalizeSwedishVideoMenuTitle(
+          link?.title ||
+            link?.label ||
+            link?.link?.title ||
+            "Link",
+          lang
+        ) ||
         "Link",
       target:
         link?.target ||
@@ -135,6 +166,8 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
             {/* Menu items */}
             <nav className="flex-1 overflow-y-auto">
               {menuData.map((menu, idx) => {
+                const menuTitle = normalizeSwedishVideoMenuTitle(menu.menu_title, lang);
+                const menuTitleUrl = normalizeSwedishVideoMenuUrl(menu.menu_title_link?.url, lang);
                 const isExpanded = mobileExpandedIdx === idx;
                 const hasDropdown =
                   menu.layout_type !== "no_column" &&
@@ -145,28 +178,28 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                   <div key={idx} className="border-b border-white/10">
                     {/* Top-level item row */}
                     <div className="flex items-center justify-between px-6 py-4">
-                      {menu.layout_type === "no_column" && menu.menu_title_link?.url ? (
+                      {menu.layout_type === "no_column" && menuTitleUrl ? (
                         <a
-                          href={menu.menu_title_link.url}
+                          href={menuTitleUrl}
                           target={menu.menu_title_link.target || "_self"}
                           rel={menu.menu_title_link.target === "_blank" ? "noopener noreferrer" : undefined}
                           onClick={closeMobile}
                           style={{ fontFamily: "Montserrat, sans-serif", fontSize: "15px", fontWeight: 500, color: "#FFF" }}
                         >
-                          {menu.menu_title}
+                          {menuTitle}
                         </a>
-                      ) : menu.menu_title_link?.url ? (
+                      ) : menuTitleUrl ? (
                         <a
-                          href={menu.menu_title_link.url}
+                          href={menuTitleUrl}
                           target={menu.menu_title_link.target || "_self"}
                           rel={menu.menu_title_link.target === "_blank" ? "noopener noreferrer" : undefined}
                           style={{ fontFamily: "Montserrat, sans-serif", fontSize: "15px", fontWeight: 500, color: "#FFF" }}
                         >
-                          {menu.menu_title}
+                          {menuTitle}
                         </a>
                       ) : (
                         <span style={{ fontFamily: "Montserrat, sans-serif", fontSize: "15px", fontWeight: 500, color: "#FFF" }}>
-                          {menu.menu_title}
+                          {menuTitle}
                         </span>
                       )}
 
@@ -305,7 +338,11 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
   return (
     <div className="w-full">
       <nav className="flex gap-4 items-center">
-        {menuData.map((menu, idx) => (
+        {menuData.map((menu, idx) => {
+          const menuTitle = normalizeSwedishVideoMenuTitle(menu.menu_title, lang);
+          const menuTitleUrl = normalizeSwedishVideoMenuUrl(menu.menu_title_link?.url, lang);
+
+          return (
           <div
             key={idx}
             className="relative"
@@ -316,22 +353,22 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
 
             {/* If layout_type is 'no_column', render as a link or button with NO arrow or dropdown */}
             {menu.layout_type === 'no_column' ? (
-              menu.menu_title_link && menu.menu_title_link.url ? (
+              menuTitleUrl ? (
                 <a
-                  href={menu.menu_title_link.url}
+                  href={menuTitleUrl}
                   target={menu.menu_title_link.target || '_self'}
                   rel={menu.menu_title_link.target === '_blank' ? 'noopener noreferrer' : undefined}
                   className="flex items-center gap-2 cursor-pointer px-3 py-2"
                   style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: 400, color: '#FFF', fontStyle: 'normal' }}
                 >
-                  {menu.menu_title}
+                  {menuTitle}
                 </a>
               ) : (
                 <span
                   className="flex items-center gap-2 cursor-pointer px-3 py-2"
                   style={{ fontFamily: 'Montserrat, sans-serif', fontSize: '14px', fontWeight: 400, color: '#FFF', fontStyle: 'normal' }}
                 >
-                  {menu.menu_title}
+                  {menuTitle}
                 </span>
               )
             ) : (
@@ -341,17 +378,17 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
                 aria-haspopup="true"
                 aria-expanded={activeIdx === idx}
               >
-                {menu.menu_title_link && menu.menu_title_link.url ? (
+                {menuTitleUrl ? (
                   <a
-                    href={menu.menu_title_link.url}
+                    href={menuTitleUrl}
                     target={menu.menu_title_link.target || '_self'}
                     rel={menu.menu_title_link.target === '_blank' ? 'noopener noreferrer' : undefined}
                     style={{ color: 'inherit', fontFamily: 'Montserrat, sans-serif' }}
                   >
-                    {menu.menu_title}
+                    {menuTitle}
                   </a>
                 ) : (
-                  menu.menu_title
+                  menuTitle
                 )}
                 {/* Dropdown chevron — vertically centered */}
                 <svg
@@ -510,7 +547,8 @@ export default function MegaMenu({ menuData, logo, mobileMode = false }) {
               );
             })()}
           </div>
-        ))}
+          );
+        })}
       </nav>
     </div>
     

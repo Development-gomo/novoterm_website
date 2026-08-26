@@ -32,14 +32,72 @@ function mapToPublicOrigin(value) {
 // Parses the yoast_head HTML string WordPress/Yoast adds to REST responses and
 // renders each tag individually inside next/head.
 
-function parseAttrs(tagStr) {
+function isSwedishVideosCanonical(canonicalUrl = "") {
+  return String(canonicalUrl).replace(/\/$/, "").endsWith("/videor");
+}
+
+function normalizeSwedishVideosValue(value, canonicalUrl) {
+  const mapped = mapToPublicOrigin(value);
+  if (!isSwedishVideosCanonical(canonicalUrl) || typeof mapped !== "string") return mapped;
+
+  const publicOrigin = PUBLIC_ORIGIN.replace(/\/$/, "");
+  const fromUrl = `${publicOrigin}/videos`;
+  const toUrl = `${publicOrigin}/videor`;
+
+  if (mapped === "Videos") return "Videor";
+  if (mapped === "/videos") return "/videor";
+  if (mapped === "/videos/") return "/videor/";
+  if (!mapped.includes(fromUrl)) return mapped;
+
+  return mapped
+    .split(`${fromUrl}/`).join(`${toUrl}/`)
+    .split(fromUrl).join(toUrl);
+}
+
+function normalizeStructuredDataValue(value, canonicalUrl) {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeStructuredDataValue(item, canonicalUrl));
+  }
+
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [
+        key,
+        normalizeStructuredDataValue(item, canonicalUrl),
+      ])
+    );
+  }
+
+  if (typeof value === "string") {
+    return normalizeSwedishVideosValue(value, canonicalUrl);
+  }
+
+  return value;
+}
+
+function normalizeYoastJsonLd(jsonText, canonicalUrl) {
+  const mapped = mapToPublicOrigin(jsonText);
+  if (!isSwedishVideosCanonical(canonicalUrl)) return mapped;
+
+  try {
+    return JSON.stringify(
+      normalizeStructuredDataValue(JSON.parse(mapped), canonicalUrl)
+    );
+  } catch {
+    return normalizeSwedishVideosValue(mapped, canonicalUrl)
+      .replace(/"name":"Videos"/g, '"name":"Videor"')
+      .replace(/"name": "Videos"/g, '"name": "Videor"');
+  }
+}
+
+function parseAttrs(tagStr, canonicalUrl) {
   const attrs = {};
   const re = /([\w-]+)=["']([^"']*)["']/g;
   let m;
   while ((m = re.exec(tagStr)) !== null) {
     // Map HTML attr names → React prop names where needed
     const key = m[1] === "class" ? "className" : m[1] === "http-equiv" ? "httpEquiv" : m[1];
-    attrs[key] = mapToPublicOrigin(m[2]);
+    attrs[key] = normalizeSwedishVideosValue(m[2], canonicalUrl);
   }
   return attrs;
 }
@@ -51,11 +109,13 @@ export function YoastHead({ yoastHead, canonicalUrl }) {
 
   // <title>
   const titleM = yoastHead.match(/<title>([\s\S]*?)<\/title>/);
-  if (titleM) els.push(<title key="yt">{titleM[1]}</title>);
+  if (titleM) {
+    els.push(<title key="yt">{normalizeSwedishVideosValue(titleM[1], canonicalUrl)}</title>);
+  }
 
   // <meta ...>
   [...yoastHead.matchAll(/<meta\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
-    const attrs = parseAttrs(m[0]);
+    const attrs = parseAttrs(m[0], canonicalUrl);
     const metaName = attrs.name?.toLowerCase();
     const metaProperty = attrs.property?.toLowerCase();
 
@@ -68,14 +128,14 @@ export function YoastHead({ yoastHead, canonicalUrl }) {
 
   // <link ...>
   [...yoastHead.matchAll(/<link\s([\s\S]*?)\/?>/g)].forEach((m, i) => {
-    const attrs = parseAttrs(m[0]);
+    const attrs = parseAttrs(m[0], canonicalUrl);
 
     if (canonicalUrl && attrs.rel?.toLowerCase() === "canonical") {
       return;
     }
 
     if (attrs.href) {
-      attrs.href = mapToPublicOrigin(attrs.href);
+      attrs.href = normalizeSwedishVideosValue(attrs.href, canonicalUrl);
     }
 
     els.push(<link key={`yl${i}`} {...attrs} />);
@@ -84,8 +144,8 @@ export function YoastHead({ yoastHead, canonicalUrl }) {
   // <script type="application/ld+json">
   [...yoastHead.matchAll(/<script\s([^>]*)>([\s\S]*?)<\/script>/g)].forEach((m, i) => {
     els.push(
-      <script key={`ys${i}`} {...parseAttrs(m[1])}
-        dangerouslySetInnerHTML={{ __html: mapToPublicOrigin(m[2]) }} />
+      <script key={`ys${i}`} {...parseAttrs(m[1], canonicalUrl)}
+        dangerouslySetInnerHTML={{ __html: normalizeYoastJsonLd(m[2], canonicalUrl) }} />
     );
   });
 
