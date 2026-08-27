@@ -9,6 +9,7 @@ import {
   fetchHeadlessVideoTranslationsBySlug,
   getWatchPath,
   secondsToReadableDuration,
+  durationToReadableDuration,
 } from "../../../lib/headlessVideo";
 
 function safeJsonLd(schema) {
@@ -179,8 +180,8 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
   const ogDescription = stripHtml(video.yoast_head_json?.og_description) || seoDescription;
   const duration =
     secondsToReadableDuration(video.duration_seconds, lang) ||
-    stripHtml(video.duration || "");
-  const uploadDate = formatArticleDate(video.upload_date, lang);
+    durationToReadableDuration(video.duration, lang);
+  const uploadDate = formatArticleDate(video.upload_date, lang, { timeZone: "UTC" });
   const views = video.interaction_count_source === "youtube"
     ? formatYouTubeViews(video.interaction_count, lang)
     : "";
@@ -332,7 +333,7 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
           {highlightsHtml && (
             <section className="mt-10 border-t border-[#D1D9E6] pt-8">
               <h2 className="text-[#061837] text-[24px] md:text-[30px] font-heading font-semibold mb-5">
-                Highlights
+                {lang === "sv" ? "Höjdpunkter" : "Highlights"}
               </h2>
               <div
                 className="prose max-w-none [&_p]:text-[17px] [&_p]:leading-[1.75] [&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-2 [&_li]:text-[#061837] [&_li::marker]:text-[#2555C4]"

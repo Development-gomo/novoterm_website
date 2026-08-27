@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { DEFAULT_LANG } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
-import { fetchHeadlessVideos, getWatchPath, secondsToReadableDuration } from "../../../lib/headlessVideo";
+import { fetchHeadlessVideos, getWatchPath, secondsToReadableDuration, durationToReadableDuration } from "../../../lib/headlessVideo";
 
 function stripHtml(value) {
   if (!value) return "";
@@ -23,7 +23,8 @@ function getDurationLabel(video, lang = "sv") {
     : "";
 
   if (derived) return derived;
-  if (typeof video.duration === "string" && video.duration.trim()) return video.duration.trim();
+  const fallback = durationToReadableDuration(video.duration, lang);
+  if (fallback) return fallback;
 
   return "";
 }
@@ -145,6 +146,14 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
   });
 }
 
+function sortVideosByDateDesc(videos = []) {
+  return [...videos].sort((a, b) => {
+    const dateA = new Date(a.uploadDate || 0).getTime() || 0;
+    const dateB = new Date(b.uploadDate || 0).getTime() || 0;
+    return dateB - dateA;
+  });
+}
+
 function CalendarIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -176,7 +185,7 @@ function MetaSeparator() {
 }
 
 function formatVideos(videos = []) {
-  return videos
+  return sortVideosByDateDesc(videos
     .filter((video) => video?.slug && video?.title)
     .map((video) => {
       const thumbnail = versionedUrl(video.thumbnail_url, video.modified) || video.thumbnail_url || "";
@@ -192,7 +201,7 @@ function formatVideos(videos = []) {
         views: video.interaction_count || 0,
         viewsSource: video.interaction_count_source || "",
       };
-    });
+    }));
 }
 
 export default function VideosListingSection({
@@ -216,7 +225,7 @@ export default function VideosListingSection({
       if (!cancelled) {
         const formatted = formatVideos(data);
         if (formatted.length > 0 || formattedInitialVideos.length === 0) {
-          setVideos((currentVideos) => mergeVideosWithExisting(currentVideos, formatted));
+          setVideos((currentVideos) => sortVideosByDateDesc(mergeVideosWithExisting(currentVideos, formatted)));
         }
       }
     }
@@ -274,7 +283,7 @@ export default function VideosListingSection({
 
               <div className="flex flex-1 flex-col px-6 py-6 bg-[#F9FAFB]">
                 {(() => {
-                  const uploadDate = formatArticleDate(video.uploadDate, lang);
+                  const uploadDate = formatArticleDate(video.uploadDate, lang, { timeZone: "UTC" });
                   const duration = getDurationLabel(video, lang);
                   const views = getViewsLabel(video, lang);
 
