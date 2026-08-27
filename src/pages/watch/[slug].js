@@ -182,9 +182,7 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
     secondsToReadableDuration(video.duration_seconds, lang) ||
     durationToReadableDuration(video.duration, lang);
   const uploadDate = formatArticleDate(video.upload_date, lang, { timeZone: "UTC" });
-  const views = video.interaction_count_source === "youtube"
-    ? formatYouTubeViews(video.interaction_count, lang)
-    : "";
+  const views = formatYouTubeViews(video.interaction_count, lang);
   const hasDirectVideo = Boolean(video.content_url);
   const hasEmbed = Boolean(video.embed_url);
   const thumbnailUrl = versionedUrl(video.thumbnail_url, video.modified);

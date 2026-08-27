@@ -36,8 +36,6 @@ function formatYouTubeViews(count, lang = "sv") {
 }
 
 function getViewsLabel(video, lang = "sv") {
-  if (video.viewsSource !== "youtube") return "";
-
   const views = formatYouTubeViews(video.views, lang);
   if (!views) return "";
 
@@ -100,29 +98,23 @@ function normalizeYouTubeThumbnailUrl(url) {
   if (!videoId) return url;
 
   const preferredUrl = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
-  const fallbackUrl = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
   try {
     const parsed = new URL(url);
     const hostname = parsed.hostname.replace(/^www\./, "");
-    const pathParts = parsed.pathname.split("/").filter(Boolean);
 
     if (hostname === "i.ytimg.com" || hostname === "img.youtube.com" || hostname === "i3.ytimg.com") {
-      return preferredUrl;
+      return url;
     }
 
     if (hostname === "youtube.com" || hostname === "youtube-nocookie.com" || hostname === "youtu.be") {
-      return preferredUrl;
-    }
-
-    if (pathParts[0] === "vi" && pathParts[1] === videoId) {
       return preferredUrl;
     }
   } catch {
     // Ignore invalid URL and fallback to default YouTube thumbnail.
   }
 
-  return preferredUrl || fallbackUrl;
+  return preferredUrl;
 }
 
 function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
@@ -131,6 +123,8 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
   return incomingVideos.map((video) => {
     const existing = existingById.get(video.id);
     if (!existing) return video;
+    const hasIncomingViews = Number(video.views) > 0;
+    const hasExistingViews = Number(existing.views) > 0;
 
     return {
       ...video,
@@ -140,8 +134,8 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
           : existing.image,
       durationSeconds: video.durationSeconds > 0 ? video.durationSeconds : existing.durationSeconds || 0,
       duration: video.duration || existing.duration || "",
-      views: video.viewsSource === "youtube" ? video.views : existing.viewsSource === "youtube" ? existing.views : 0,
-      viewsSource: video.viewsSource === "youtube" ? video.viewsSource : existing.viewsSource || "",
+      views: hasIncomingViews ? video.views : hasExistingViews ? existing.views : 0,
+      viewsSource: hasIncomingViews ? video.viewsSource : hasExistingViews ? existing.viewsSource : "",
     };
   });
 }
