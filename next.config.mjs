@@ -121,12 +121,6 @@ const nextConfig = {
         locale: false,
       },
       {
-        source: '/videos',
-        destination: '/videor',
-        permanent: true,
-        locale: false,
-      },
-      {
         source: '/home',
         destination: '/',
         permanent: true,

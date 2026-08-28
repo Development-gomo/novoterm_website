@@ -101,15 +101,6 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   const slugPath = segments.join("/") || "home";
   const wpSlugPath = pathToWpPageSlug(slugPath, lang);
 
-  if (lang === "sv" && slugPath === "videos") {
-    return {
-      redirect: {
-        destination: "/videor",
-        permanent: true,
-      },
-    };
-  }
-
   // Only fetch the page in the requested language — a slug that belongs
   // to another locale (e.g. /en/kontakta-oss) must 404, not fall back.
   const page =
