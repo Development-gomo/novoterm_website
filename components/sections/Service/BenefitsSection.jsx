@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { wpToPath } from "../../../lib/api";
 import { pickWpImageUrl } from "../../../lib/wpImage";
+import { getSectionBackground, isDarkSectionColor } from "../../../lib/sectionTheme";
 
 const getImageUrl = (img) => {
   if (!img) return null;
@@ -12,7 +13,21 @@ const getImageUrl = (img) => {
 export default function BenefitsSection({ section, sectionId, index = 0 }) {
   if (!section) return null;
 
-  const { heading, section_description, cta_text, cta_link, benefits = [] } = section;
+  const {
+    section_theme = "#E3EDFF",
+    heading,
+    section_description,
+    cta_text,
+    cta_link,
+    benefits = [],
+  } = section;
+
+  const sectionBackground = getSectionBackground(section_theme);
+  const isDark = isDarkSectionColor(section_theme);
+  const headingColor = isDark ? "text-white" : "text-[#061837]";
+  const textColor = isDark ? "text-white/85" : "text-[#061837]";
+  const labelColor = isDark ? "text-white" : "text-[#061837]";
+  const emptyCardClass = isDark ? "bg-[#D7E5F5]" : "bg-[#CCD8EE]";
 
   const formatLabel = (layout) => {
     if (!layout) return null;
@@ -25,7 +40,11 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
   const mobileLabel = section.section_label || formatLabel(section.acf_fc_layout);
 
   return (
-    <section id={sectionId} className="w-full bg-[#EAF1FF]  py-[60px] sm:py-[80px] lg:py-[100px]">
+    <section
+      id={sectionId}
+      className="w-full py-[60px] sm:py-[80px] lg:py-[100px]"
+      style={{ backgroundColor: sectionBackground }}
+    >
       <div className="web-width mx-auto px-6 md:px-0">
         <div className="flex flex-col lg:flex-row">
 
@@ -34,7 +53,7 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
             {mobileLabel && (
               <div className="flex items-center gap-2 mb-4 lg:hidden">
                 <span className="w-2 h-2 rounded-full bg-[#2655C4]" />
-                <span className="uppercase font-montserrat font-medium text-[10px] tracking-wider text-[#061837]">
+                <span className={`uppercase font-montserrat font-medium text-[10px] tracking-wider ${labelColor}`}>
                   {mobileLabel}
                 </span>
               </div>
@@ -48,14 +67,13 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-[40px] lg:mb-[64px] gap-6">
               <div className="max-w-[550px]">
                 {heading && (
-                  <h2 className="font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold text-[#061837] leading-tight md:leading-[1.15] mb-4">
+                  <h2 className={`font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] mb-4 ${headingColor}`}>
                     {heading}
                   </h2>
                 )}
                  {section_description && (
   <div 
-    className="text-[14px] sm:text-[15px] md:text-[16px]
-               leading-[24px] text-[#061837]"
+    className={`text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] ${textColor}`}
     dangerouslySetInnerHTML={{ __html: section_description }}
   />
 )}
@@ -78,7 +96,7 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
                 const isImageCard = !!bgUrl;
 
                 return (
-                  <div key={`benefit-${i}`} className="relative justify-end min-h-[320px] overflow-hidden bg-[#CCD8EE]">
+                  <div key={`benefit-${i}`} className={`relative justify-end min-h-[320px] overflow-hidden ${emptyCardClass}`}>
 
                     {/* IMAGE BACKGROUND */}
                     {isImageCard && (

@@ -1,10 +1,21 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyPageNav from "../../../components/StickyPageNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale, preview, previewData }) {
+const REVALIDATE_SECONDS = 60;
+
+export async function getStaticPaths() {
+  const slugs = await fetchWpSlugs("case_study", "sv");
+
+  return {
+    paths: slugs.map((slug) => ({ params: { slug }, locale: "sv" })),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps({ params, locale, preview, previewData }) {
   const lang = resolveLang(locale);
   const { slug } = params;
   const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
@@ -31,16 +42,17 @@ export async function getServerSideProps({ params, locale, preview, previewData 
   let caseStudy = null;
 
   if (preview && previewData?.type === "case_study" && previewData?.postId) {
-    caseStudy = await fetchPreviewContentById(previewData.postId, "case_study", lang);
+    try {
+      caseStudy = await fetchPreviewContentById(previewData.postId, "case_study", lang);
+    } catch (error) {
+      console.error("Case study preview fetch failed:", error);
+    }
   } else {
-    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/case_study?slug=${slug}&acf_format=standard`;
-    const res = await fetch(`${base}&lang=${lang}`);
-    const data = await res.json();
-    caseStudy = Array.isArray(data) && data.length ? data[0] : null;
+    caseStudy = await fetchWpPostBySlug("case_study", slug, lang);
   }
 
   if (!caseStudy) {
-    return { notFound: true };
+    return { notFound: true, revalidate: REVALIDATE_SECONDS };
   }
 
   return {
@@ -51,6 +63,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
       yoastHead: caseStudy.yoast_head || null,
       isPreview: Boolean(preview),
     },
+    revalidate: REVALIDATE_SECONDS,
   };
 }
 

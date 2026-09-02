@@ -1,10 +1,21 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyIndustryNav from "../../../components/StickyIndustryNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale, preview, previewData }) {
+const REVALIDATE_SECONDS = 60;
+
+export async function getStaticPaths() {
+  const slugs = await fetchWpSlugs("industry", "en");
+
+  return {
+    paths: slugs.map((slug) => ({ params: { slug }, locale: "en" })),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps({ params, locale, preview, previewData }) {
   const { slug } = params;
   const lang = resolveLang(locale);
   const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
@@ -32,19 +43,20 @@ export async function getServerSideProps({ params, locale, preview, previewData 
 
   // Only fetch in the requested language — wrong-locale slugs must 404.
   if (preview && previewData?.type === "industry" && previewData?.postId) {
-    industry = await fetchPreviewContentById(previewData.postId, "industry", lang);
+    try {
+      industry = await fetchPreviewContentById(previewData.postId, "industry", lang);
+    } catch (error) {
+      console.error("Industry preview fetch failed:", error);
+    }
   } else {
-    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/industry?slug=${slug}&acf_format=standard`;
-    const res = await fetch(`${base}&lang=${lang}`);
-    const data = await res.json();
-    industry = Array.isArray(data) && data.length ? data[0] : null;
+    industry = await fetchWpPostBySlug("industry", slug, lang);
   }
 
   if (!industry) {
-    return { notFound: true };
+    return { notFound: true, revalidate: REVALIDATE_SECONDS };
   }
 
-  return { props: { industry, translations: industry.translations || null, yoastHead: industry.yoast_head || null, isPreview: Boolean(preview) } };
+  return { props: { industry, translations: industry.translations || null, yoastHead: industry.yoast_head || null, isPreview: Boolean(preview) }, revalidate: REVALIDATE_SECONDS };
 }
 
 export default function SingleIndustry({ industry, yoastHead, lang }) {

@@ -3,7 +3,7 @@
 import SectionRenderer from "../../components/SectionRenderer";
 import StickyPageNav from "../../components/StickyPageNav";
 import LcpHeroPreload from "../../components/LcpHeroPreload";
-import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
+import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, fetchLanguages, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 import { fetchPreviewContentById } from "../../lib/wpPreview";
 import { fetchHeadlessVideos } from "../../lib/headlessVideo";
@@ -79,7 +79,12 @@ function normalizePageForRoute(page, lang, slugPath) {
 // routes each path to getStaticProps with the correct locale.
 export async function getStaticPaths() {
   const allPages = await Promise.all(
-    SUPPORTED_LANGS.map((lang) => fetchPages(100, lang))
+    SUPPORTED_LANGS.map((lang) =>
+      fetchPages(100, lang).catch((error) => {
+        console.error(`Static path fetch failed for ${lang}:`, error);
+        return [];
+      })
+    )
   );
 
   const paths = SUPPORTED_LANGS.flatMap((locale, i) =>
@@ -103,10 +108,16 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
 
   // Only fetch the page in the requested language — a slug that belongs
   // to another locale (e.g. /en/kontakta-oss) must 404, not fall back.
-  const page =
-    preview && previewData?.type === "page" && previewData?.postId
-      ? await fetchPreviewContentById(previewData.postId, "page", lang)
-      : await fetchPageBySlug(wpSlugPath, lang);
+  let page = null;
+  try {
+    page =
+      preview && previewData?.type === "page" && previewData?.postId
+        ? await fetchPreviewContentById(previewData.postId, "page", lang)
+        : await fetchPageBySlug(wpSlugPath, lang);
+  } catch (error) {
+    console.error(`Page fetch failed for "${wpSlugPath}" (${lang}):`, error);
+    throw error;
+  }
 
   if (!page) return { notFound: true };
   const routePage = normalizePageForRoute(page, lang, slugPath);
@@ -115,10 +126,12 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   let initialArticles = null;
   let initialDocumentTypes = null;
   let initialCaseStudies = null;
+  let initialIndustries = null;
   let initialClientLogos = null;
   let initialCustomerQuotes = null;
   let initialTranslatorQuotes = null;
   let initialHeadlessVideos = null;
+  let initialLanguages = null;
   const sections = routePage?.acf?.page_sections || [];
   const hasArticlesSection = sections.some(
     (s) => s?.acf_fc_layout === "articles_section"
@@ -132,12 +145,21 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   const hasCaseStudySection = sections.some(
     (s) => s?.acf_fc_layout === "case_study_section"
   );
+  const hasServiceCaseStudySection = sections.some(
+    (s) => s?.acf_fc_layout === "service_case_study_section"
+  );
+  const hasIndustriesSection = sections.some(
+    (s) => s?.acf_fc_layout === "industries"
+  );
   const hasLogoSection = sections.some(
     (s) => s?.acf_fc_layout === "logo_section"
   );
   const quoteBlocks = sections.filter((s) => s?.acf_fc_layout === "translator_quote_block");
   const hasVideosListingSection = sections.some(
     (s) => s?.acf_fc_layout === "videos_listing"
+  );
+  const hasLanguageModule = sections.some(
+    (s) => s?.acf_fc_layout === "language_module"
   );
   const needsCustomerQuotes = quoteBlocks.some((s) => s?.quote_source === "customer");
   const needsTranslatorQuotes = quoteBlocks.some((s) => !s?.quote_source || s?.quote_source === "translator");
@@ -212,7 +234,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   }
 
   // Prefetch case studies
-  if (hasCaseStudySection) {
+  if (hasCaseStudySection || hasServiceCaseStudySection) {
     try {
       const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
       const res = await fetch(
@@ -267,6 +289,39 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
     }
   }
 
+  if (hasIndustriesSection) {
+    try {
+      const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
+      const res = await fetch(
+        `${wpUrl}/wp-json/wp/v2/industry?_embed&acf_format=standard&lang=${lang}&per_page=20`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const hiddenSlugs = ["vara-huvudomraden", "main-areas"];
+        initialIndustries = Array.isArray(data)
+          ? data
+              .filter((item) => !hiddenSlugs.includes(item.slug))
+              .map((item) => ({
+                id: item.id,
+                title: item.title?.rendered || "",
+                slug: item.slug,
+                image: item._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
+              }))
+          : [];
+      }
+    } catch (e) {
+      console.error("SSR industries prefetch failed:", e);
+    }
+  }
+
+  if (hasLanguageModule) {
+    try {
+      initialLanguages = await fetchLanguages(lang);
+    } catch (e) {
+      console.error("SSR languages prefetch failed:", e);
+    }
+  }
+
   return {
     props: {
       page: routePage,
@@ -276,17 +331,19 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
       initialArticles,
       initialDocumentTypes,
       initialCaseStudies,
+      initialIndustries,
       initialClientLogos,
       initialCustomerQuotes,
       initialTranslatorQuotes,
       initialHeadlessVideos,
+      initialLanguages,
       isPreview: Boolean(preview),
     },
     revalidate: 60
   };
 }
 
-export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos }) {
+export default function Page({ page, lang, yoastHead, initialArticles, initialDocumentTypes, initialCaseStudies, initialIndustries, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos, initialLanguages }) {
   const title = page?.title?.rendered || "";
   const summary = page?.acf?.article_summary || "";
   const localizedSlug = pageSlugToPath(page?.slug || "", lang);
@@ -306,7 +363,7 @@ export default function Page({ page, lang, yoastHead, initialArticles, initialDo
       {sections.length ? (
         <>
           {page?.slug !== "home" && <StickyPageNav sections={sections} />}
-          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} initialClientLogos={initialClientLogos} initialCustomerQuotes={initialCustomerQuotes} initialTranslatorQuotes={initialTranslatorQuotes} initialHeadlessVideos={initialHeadlessVideos} />
+          <SectionRenderer sections={sections} lang={lang} initialArticles={initialArticles} initialDocumentTypes={initialDocumentTypes} initialCaseStudies={initialCaseStudies} initialIndustries={initialIndustries} initialClientLogos={initialClientLogos} initialCustomerQuotes={initialCustomerQuotes} initialTranslatorQuotes={initialTranslatorQuotes} initialHeadlessVideos={initialHeadlessVideos} initialLanguages={initialLanguages} />
         </>
       ) : (
         <div>No sections found</div>

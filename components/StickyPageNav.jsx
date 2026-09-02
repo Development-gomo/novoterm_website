@@ -23,6 +23,10 @@ const formatLabel = (layout) => {
 };
 
 const isHeroSection = (layout) => /hero/i.test(layout);
+const isInnerPageType = (pageType) => {
+  if (!pageType) return true;
+  return ["inner", "innerpage"].includes(String(pageType).toLowerCase());
+};
 
 export default function StickyPageNav({ sections = [] }) {
   const [activeSection, setActiveSection] = useState(0);
@@ -47,8 +51,8 @@ export default function StickyPageNav({ sections = [] }) {
     .filter((item) => {
       if (!item.label) return false;
       if (isHeroSection(item.acf_fc_layout)) return false;
-      // If section has a page_type field, only show in sticky nav when set to innerpage
-      if (item.page_type && item.page_type !== "innerpage") return false;
+      // ACF uses both "inner" and "innerpage" across modules for the same layout intent.
+      if (!isInnerPageType(item.page_type)) return false;
       return true;
     });
 

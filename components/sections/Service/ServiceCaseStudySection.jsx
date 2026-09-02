@@ -11,6 +11,7 @@ export default function ServiceCaseStudySection({
   sectionId,
   index = 0,
   add_padding_top = 'no',
+  initialSlides = null,
 }) {
   const formatLabel = (layout) => {
     if (!layout) return null;
@@ -22,37 +23,48 @@ export default function ServiceCaseStudySection({
   };
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const [slides, setSlides] = useState([]);
+  const [slides, setSlides] = useState(initialSlides || []);
 
   useEffect(() => {
+    if (Array.isArray(initialSlides)) {
+      setSlides(initialSlides);
+      return;
+    }
+
     async function getData() {
       try {
         const res = await fetch(
           wpRestUrl(`wp/v2/case_study?acf_format=standard&per_page=10&lang=${lang}`)
         );
+        if (!res.ok) {
+          setSlides([]);
+          return;
+        }
+
         const data = await res.json();
 
-        const formatted = data.map((post) => ({
-          slug: post.slug,
-          review_heading: post.acf?.review_heading,
-          button_text: post.acf?.button_text,
-          button_link: post.acf?.button_link,
-          time_text: post.acf?.time_text,
-          subtext: post.acf?.subtext,
-          service_title: post.acf?.service_title,
-          service_used: post.acf?.service_used,
-          cs_image: post.acf?.cs_image,
-        }));
+        const formatted = Array.isArray(data)
+          ? data.map((post) => ({
+              slug: post.slug,
+              review_heading: post.acf?.review_heading,
+              button_text: post.acf?.button_text,
+              button_link: post.acf?.button_link,
+              time_text: post.acf?.time_text,
+              subtext: post.acf?.subtext,
+              service_title: post.acf?.service_title,
+              service_used: post.acf?.service_used,
+              cs_image: post.acf?.cs_image,
+            }))
+          : [];
 
         setSlides(formatted);
       } catch (error) {
-        console.error("SERVICE CASE STUDY FETCH ERROR:", error);
         setSlides([]);
       }
     }
 
     getData();
-  }, [lang]);
+  }, [lang, initialSlides]);
 
   // Determine top padding class
   const topPaddingClass = add_padding_top === 'yes'

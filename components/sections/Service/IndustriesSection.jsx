@@ -10,7 +10,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-export default function IndustriesSection({ data, sectionId, index = 0 }) {
+export default function IndustriesSection({ data, sectionId, index = 0, initialIndustries = null }) {
   const { section_title, section_description } = data || {};
 
   const formatLabel = (layout) => {
@@ -25,12 +25,22 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
 
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const [industries, setIndustries] = useState([]);
+  const [industries, setIndustries] = useState(initialIndustries || []);
 
   useEffect(() => {
+    if (Array.isArray(initialIndustries)) {
+      setIndustries(initialIndustries);
+      return;
+    }
+
     async function fetchIndustries() {
       try {
         const res = await fetch(wpRestUrl(`wp/v2/industry?_embed&per_page=20&lang=${lang}`));
+        if (!res.ok) {
+          setIndustries([]);
+          return;
+        }
+
         const json = await res.json();
 
         const HIDDEN_SLUGS = ["vara-huvudomraden", "main-areas"];
@@ -48,12 +58,12 @@ export default function IndustriesSection({ data, sectionId, index = 0 }) {
 
         setIndustries(formatted);
       } catch (err) {
-        console.error("Industry fetch error:", err);
+        setIndustries([]);
       }
     }
 
     fetchIndustries();
-  }, [lang]);
+  }, [lang, initialIndustries]);
 
   if (!industries.length) return null;
 

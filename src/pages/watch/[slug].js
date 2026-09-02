@@ -6,6 +6,7 @@ import { buildSiteUrl, resolveLang, SUPPORTED_LANGS } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import {
   fetchHeadlessVideoBySlug,
+  fetchHeadlessVideoSlugs,
   fetchHeadlessVideoTranslationsBySlug,
   getWatchPath,
   secondsToReadableDuration,
@@ -114,22 +115,30 @@ function formatYouTubeViews(count, lang = "sv") {
   return new Intl.NumberFormat(lang === "en" ? "en-GB" : "sv-SE").format(value);
 }
 
-export async function getServerSideProps({ params, locale, resolvedUrl }) {
+const REVALIDATE_SECONDS = 60;
+
+export async function getVideoStaticPaths(lang) {
+  const slugs = await fetchHeadlessVideoSlugs(lang);
+
+  return {
+    paths: slugs.map((slug) => ({ params: { slug }, locale: lang })),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
+
+export async function getVideoStaticProps({ params, locale }) {
   const lang = resolveLang(locale);
-  const video = await fetchHeadlessVideoBySlug(params.slug, lang);
+  const video = await fetchHeadlessVideoBySlug(params.slug, lang, { throwOnError: true });
 
   if (!video) {
-    return { notFound: true };
-  }
-
-  const currentPath = (resolvedUrl || "").split(/[?#]/)[0];
-  if (/^\/(?:en\/)?watch\//.test(currentPath)) {
-    return {
-      redirect: {
-        destination: getWatchPath(video.slug, lang),
-        permanent: true,
-      },
-    };
+    return { notFound: true, revalidate: REVALIDATE_SECONDS };
   }
 
   const translatedWatchPaths =
@@ -156,6 +165,7 @@ export async function getServerSideProps({ params, locale, resolvedUrl }) {
         canonicalUrl: buildSiteUrl(getWatchPath(video.slug, lang)),
         noindex: true,
       },
+      revalidate: REVALIDATE_SECONDS,
     };
   }
 
@@ -167,7 +177,12 @@ export async function getServerSideProps({ params, locale, resolvedUrl }) {
       canonicalUrl: buildSiteUrl(getWatchPath(video.slug, lang)),
       noindex: false,
     },
+    revalidate: REVALIDATE_SECONDS,
   };
+}
+
+export async function getStaticProps(context) {
+  return getVideoStaticProps(context);
 }
 
 export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" }) {

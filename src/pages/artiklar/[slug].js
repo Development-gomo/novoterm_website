@@ -1,10 +1,21 @@
 ﻿import SectionRenderer from "../../../components/SectionRenderer";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { fetchPreviewPostById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale, preview, previewData }) {
+const REVALIDATE_SECONDS = 60;
+
+export async function getStaticPaths() {
+  const slugs = await fetchWpSlugs("posts", "sv");
+
+  return {
+    paths: slugs.map((slug) => ({ params: { slug }, locale: "sv" })),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps({ params, locale, preview, previewData }) {
   const { slug } = params;
   const lang = resolveLang(locale);
   const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
@@ -29,18 +40,17 @@ export async function getServerSideProps({ params, locale, preview, previewData 
   let post = null;
 
   if (preview && previewData?.type === "post" && previewData?.postId) {
-    post = await fetchPreviewPostById(previewData.postId, lang);
+    try {
+      post = await fetchPreviewPostById(previewData.postId, lang);
+    } catch (error) {
+      console.error("Article preview fetch failed:", error);
+    }
   } else {
-    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/posts?slug=${slug}&acf_format=standard&_embed`;
-
-    // Only fetch in the requested language — wrong-locale slugs must 404.
-    const res = await fetch(`${base}&lang=${lang}`);
-    const data = await res.json();
-    post = Array.isArray(data) && data.length ? data[0] : null;
+    post = await fetchWpPostBySlug("posts", slug, lang, { embed: true });
   }
 
   if (!post) {
-    return { notFound: true };
+    return { notFound: true, revalidate: REVALIDATE_SECONDS };
   }
 
   const featuredImage = post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "";
@@ -51,7 +61,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
   const currentSlug = post.slug || slug;
 
   if (post.acf?.sections && Array.isArray(post.acf.sections)) {
-    return { props: { post, sections: post.acf.sections, currentSlug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null, isPreview: Boolean(preview) } };
+    return { props: { post, sections: post.acf.sections, currentSlug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null, isPreview: Boolean(preview) }, revalidate: REVALIDATE_SECONDS };
   }
 
   return {
@@ -85,6 +95,7 @@ export async function getServerSideProps({ params, locale, preview, previewData 
         },
       ],
     },
+    revalidate: REVALIDATE_SECONDS,
   };
 }
 

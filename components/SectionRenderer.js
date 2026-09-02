@@ -20,6 +20,8 @@ const LogoSection = dynamic(() => import("./sections/Homepage/LogoSection"));
 const TranslatorQuoteSection = dynamic(() => import("./sections/Homepage/TranslatorQuoteSection"));
 const GeoAgentSection = dynamic(() => import("./sections/Homepage/GeoAgentSection"));
 const VideosListingSection = dynamic(() => import("./sections/Homepage/VideosListingSection"));
+const ResultsSection = dynamic(() => import("./sections/Homepage/ResultsSection"));
+const LanguageModuleSection = dynamic(() => import("./sections/Homepage/LanguageModuleSection"));
 
 /* ===================== SERVICE PAGE ===================== */
 const ServicesHeroSection = dynamic(() => import("./sections/Service/ServicesHeroSection"));
@@ -88,7 +90,7 @@ const mediaOrNull = (img) => {
   return null;
 };
 
-export default function SectionRenderer({ sections = [], lang = "sv", currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos }) {
+export default function SectionRenderer({ sections = [], lang = "sv", currentSlug, pageType, postAcf, initialArticles, initialDocumentTypes, initialCaseStudies, initialIndustries, initialClientLogos, initialCustomerQuotes, initialTranslatorQuotes, initialHeadlessVideos, initialLanguages }) {
   if (!Array.isArray(sections) || sections.length === 0) return null;
 
   return sections.map((block, index) => {
@@ -273,6 +275,26 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
           />
         );
 
+      case "homepage_results":
+        return (
+          <ResultsSection
+            key={`homepage-results-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+          />
+        );
+
+      case "language_module":
+        return (
+          <LanguageModuleSection
+            key={`language-module-${index}`}
+            section={block}
+            sectionId={`section-${index}`}
+            initialLanguages={initialLanguages || []}
+            lang={lang}
+          />
+        );
+
       
 
       /* ===================== SERVICE PAGE ===================== */
@@ -307,7 +329,15 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
         return <FaqSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "industries":
-        return <IndustriesSection key={index} data={block} sectionId={`section-${index}`} index={index} />;
+        return (
+          <IndustriesSection
+            key={index}
+            data={block}
+            sectionId={`section-${index}`}
+            index={index}
+            initialIndustries={initialIndustries}
+          />
+        );
 
       case "service_case_study_section":
         return (
@@ -319,6 +349,7 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
             sectionId={`section-${index}`}
             index={index}
             add_padding_top={block.add_padding_top}
+            initialSlides={initialCaseStudies}
           />
         );
 

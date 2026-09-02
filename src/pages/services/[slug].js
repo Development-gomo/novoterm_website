@@ -1,10 +1,21 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
-import { buildSiteUrl, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { buildSiteUrl, fetchCaseStudies, fetchIndustries, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
-export async function getServerSideProps({ params, locale, preview, previewData }) {
+const REVALIDATE_SECONDS = 60;
+
+export async function getStaticPaths() {
+  const slugs = await fetchWpSlugs("service", "en");
+
+  return {
+    paths: slugs.map((slug) => ({ params: { slug }, locale: "en" })),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps({ params, locale, preview, previewData }) {
   const { slug } = params;
   const lang = resolveLang(locale);
   const previewLang = previewData?.lang ? resolveLang(previewData.lang) : null;
@@ -32,17 +43,30 @@ export async function getServerSideProps({ params, locale, preview, previewData 
 
   // Only fetch in the requested language — wrong-locale slugs must 404.
   if (preview && previewData?.type === "service" && previewData?.postId) {
-    service = await fetchPreviewContentById(previewData.postId, "service", lang);
+    try {
+      service = await fetchPreviewContentById(previewData.postId, "service", lang);
+    } catch (error) {
+      console.error("Service preview fetch failed:", error);
+    }
   } else {
-    const base = `${process.env.NEXT_PUBLIC_WP_URL}/wp-json/wp/v2/service?slug=${slug}&acf_format=standard`;
-    const res = await fetch(`${base}&lang=${lang}`);
-    const data = await res.json();
-    service = Array.isArray(data) && data.length ? data[0] : null;
+    service = await fetchWpPostBySlug("service", slug, lang);
   }
 
   if (!service) {
-    return { notFound: true };
+    return { notFound: true, revalidate: REVALIDATE_SECONDS };
   }
+
+  const sections = service.acf?.sections || [];
+  const needsCaseStudies = sections.some(
+    (section) =>
+      section?.acf_fc_layout === "case_study_section" ||
+      section?.acf_fc_layout === "service_case_study_section"
+  );
+  const needsIndustries = sections.some(
+    (section) => section?.acf_fc_layout === "industries"
+  );
+  const initialCaseStudies = needsCaseStudies ? await fetchCaseStudies(lang) : null;
+  const initialIndustries = needsIndustries ? await fetchIndustries(lang) : null;
 
   return {
     props: {
@@ -50,11 +74,14 @@ export async function getServerSideProps({ params, locale, preview, previewData 
       lang,
       translations: service.translations || null,
       yoastHead: service.yoast_head || null,
+      initialCaseStudies,
+      initialIndustries,
       isPreview: Boolean(preview),
     },
+    revalidate: REVALIDATE_SECONDS,
   };
 }
-export default function SingleService({ service, yoastHead, lang }) {
+export default function SingleService({ service, yoastHead, lang, initialCaseStudies, initialIndustries }) {
   const sections = service.acf?.sections || [];
   const title = service.title?.rendered || "";
   const summary = service.acf?.article_summary || "";
@@ -67,7 +94,12 @@ export default function SingleService({ service, yoastHead, lang }) {
       {sections.length > 0 ? (
         <>
           <StickyServiceNav sections={sections} />
-          <SectionRenderer sections={sections} lang={lang} />
+          <SectionRenderer
+            sections={sections}
+            lang={lang}
+            initialCaseStudies={initialCaseStudies}
+            initialIndustries={initialIndustries}
+          />
         </>
       ) : (
         // fallback if no flexible content added
