@@ -5,6 +5,7 @@ import Link from "next/link";
 import { DEFAULT_LANG } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { fetchHeadlessVideos, getWatchPath, secondsToReadableDuration, durationToReadableDuration } from "../../../lib/headlessVideo";
+import { getYouTubeThumbnailCandidates } from "../../../lib/videoEmbed";
 
 function stripHtml(value) {
   if (!value) return "";
@@ -117,6 +118,13 @@ function normalizeYouTubeThumbnailUrl(url) {
   return preferredUrl;
 }
 
+function isPlaceholderUploadDate(value) {
+  const timestamp = new Date(value).getTime();
+  if (!Number.isFinite(timestamp)) return false;
+
+  return timestamp >= Date.parse("2026-07-14T07:44:00Z") && timestamp <= Date.parse("2026-07-14T07:46:00Z");
+}
+
 function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
   const existingById = new Map(existingVideos.map((video) => [video.id, video]));
 
@@ -183,19 +191,48 @@ function formatVideos(videos = []) {
     .filter((video) => video?.slug && video?.title)
     .map((video) => {
       const thumbnail = versionedUrl(video.thumbnail_url, video.modified) || video.thumbnail_url || "";
+      const thumbnailCandidates = [
+        thumbnail,
+        ...getYouTubeThumbnailCandidates(video.embed_url || video.content_url || video.watch_url)
+          .map((url) => versionedUrl(url, video.modified)),
+      ].filter(Boolean).filter((url, index, candidates) => candidates.indexOf(url) === index);
       return {
         id: video.id || video.slug,
         slug: video.slug,
         title: stripHtml(video.title),
         description: clampDescription(video.description || video.description_html),
-        image: normalizeYouTubeThumbnailUrl(thumbnail) || "/userfallback.webp",
-        uploadDate: video.upload_date || "",
+        image: normalizeYouTubeThumbnailUrl(thumbnail) || thumbnailCandidates[0] || "",
+        imageCandidates: thumbnailCandidates,
+        uploadDate: isPlaceholderUploadDate(video.upload_date) ? "" : video.upload_date || "",
         durationSeconds: video.duration_seconds || 0,
         duration: video.duration || "",
         views: video.interaction_count || 0,
         viewsSource: video.interaction_count_source || "",
       };
     }));
+}
+
+function VideoThumbnail({ video }) {
+  const candidates = video.imageCandidates?.length ? video.imageCandidates : [video.image];
+  const [candidateIndex, setCandidateIndex] = useState(0);
+  const image = candidates[candidateIndex] || "";
+
+  if (!image) {
+    return <span className="absolute inset-0 bg-[#E3EDFF]" aria-hidden="true" />;
+  }
+
+  return (
+    <Image
+      src={normalizeYouTubeThumbnailUrl(image)}
+      alt={video.title}
+      fill
+      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+      className="object-cover transition-transform duration-700 group-hover:scale-105"
+      onError={() => {
+        setCandidateIndex((currentIndex) => Math.min(currentIndex + 1, candidates.length));
+      }}
+    />
+  );
 }
 
 export default function VideosListingSection({
@@ -254,13 +291,7 @@ export default function VideosListingSection({
                 className="group relative aspect-video w-full overflow-hidden bg-[#E3EDFF]"
                 aria-label={video.title}
               >
-                <Image
-                  src={video.image}
-                  alt={video.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                <VideoThumbnail video={video} />
                 <span className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-70 transition-opacity duration-300 group-hover:opacity-90" />
                 <span className="absolute bottom-4 left-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#2655C4] text-white shadow-lg transition-transform duration-300 group-hover:scale-105">
                   <svg
