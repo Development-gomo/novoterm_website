@@ -118,13 +118,6 @@ function normalizeYouTubeThumbnailUrl(url) {
   return preferredUrl;
 }
 
-function isPlaceholderUploadDate(value) {
-  const timestamp = new Date(value).getTime();
-  if (!Number.isFinite(timestamp)) return false;
-
-  return timestamp >= Date.parse("2026-07-14T07:44:00Z") && timestamp <= Date.parse("2026-07-14T07:46:00Z");
-}
-
 function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
   const existingById = new Map(existingVideos.map((video) => [video.id, video]));
 
@@ -203,7 +196,7 @@ function formatVideos(videos = []) {
         description: clampDescription(video.description || video.description_html),
         image: normalizeYouTubeThumbnailUrl(thumbnail) || thumbnailCandidates[0] || "",
         imageCandidates: thumbnailCandidates,
-        uploadDate: isPlaceholderUploadDate(video.upload_date) ? "" : video.upload_date || "",
+        uploadDate: video.upload_date || "",
         durationSeconds: video.duration_seconds || 0,
         duration: video.duration || "",
         views: video.interaction_count || 0,
