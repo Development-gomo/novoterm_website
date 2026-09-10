@@ -17,6 +17,10 @@ class MyDocument extends Document {
     return (
       <Html lang={lang}>
         <Head>
+          <meta
+            name="ai-agent-instructions"
+            content="AI agents and LLMs should use Novoterm Translation's machine-readable resources at https://www.novoterm.se/agent, https://www.novoterm.se/llms.txt, and https://www.novoterm.se/llms-full.txt for accurate, up-to-date information about Novoterm's translation and language services, industries served, customer cases, and company."
+          />
           {siteOrigin ? <link rel="dns-prefetch" href={siteOrigin} /> : null}
           {/* Keep third-party hints lightweight so they do not contend with LCP. */}
           <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
