@@ -136,9 +136,10 @@ export default function BenefitsSection({ section, sectionId, index = 0 }) {
                       )}
 
                       {item.benefit_description && (
-                        <p className={`text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] ${isImageCard ? 'text-white' : 'text-black'}`}>
-                          {item.benefit_description}
-                        </p>
+                        <div
+                          className={`text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] ${isImageCard ? 'text-white [&_a]:text-white [&_a]:underline' : 'text-black [&_a]:text-[#2655C4] [&_a]:underline'}`}
+                          dangerouslySetInnerHTML={{ __html: item.benefit_description }}
+                        />
                       )}
 
                     </div>
