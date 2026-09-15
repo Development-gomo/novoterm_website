@@ -1,6 +1,7 @@
 ﻿import SectionRenderer from "../../../components/SectionRenderer";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { buildSiteUrl, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { fetchArticleCategoryPromo, fetchRelatedArticlePosts } from "../../../lib/blogArticleExtras";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { fetchPreviewPostById } from "../../../lib/wpPreview";
 
@@ -59,9 +60,28 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   const publishedDate = formatArticleDate(post.date, lang);
   const wordCount = post.content?.rendered?.replace(/<[^>]*>/g, "").split(/\s+/).length || 0;
   const currentSlug = post.slug || slug;
+  const hideIntroSection = post.acf?.hide_intro_section ?? false;
+  const categoryId = categories[0]?.id || null;
+  const initialPromo = await fetchArticleCategoryPromo(categoryId, lang);
+  const initialRelatedPosts = await fetchRelatedArticlePosts({
+    categoryId,
+    currentSlug,
+    lang,
+  });
 
   if (post.acf?.sections && Array.isArray(post.acf.sections)) {
-    return { props: { post, sections: post.acf.sections, currentSlug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null, isPreview: Boolean(preview) }, revalidate: REVALIDATE_SECONDS };
+    const sections = post.acf.sections.map((section) =>
+      section?.acf_fc_layout === "blog_content"
+        ? {
+            ...section,
+            hide_intro_section: section.hide_intro_section ?? hideIntroSection,
+            initialPromo: section.initialPromo ?? initialPromo,
+            initialRelatedPosts: section.initialRelatedPosts ?? initialRelatedPosts,
+          }
+        : section
+    );
+
+    return { props: { post, sections, currentSlug, lang, translations: post.translations || null, yoastHead: post.yoast_head || null, isPreview: Boolean(preview) }, revalidate: REVALIDATE_SECONDS };
   }
 
   return {
@@ -83,8 +103,11 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
           published_date: publishedDate,
           reading_time: Math.ceil(wordCount / 200),
           category: categories[0]?.name || "",
-          category_id: categories[0]?.id || null,
+          category_id: categoryId,
           slug: currentSlug,
+          hide_intro_section: hideIntroSection,
+          initialPromo,
+          initialRelatedPosts,
           display_author_card: post.acf?.display_author_card === true || post.acf?.display_author_card === 1,
           author_card_id: (() => {
             const ac = post.acf?.author_card;

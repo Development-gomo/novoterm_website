@@ -65,7 +65,6 @@ export default function InsightsSlider({ slides, lang = "sv" }) {
                     alt=""
                     fill
                     sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 33vw"
-                    quality={72}
                     loading="lazy"
                     className="object-cover object-center"
                   />

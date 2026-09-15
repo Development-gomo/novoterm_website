@@ -4,6 +4,7 @@ import SectionRenderer from "../../components/SectionRenderer";
 import StickyPageNav from "../../components/StickyPageNav";
 import LcpHeroPreload from "../../components/LcpHeroPreload";
 import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, fetchLanguages, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
+import { plainTextFromHtml } from "../../lib/html";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 import { fetchPreviewContentById } from "../../lib/wpPreview";
 import { fetchHeadlessVideos } from "../../lib/headlessVideo";
@@ -19,6 +20,9 @@ const WP_PAGE_SLUG_ALIASES = {
     videor: "videos",
   },
 };
+
+const ARTICLE_PREFETCH_LIMIT = 100;
+const INSIGHTS_PREFETCH_LIMIT = 7;
 
 function pageSlugToPath(slug = "", lang = DEFAULT_LANG) {
   const aliases = PAGE_SLUG_ALIASES[lang] || {};
@@ -168,8 +172,11 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
   if (hasArticlesSection || hasInsightsSection) {
     try {
       const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
+      const perPage = hasArticlesSection
+        ? ARTICLE_PREFETCH_LIMIT
+        : INSIGHTS_PREFETCH_LIMIT;
       const res = await fetch(
-        `${wpUrl}/wp-json/wp/v2/posts?_embed&lang=${lang}&per_page=7&page=1&orderby=date&order=desc`
+        `${wpUrl}/wp-json/wp/v2/posts?acf_format=standard&_embed&lang=${lang}&per_page=${perPage}&page=1&orderby=date&order=desc`
       );
       if (res.ok) {
         const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
@@ -177,13 +184,19 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
         // Trim to only the fields ArticlesSection.formatPost() needs
         const posts = (rawPosts || []).map((p) => {
           const fm = p._embedded?.["wp:featuredmedia"]?.[0];
+          const cleanContent = plainTextFromHtml(p.content?.rendered || "").trim();
           return {
             id: p.id,
             slug: p.slug,
             date: p.date,
             title: { rendered: p.title?.rendered || "" },
             excerpt: { rendered: p.excerpt?.rendered || "" },
-            content: { rendered: p.content?.rendered || "" },
+            content: { rendered: "" },
+            wordCount: cleanContent ? cleanContent.split(/\s+/).length : 0,
+            acf: {
+              hide_from_listing: p.acf?.hide_from_listing ?? false,
+              display_as_latest_post: p.acf?.display_as_latest_post ?? false,
+            },
             _embedded: {
               "wp:term": [[{ name: p._embedded?.["wp:term"]?.[0]?.[0]?.name || "General" }]],
               "wp:featuredmedia": fm ? [{
@@ -198,7 +211,11 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
             },
           };
         });
-        initialArticles = { posts, totalPages };
+        initialArticles = {
+          posts,
+          insightPosts: posts.slice(0, INSIGHTS_PREFETCH_LIMIT),
+          totalPages,
+        };
       }
     } catch (e) {
       console.error("SSR articles prefetch failed:", e);

@@ -98,21 +98,14 @@ const translations = {
   },
 };
 
+function isAcfTrue(value) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
+
 export default function BlogContentSection({ section }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
   const t = translations[lang] || translations.sv;
-
-  const [relatedPosts, setRelatedPosts] = useState([]);
-  const [toc, setToc] = useState([]);
-  const [promo, setPromo] = useState(null);
-  const [processedContent, setProcessedContent] = useState("");
-  const [pageUrl, setPageUrl] = useState("");
-  const [authorCards, setAuthorCards] = useState([]);
-
-  useEffect(() => {
-    setPageUrl(window.location.href);
-  }, []);
 
   const {
     featured_image,
@@ -127,13 +120,40 @@ export default function BlogContentSection({ section }) {
     slug,
     display_author_card,
     author_card_id,
+    hide_intro_section,
+    initialPromo,
+    initialRelatedPosts,
   } = section || {};
+
+  const [relatedPosts, setRelatedPosts] = useState(() =>
+    Array.isArray(initialRelatedPosts) ? initialRelatedPosts : []
+  );
+  const [toc, setToc] = useState([]);
+  const [promo, setPromo] = useState(null);
+  const [processedContent, setProcessedContent] = useState("");
+  const [pageUrl, setPageUrl] = useState("");
+  const [authorCards, setAuthorCards] = useState([]);
+
+  useEffect(() => {
+    setPageUrl(window.location.href);
+  }, []);
+
+  useEffect(() => {
+    setPromo(initialPromo || null);
+  }, [initialPromo]);
+
+  useEffect(() => {
+    if (Array.isArray(initialRelatedPosts)) {
+      setRelatedPosts(initialRelatedPosts);
+    }
+  }, [initialRelatedPosts]);
 
   const bgUrl = pickWpImageUrl(featured_image, "heroNext");
   const introHtml =
     hasAutoExcerptMarker(excerpt) && content
       ? getOpeningParagraphsHtml(content) || cleanExcerptHtml(excerpt)
       : cleanExcerptHtml(excerpt);
+  const showIntroHtml = Boolean(introHtml) && !isAcfTrue(hide_intro_section);
 
   /* =========================
      AUTHOR CARD
@@ -194,12 +214,13 @@ export default function BlogContentSection({ section }) {
   ========================== */
   useEffect(() => {
     async function loadPromo() {
-      if (!category_id) return;
+      if (initialPromo !== undefined || !category_id) return;
 
       try {
-const res = await fetch(
-  wpRestUrl(`wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`)
-);
+        const res = await fetch(
+          wpRestUrl(`wp/v2/categories/${category_id}?acf_format=standard&lang=${lang}`)
+        );
+        if (!res.ok) return;
         const data = await res.json();
 
         if (data?.acf) {
@@ -216,17 +237,20 @@ const res = await fetch(
     }
 
     loadPromo();
-  }, [category_id]);
+  }, [category_id, initialPromo, lang]);
 
   /* =========================
      RELATED POSTS
   ========================== */
   useEffect(() => {
     async function loadRelatedPosts() {
+      if (Array.isArray(initialRelatedPosts) || !category_id) return;
+
       try {
         const res = await fetch(
           wpRestUrl(`wp/v2/posts?_embed&per_page=6&categories=${category_id}&lang=${lang}`)
         );
+        if (!res.ok) return;
         const data = await res.json();
 
         const formatted = data
@@ -255,8 +279,8 @@ const res = await fetch(
       }
     }
 
-    if (category_id) loadRelatedPosts();
-  }, [lang, category_id, slug]);
+    loadRelatedPosts();
+  }, [lang, category_id, slug, initialRelatedPosts]);
 
   /* =========================
      SCROLL
@@ -294,9 +318,9 @@ const res = await fetch(
               dangerouslySetInnerHTML={{ __html: heading }}
             />
 
-            {introHtml && (
+            {showIntroHtml && (
               <div
-                className="text-[16px] md:text-[18px] text-[#3A3A3A] space-y-3 mt-2"
+                className="text-[16px] md:text-[18px] text-[#3A3A3A] space-y-3 mt-2 hide-section"
                 dangerouslySetInnerHTML={{ __html: introHtml }}
               />
             )}
@@ -321,7 +345,6 @@ const res = await fetch(
             alt={heading ? heading.replace(/<[^>]*>/g, "") : ""}
             fill
             sizes="100vw"
-            quality={72}
             loading="lazy"
             className="object-cover object-[0px_-50px]"
           />

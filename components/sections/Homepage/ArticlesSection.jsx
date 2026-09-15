@@ -8,6 +8,12 @@ import { formatArticleDate } from "../../../lib/dateFormat";
 import { plainTextFromHtml } from "../../../lib/html";
 
 const POSTS_PER_PAGE = 6;
+const INITIAL_POSTS_COUNT = POSTS_PER_PAGE + 1;
+const POSTS_FETCH_LIMIT = 100;
+
+function isAcfTrue(value) {
+  return value === true || value === 1 || value === "1" || value === "true";
+}
 
 function normalizeTerm(term) {
   if (!term || typeof term !== "object") return null;
@@ -25,13 +31,20 @@ function formatPost(post, lang) {
     plainTextFromHtml(post?._embedded?.["wp:term"]?.[0]?.[0]?.name || "General");
   const fm = post?._embedded?.["wp:featuredmedia"]?.[0];
   const image =
-    fm?.media_details?.sizes?.medium_large?.source_url ||
-    fm?.media_details?.sizes?.large?.source_url ||
     fm?.source_url ||
+    fm?.media_details?.sizes?.["2048x2048"]?.source_url ||
+    fm?.media_details?.sizes?.["1536x1536"]?.source_url ||
+    fm?.media_details?.sizes?.large?.source_url ||
+    fm?.media_details?.sizes?.medium_large?.source_url ||
     "/default-blog.jpg";
   const date = formatArticleDate(post.date, lang);
-  const clean = plainTextFromHtml(post.content.rendered);
-  const words = clean.split(/\s+/).length;
+  const clean = plainTextFromHtml(post.content?.rendered || "");
+  const words =
+    typeof post.wordCount === "number"
+      ? post.wordCount
+      : clean.trim()
+        ? clean.trim().split(/\s+/).length
+        : 0;
   let readTimeLabel = "min read";
   if (lang === "sv") readTimeLabel = "min läsning";
   else if (lang === "en") readTimeLabel = "min read";
@@ -47,6 +60,29 @@ function formatPost(post, lang) {
     date,
     readTime,
   };
+}
+
+function isHiddenFromListing(post) {
+  return isAcfTrue(post?.acf?.hide_from_listing);
+}
+
+function isLatestPostOverride(post) {
+  return isAcfTrue(post?.acf?.display_as_latest_post);
+}
+
+function getOrderedListingPosts(posts) {
+  const visiblePosts = Array.isArray(posts)
+    ? posts.filter((post) => !isHiddenFromListing(post))
+    : [];
+  const featuredOverride = visiblePosts.find(isLatestPostOverride);
+  const featured = featuredOverride || visiblePosts[0] || null;
+
+  if (!featured) return [];
+
+  return [
+    featured,
+    ...visiblePosts.filter((post) => post.id !== featured.id),
+  ];
 }
 
 export default function ArticlesSection({
@@ -72,40 +108,26 @@ export default function ArticlesSection({
     String(t?.term_id || t?.id || t)
   );
 
-  // Pre-process SSR data for instant initial render
-  const ssrData = (() => {
-    if (!initialArticles?.posts?.length) return null;
-    const formatted = initialArticles.posts.map((p) => formatPost(p, lang));
-    return {
-      featured: formatted[0] || null,
-      grid: formatted.slice(1, 7),
-      totalPages: initialArticles.totalPages || 1,
-    };
-  })();
+  const initialPosts = Array.isArray(initialArticles?.posts)
+    ? initialArticles.posts
+    : [];
 
   const [categories, setCategories] = useState(seededCategories);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [featuredPost, setFeaturedPost] = useState(ssrData?.featured || null);
-  const [gridPosts, setGridPosts] = useState(ssrData?.grid || []);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(
-    ssrData ? (ssrData.featured ? 1 : 0) + ssrData.grid.length < (max_posts || 50) && 1 < ssrData.totalPages : false
-  );
+  const [allPosts, setAllPosts] = useState(initialPosts);
+  const [visibleCount, setVisibleCount] = useState(INITIAL_POSTS_COUNT);
   const [loading, setLoading] = useState(false);
-  const seenIdsRef = useRef(
-    new Set(
-      ssrData
-        ? [
-            ...(ssrData.featured ? [ssrData.featured.id] : []),
-            ...ssrData.grid.map((p) => p.id),
-          ]
-        : []
-    )
-  );
 
   const limit = max_posts || 50;
+  const orderedPosts = getOrderedListingPosts(allPosts);
+  const cappedPosts = orderedPosts.slice(0, Math.min(visibleCount, limit));
+  const formattedPosts = cappedPosts.map((post) => formatPost(post, lang));
+  const featuredPost = formattedPosts[0] || null;
+  const gridPosts = formattedPosts.slice(1);
+  const hasMore =
+    visibleCount < Math.min(orderedPosts.length, limit);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -165,13 +187,11 @@ export default function ArticlesSection({
 
   // Fetch posts — always use the same per_page so WordPress pagination never overlaps between calls
   const fetchPosts = useCallback(
-    async (pageNum, reset = false) => {
+    async () => {
       setLoading(true);
       try {
-        // Keep per_page identical on every request: 1 featured slot + 6 grid slots
-        const PER_PAGE = POSTS_PER_PAGE + 1; // 7
-        // Only embed what we actually need (featured media + terms), skip author embed for speed
-        let endpoint = wpRestUrl(`wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=${PER_PAGE}&page=${pageNum}&orderby=date&order=desc`);
+        // Fetch enough posts to evaluate ACF listing flags before slicing the visible list.
+        let endpoint = wpRestUrl(`wp/v2/posts?acf_format=standard&_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,acf,_links,_embedded&lang=${lang}&per_page=${POSTS_FETCH_LIMIT}&page=1&orderby=date&order=desc`);
 
         if (selectedCategories.length > 0) {
           endpoint += `&categories=${selectedCategories.join(",")}`;
@@ -179,7 +199,6 @@ export default function ArticlesSection({
 
         const res = await fetch(endpoint);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
         const data = await res.json();
 
         if (!Array.isArray(data)) {
@@ -187,32 +206,8 @@ export default function ArticlesSection({
           return;
         }
 
-        const formatted = data.map((post) => formatPost(post, lang));
-
-        if (reset) {
-          const featured = formatted[0] || null;
-          // slice(1, PER_PAGE) gives exactly POSTS_PER_PAGE (6) grid posts
-          const grid = formatted.slice(1, PER_PAGE);
-          // Record every shown ID so load-more can deduplicate reliably
-          seenIdsRef.current = new Set([
-            ...(featured ? [featured.id] : []),
-            ...grid.map((p) => p.id),
-          ]);
-          setFeaturedPost(featured);
-          setGridPosts(grid);
-          setPage(1);
-          setHasMore((featured ? 1 : 0) + grid.length < limit && 1 < totalPages);
-        } else {
-          // Deduplicate against every previously shown post (featured + all grid pages)
-          // Cap to POSTS_PER_PAGE (6) per load-more batch so exactly 6 new cards appear
-          const newPosts = formatted
-            .filter((p) => !seenIdsRef.current.has(p.id))
-            .slice(0, POSTS_PER_PAGE);
-          newPosts.forEach((p) => seenIdsRef.current.add(p.id));
-
-          setGridPosts((prev) => [...prev, ...newPosts].slice(0, limit - 1));
-          setHasMore(seenIdsRef.current.size < limit && pageNum < totalPages);
-        }
+        setAllPosts(data);
+        setVisibleCount(INITIAL_POSTS_COUNT);
       } catch (e) {
         console.error("ARTICLES FETCH ERROR:", e);
       }
@@ -227,19 +222,19 @@ export default function ArticlesSection({
   // Initial load & category change
   useEffect(() => {
     // Skip client fetch on first mount if we already have SSR data
-    if (ssrData && !ssrConsumedRef.current && selectedCategories.length === 0) {
+    if (initialPosts.length > 0 && !ssrConsumedRef.current && selectedCategories.length === 0) {
       ssrConsumedRef.current = true;
       return;
     }
-    fetchPosts(1, true);
+    fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, selectedCategories]);
 
   const handleLoadMore = () => {
     if (loading) return;
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchPosts(nextPage, false);
+    setVisibleCount((count) =>
+      Math.min(count + POSTS_PER_PAGE, limit, orderedPosts.length)
+    );
   };
 
   const filterLabel = lang === "en" ? "Filter:" : "Filtrera:";
@@ -330,7 +325,6 @@ export default function ArticlesSection({
                   alt=""
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  quality={72}
                   loading="lazy"
                   className="object-cover object-center"
                 />
@@ -375,7 +369,6 @@ export default function ArticlesSection({
                     alt=""
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    quality={72}
                     loading="lazy"
                     className="object-cover object-center"
                   />

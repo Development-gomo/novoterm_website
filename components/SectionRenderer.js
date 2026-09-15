@@ -219,7 +219,7 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
             paragraph={block.paragraph}
             button={block.button}
             button_url={block.button_url}
-            initialSlides={initialArticles?.posts}
+            initialSlides={initialArticles?.insightPosts || initialArticles?.posts}
           />
         );
 
