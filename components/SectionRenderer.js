@@ -25,9 +25,11 @@ const LanguageModuleSection = dynamic(() => import("./sections/Homepage/Language
 
 /* ===================== SERVICE PAGE ===================== */
 const ServicesHeroSection = dynamic(() => import("./sections/Service/ServicesHeroSection"));
+const ServicesHeroFormSection = dynamic(() => import("./sections/Service/ServicesHeroFormSection"));
 const ServiceIntroFrontend = dynamic(() => import("./sections/Service/ServiceIntroSection"));
 const TranslationMethodsSection = dynamic(() => import("./sections/Service/TranslationMethodsSection"));
 const BenefitsSection = dynamic(() => import("./sections/Service/BenefitsSection"));
+const ServiceCTASection = dynamic(() => import("./sections/Service/ServiceCTASection"));
 const OurApproachSection = dynamic(() => import("./sections/Service/OurApproachSection"));
 const ContactSection = dynamic(() => import("./sections/Service/ContactSection"));
 const FaqSection = dynamic(() => import("./sections/Service/FaqSection"));
@@ -301,6 +303,14 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
       case "services_hero":
         return <ServicesHeroSection key={index} {...block} sectionId={`section-${index}`} index={index} />;
 
+      case "services_hero_with_form":
+      case "service_hero_with_form":
+      case "services_hero_form":
+      case "service_hero_form":
+      case "hero_with_form":
+      case "form_on_hero":
+        return <ServicesHeroFormSection key={index} {...block} sectionId={`section-${index}`} index={index} />;
+
 
                 case "new_home_banner_text":
                   return (
@@ -318,6 +328,9 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
 
       case "benefits_section":
         return <BenefitsSection key={index} section={block} sectionId={`section-${index}`} index={index} />;
+
+      case "service_cta":
+        return <ServiceCTASection key={index} section={block} sectionId={`section-${index}`} index={index} />;
 
       case "our_approach":
         return <OurApproachSection key={index} section={block} sectionId={`section-${index}`} index={index} />;

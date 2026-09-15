@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
+import { DEFAULT_LANG, localePath, wpRestUrl, wpToPath } from "../../../lib/api";
 import { Navigation, Pagination } from "swiper/modules";
 
 import "swiper/css";
@@ -11,7 +11,16 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 export default function IndustriesSection({ data, sectionId, index = 0, initialIndustries = null }) {
-  const { section_title, section_description } = data || {};
+  const {
+    section_title,
+    section_description,
+    cta_text,
+    cta_link,
+    cta_url,
+    button_text,
+    button_link,
+    button_url,
+  } = data || {};
 
   const formatLabel = (layout) => {
     if (!layout) return null;
@@ -25,6 +34,13 @@ export default function IndustriesSection({ data, sectionId, index = 0, initialI
 
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
+  const ctaSource = cta_link || cta_url || button_link || button_url;
+  const ctaHref = typeof ctaSource === "object" ? ctaSource?.url : ctaSource;
+  const ctaTarget = typeof ctaSource === "object" ? ctaSource?.target : undefined;
+  const ctaLabel =
+    cta_text ||
+    button_text ||
+    (typeof ctaSource === "object" ? ctaSource?.title : "");
   const [industries, setIndustries] = useState(initialIndustries || []);
 
   useEffect(() => {
@@ -148,6 +164,13 @@ export default function IndustriesSection({ data, sectionId, index = 0, initialI
                 </SwiperSlide>
               ))}
             </Swiper>
+            {ctaLabel && ctaHref && (
+              <div className="mt-10 flex justify-center">
+                <Link href={wpToPath(ctaHref, lang) || "#"} target={ctaTarget} className="btn-primary w-fit">
+                  {ctaLabel}
+                </Link>
+              </div>
+            )}
 </div>
            
 

@@ -2,6 +2,7 @@ import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
 import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { buildSiteUrl, fetchCaseStudies, fetchIndustries, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
+import { getLayoutOptions } from "../../../lib/pageSettings";
 import { fetchPreviewContentById } from "../../../lib/wpPreview";
 
 const REVALIDATE_SECONDS = 60;
@@ -75,6 +76,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
       yoastHead: service.yoast_head || null,
       initialCaseStudies,
       initialIndustries,
+      layoutOptions: getLayoutOptions(service.acf),
       isPreview: Boolean(preview),
     },
     revalidate: REVALIDATE_SECONDS,

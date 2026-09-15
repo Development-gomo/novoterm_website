@@ -68,6 +68,11 @@ export default function MyApp({
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
+  const layoutOptions = pageProps.layoutOptions || {};
+  const hideHeader = Boolean(layoutOptions.hideHeader);
+  const hideFooter = Boolean(layoutOptions.hideFooter);
+  const fallbackFooterText = layoutOptions.fallbackFooterText || "";
+  const showFallbackFooter = hideFooter && fallbackFooterText;
 
   const [headerData, setHeaderData] = useState(initialHeader || null);
   const [footerData, setFooterData] = useState(initialFooter || null);
@@ -157,7 +162,7 @@ export default function MyApp({
       <DeferredGtm />
 
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
-      {headerData && (
+      {!hideHeader && headerData && (
         <Header
           {...headerData}
           {...hamburgerMenuData}
@@ -167,7 +172,12 @@ export default function MyApp({
       )}
       {pageProps.isPreview && <PreviewBanner />}
       <Component {...pageProps} lang={lang} />
-      {footerData && <Footer data={footerData} />}
+      {!hideFooter && footerData && <Footer data={footerData} />}
+      {showFallbackFooter && (
+        <div className="w-full border-t border-[#2D4B83] bg-[#061837] px-6 py-3 text-center font-montserrat text-[12px] leading-relaxed text-white/70">
+          {fallbackFooterText}
+        </div>
+      )}
       <DelayedSpeedInsights />
     </div>
     </>
