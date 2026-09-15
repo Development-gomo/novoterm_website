@@ -51,7 +51,7 @@ export default function ServicesHeroFormSection({
         }}
       />
 
-      <div className="relative z-[2] w-full web-width px-6 pb-28 pt-24 sm:py-24 lg:py-36">
+      <div className="relative z-[2] w-full web-width px-6 pb-20 pt-16 sm:pb-20 sm:pt-18 lg:pb-40 lg:pt-20">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_520px] gap-10 lg:gap-16 items-center">
           <div className="max-w-[760px]">
             {heading && (
@@ -83,8 +83,65 @@ export default function ServicesHeroFormSection({
             )}
           </div>
 
-          <div className="w-full rounded-[3px] border border-white/20 bg-[#061837]/20 p-5">
+          <div className="hero-form-cf7 w-full rounded-[3px] border border-white/20 bg-[#061837]/20 p-4">
             <CF7ContactForm formId={select_form} sectionTheme="dark" />
+            <style jsx global>{`
+              .hero-form-cf7 form {
+                max-width: none !important;
+                padding: 0 !important;
+              }
+
+              .hero-form-cf7 form .mb-8 {
+                margin-bottom: 14px !important;
+              }
+
+              .hero-form-cf7 form .mb-4 {
+                margin-bottom: 10px !important;
+              }
+
+              .hero-form-cf7 form .mt-4 {
+                margin-top: 10px !important;
+              }
+
+              .hero-form-cf7 form .gap-4 {
+                gap: 10px !important;
+              }
+
+              .hero-form-cf7 form .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+                margin-top: 10px !important;
+              }
+
+              .hero-form-cf7 form p {
+                line-height: 1.35 !important;
+              }
+
+              .hero-form-cf7 form label {
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+              }
+
+              .hero-form-cf7 form input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
+              .hero-form-cf7 form select {
+                height: 42px !important;
+                min-height: 42px !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                font-size: 13px !important;
+              }
+
+              .hero-form-cf7 form textarea {
+                min-height: 72px !important;
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+                font-size: 13px !important;
+              }
+
+              .hero-form-cf7 form button[type="submit"] {
+                min-height: 42px !important;
+                padding-top: 10px !important;
+                padding-bottom: 10px !important;
+              }
+            `}</style>
           </div>
         </div>
       </div>

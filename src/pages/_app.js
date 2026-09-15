@@ -17,6 +17,7 @@ import DeferredGtm from "../../components/DeferredGtm";
 // DeferredCookiebot removed - GTM handles Cookiebot via its integration (implementation=gtm)
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 import PreviewBanner from "../../components/PreviewBanner";
+import DelayedFormPopup from "../../components/ui/DelayedFormPopup";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
@@ -73,6 +74,7 @@ export default function MyApp({
   const hideFooter = Boolean(layoutOptions.hideFooter);
   const fallbackFooterText = layoutOptions.fallbackFooterText || "";
   const showFallbackFooter = hideFooter && fallbackFooterText;
+  const popupConfig = layoutOptions.popup || null;
 
   const [headerData, setHeaderData] = useState(initialHeader || null);
   const [footerData, setFooterData] = useState(initialFooter || null);
@@ -178,6 +180,7 @@ export default function MyApp({
           {fallbackFooterText}
         </div>
       )}
+      <DelayedFormPopup key={router.asPath} config={popupConfig} />
       <DelayedSpeedInsights />
     </div>
     </>
