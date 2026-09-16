@@ -98,24 +98,24 @@ export default function DelayedFormPopup({ config }) {
         if (event.target === event.currentTarget) setIsOpen(false);
       }}
     >
-      <div className="relative w-full max-w-[720px]">
+      <div className="relative w-full max-w-[680px]">
         <button
           type="button"
           onClick={() => setIsOpen(false)}
-          className="absolute right-2 top-2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/35 bg-[#061837] text-white transition hover:bg-white/10 cursor-pointer sm:right-2 sm:top-2"
+          className="absolute right-2 top-2 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-[#061837] text-white shadow-[0_10px_30px_rgba(0,0,0,0.28)] transition hover:bg-white/10 cursor-pointer sm:-right-4 sm:-top-4"
           aria-label="Close popup form"
         >
           <svg
             aria-hidden="true"
-            className="h-5 w-5"
+            className="h-6 w-6"
             viewBox="0 0 24 24"
             fill="none"
           >
-            <path d="M6.75 6.75L17.25 17.25" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-            <path d="M17.25 6.75L6.75 17.25" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            <path d="M6.75 6.75L17.25 17.25" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+            <path d="M17.25 6.75L6.75 17.25" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
         </button>
-        <div className="popup-cf7-panel max-h-[calc(100vh-32px)] w-full overflow-hidden rounded-[3px] border border-white/15 bg-[#061837] px-5 py-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:px-10 sm:py-10 ">
+        <div className="popup-cf7-panel max-h-[calc(100dvh-32px)] w-full overflow-hidden rounded-[3px] border border-white/15 bg-[#061837] px-5 py-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:px-8 sm:py-7">
           <div className="pr-10 sm:pr-0">
             <CF7ContactForm formId={config.form} sectionTheme="dark" />
           </div>
@@ -125,12 +125,18 @@ export default function DelayedFormPopup({ config }) {
               padding: 0 !important;
             }
 
+            .popup-cf7-panel form > p:first-of-type {
+              font-size: 20px !important;
+              line-height: 1.25 !important;
+              margin-bottom: 12px !important;
+            }
+
             .popup-cf7-panel form .mb-8 {
-              margin-bottom: 14px !important;
+              margin-bottom: 12px !important;
             }
 
             .popup-cf7-panel form .mb-4 {
-              margin-bottom: 10px !important;
+              margin-bottom: 8px !important;
             }
 
             .popup-cf7-panel form .mt-4 {
@@ -150,30 +156,36 @@ export default function DelayedFormPopup({ config }) {
             }
 
             .popup-cf7-panel form label {
-              padding-top: 10px !important;
-              padding-bottom: 10px !important;
+              padding-top: 9px !important;
+              padding-bottom: 9px !important;
             }
 
             .popup-cf7-panel form input:not([type="radio"]):not([type="checkbox"]):not([type="file"]),
             .popup-cf7-panel form select {
-              height: 42px !important;
-              min-height: 42px !important;
+              height: 40px !important;
+              min-height: 40px !important;
               padding-top: 0 !important;
               padding-bottom: 0 !important;
               font-size: 13px !important;
             }
 
             .popup-cf7-panel form textarea {
-              min-height: 68px !important;
-              padding-top: 10px !important;
-              padding-bottom: 10px !important;
+              min-height: 64px !important;
+              padding-top: 9px !important;
+              padding-bottom: 9px !important;
               font-size: 13px !important;
             }
 
+            .popup-cf7-panel form label:has(input[type="file"]) {
+              height: 44px !important;
+              margin-top: 10px !important;
+            }
+
             .popup-cf7-panel form button[type="submit"] {
-              min-height: 42px !important;
-              padding-top: 10px !important;
-              padding-bottom: 10px !important;
+              min-height: 40px !important;
+              padding-top: 9px !important;
+              padding-bottom: 9px !important;
+              font-size: 14px !important;
             }
           `}</style>
         </div>

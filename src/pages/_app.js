@@ -13,6 +13,7 @@ import {
 
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
+import HiddenFooterContent from "../../components/Footer/HiddenFooterContent";
 import DeferredGtm from "../../components/DeferredGtm";
 // DeferredCookiebot removed - GTM handles Cookiebot via its integration (implementation=gtm)
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
@@ -72,8 +73,8 @@ export default function MyApp({
   const layoutOptions = pageProps.layoutOptions || {};
   const hideHeader = Boolean(layoutOptions.hideHeader);
   const hideFooter = Boolean(layoutOptions.hideFooter);
-  const fallbackFooterText = layoutOptions.fallbackFooterText || "";
-  const showFallbackFooter = hideFooter && fallbackFooterText;
+  const hiddenFooterContent = layoutOptions.hiddenFooterContent || layoutOptions.fallbackFooterText || null;
+  const showHiddenFooterContent = hideFooter && hiddenFooterContent;
   const popupConfig = layoutOptions.popup || null;
 
   const [headerData, setHeaderData] = useState(initialHeader || null);
@@ -175,11 +176,7 @@ export default function MyApp({
       {pageProps.isPreview && <PreviewBanner />}
       <Component {...pageProps} lang={lang} />
       {!hideFooter && footerData && <Footer data={footerData} />}
-      {showFallbackFooter && (
-        <div className="w-full border-t border-[#2D4B83] bg-[#061837] px-6 py-3 text-center font-montserrat text-[12px] leading-relaxed text-white/70">
-          {fallbackFooterText}
-        </div>
-      )}
+      {showHiddenFooterContent && <HiddenFooterContent data={hiddenFooterContent} />}
       <DelayedFormPopup key={router.asPath} config={popupConfig} />
       <DelayedSpeedInsights />
     </div>
