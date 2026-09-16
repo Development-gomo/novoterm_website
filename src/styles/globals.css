@@ -22,7 +22,19 @@
   }
 }
 
+.mcp-text-lite{
+  color: #e3edff !important;
+  font-size:10px !important;
+  margin:0 !important;  
+}
 
+.text-white .mcp-text-lite {
+  color: #061837 !important;
+}
+
+.text-\[\#061837\] .mcp-text-lite {
+  color: #e3edff !important;
+}
 
 /* GLOBAL TYPOGRAPHY SYSTEM */
 @layer base {

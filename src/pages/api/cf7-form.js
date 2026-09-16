@@ -114,15 +114,29 @@ function stripTags(value = "") {
   return decodeEntities(value.replace(/<[^>]*>/g, "").trim());
 }
 
+function getAttributeValue(attributes = "", name = "") {
+  const match = attributes.match(new RegExp(`${name}=["']([^"']*)["']`, "i"));
+  return match ? decodeEntities(match[1]).trim() : "";
+}
+
 function extractFormCopy(content = "") {
-  const headings = [...content.matchAll(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gis)]
-    .map((match) => stripTags(match[1]))
+  const headingMatches = [...content.matchAll(/<h([1-6])([^>]*)>(.*?)<\/h\1>/gis)];
+  const headingItems = headingMatches
+    .map((match) => ({
+      level: Number(match[1]),
+      className: getAttributeValue(match[2], "class"),
+      text: stripTags(match[3]),
+    }))
+    .filter((item) => item.text);
+  const headings = headingItems
+    .filter((item) => !item.className)
+    .map((item) => item.text)
     .filter(Boolean);
   const notes = [...content.matchAll(/<p[^>]*class=["'][^"']*cf7-note[^"']*["'][^>]*>(.*?)<\/p>/gis)]
     .map((match) => stripTags(match[1]))
     .filter(Boolean);
 
-  return { headings, notes };
+  return { headings, headingItems, notes };
 }
 
 function extractShortcodeFieldNames(value = "") {
@@ -148,9 +162,14 @@ function extractFormLayout(content = "") {
     const line = lines[i].trim();
     if (!line) continue;
 
-    const headingMatch = line.match(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/i);
+    const headingMatch = line.match(/<h([1-6])([^>]*)>(.*?)<\/h\1>/i);
     if (headingMatch) {
-      layout.push({ type: "heading", text: stripTags(headingMatch[1]) });
+      layout.push({
+        type: "heading",
+        level: Number(headingMatch[1]),
+        className: getAttributeValue(headingMatch[2], "class"),
+        text: stripTags(headingMatch[3]),
+      });
       continue;
     }
 

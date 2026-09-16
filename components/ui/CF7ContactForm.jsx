@@ -83,6 +83,50 @@ function cf7Message(result, fallback) {
   return result?.message || result?.invalid_fields?.[0]?.message || fallback;
 }
 
+function getCf7PluginRedirect(result) {
+  const redirect = Array.isArray(result?.redirect)
+    ? result.redirect.find((item) => item?.redirect_url || item?.url)
+    : result?.redirect;
+  const url = redirect?.redirect_url || redirect?.url || "";
+  const delay = Math.max(Number(redirect?.delay || 0), 0);
+
+  return url ? { url, delay } : null;
+}
+
+function normalizeCf7RedirectUrl(url) {
+  if (!url) return "";
+  return url;
+}
+
+function redirectToCf7PluginUrl(result, router) {
+  const pluginRedirect = getCf7PluginRedirect(result);
+  if (!pluginRedirect) return false;
+
+  const redirectUrl = normalizeCf7RedirectUrl(pluginRedirect.url);
+  if (!redirectUrl) return false;
+
+  const navigate = () => {
+    if (/^https?:\/\//i.test(redirectUrl)) {
+      window.location.assign(redirectUrl);
+      return;
+    }
+
+    router.push(redirectUrl);
+  };
+
+  if (pluginRedirect.delay > 0) {
+    window.setTimeout(navigate, pluginRedirect.delay * 1000);
+  } else {
+    navigate();
+  }
+
+  return true;
+}
+
+function getHeadingTag(level) {
+  return `h${Math.min(Math.max(Number(level) || 3, 1), 6)}`;
+}
+
 async function submitCf7Form(formData, formId, lang) {
   const resolvedFormId = attachCf7Meta(formData, formId, lang);
   const res = await fetch(`/api/cf7-form?formId=${encodeURIComponent(resolvedFormId)}`, {
@@ -237,6 +281,8 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       const result = await submitCf7Form(formData, fallbackFormId, lang);
 
       if (result.status === "mail_sent") {
+        if (redirectToCf7PluginUrl(result, router)) return;
+
         const thankYouPage = type === "company"
           ? (lang === "en" ? "thank-you-company" : "thank-you-company")
           : (lang === "en" ? "thankyou-private" : "thank-you-private");
@@ -292,6 +338,8 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       const result = await submitCf7Form(formData, fallbackFormId, lang);
 
       if (result.status === "mail_sent") {
+        if (redirectToCf7PluginUrl(result, router)) return;
+
         const redirectPath = lang === "en"
           ? "/en/unsubscribe-thank-you"
           : "/unsubscribe-thank-you/";
@@ -336,6 +384,8 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       const result = await submitCf7Form(formData, fallbackFormId, lang);
 
       if (result.status === "mail_sent") {
+        if (redirectToCf7PluginUrl(result, router)) return;
+
         const redirectPath = lang === "en" ? "/en/event-thank-you" : "/event-thankyou/";
         router.push(redirectPath);
         return;
@@ -364,6 +414,8 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       const result = await submitCf7Form(formData, resolvedFormId, lang);
 
       if (result.status === "mail_sent") {
+        if (redirectToCf7PluginUrl(result, router)) return;
+
         if (mode === "newsletter_unsubscribe") {
           router.push(lang === "en" ? "/en/unsubscribe-thank-you" : "/unsubscribe-thank-you/");
           return;
@@ -607,13 +659,15 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
 
     layout.forEach((item, index) => {
       if (item.type === "heading" && item.text) {
+        const HeadingTag = getHeadingTag(item.level);
+
         items.push(
-          <p
+          <HeadingTag
             key={`heading-${index}-${item.text}`}
-            className={dynamicFieldLabelClass}
+            className={[dynamicFieldLabelClass, item.className].filter(Boolean).join(" ")}
           >
             {item.text}
-          </p>
+          </HeadingTag>
         );
         return;
       }
@@ -681,6 +735,9 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     const privateValue = userTypeField?.values?.[1] || "PRIVATPERSON";
     const areaHasFirstLabel = areaField?.options?.includes("first_as_label");
     const formCopy = cf7Form?.copy || {};
+    const customHeadings = Array.isArray(formCopy.headingItems)
+      ? formCopy.headingItems.filter((item) => item?.className && item?.text)
+      : [];
     const firstHeading = formCopy.headings?.[0] || t("Företagskund eller privatperson? Välj nedan:", "Business client or private individual? Select below:");
     const secondHeading = formCopy.headings?.[1] || t("Berätta om dig själv", "Tell us about you");
     const note = formCopy.notes?.[0] || `* ${t("Obligatoriskt fält", "Mandatory field")}`;
@@ -742,6 +799,19 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
             {note}
           </p>
         </div>
+
+        {customHeadings.map((item, index) => {
+          const HeadingTag = getHeadingTag(item.level);
+
+          return (
+            <HeadingTag
+              key={`${item.className}-${index}`}
+              className={item.className}
+            >
+              {item.text}
+            </HeadingTag>
+          );
+        })}
 
         <div className="space-y-4">
           {renderStyledInput(companyField)}
