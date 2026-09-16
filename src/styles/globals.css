@@ -36,6 +36,10 @@
   color: #e3edff !important;
 }
 
+.grecaptcha-badge {
+  z-index: 2147483647 !important;
+}
+
 /* GLOBAL TYPOGRAPHY SYSTEM */
 @layer base {
   html {
