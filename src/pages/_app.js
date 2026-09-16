@@ -19,6 +19,7 @@ import DeferredGtm from "../../components/DeferredGtm";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 import PreviewBanner from "../../components/PreviewBanner";
 import DelayedFormPopup from "../../components/ui/DelayedFormPopup";
+import { loadRecaptchaScript } from "../../lib/recaptcha";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
@@ -101,6 +102,12 @@ export default function MyApp({
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  useEffect(() => {
+    loadRecaptchaScript().catch(() => {
+      // Form submission can still continue if reCAPTCHA is unavailable.
+    });
+  }, []);
 
   // Re-fetch header + menu on client-side locale changes
   useEffect(() => {
