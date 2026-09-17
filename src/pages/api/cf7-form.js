@@ -1,6 +1,9 @@
 const WP_API = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
 const WP_USER = process.env.WP_API_USER;
 const WP_PASS = process.env.WP_API_PASS;
+const RECAPTCHA_V2_SECRET_KEY = process.env.RECAPTCHA_V2_SECRET_KEY || "";
+const RECAPTCHA_MARKER_FIELD = "__cf7_has_recaptcha";
+const RECAPTCHA_SHORTCODE_FIELD = "__recaptcha";
 
 export const config = {
   api: {
@@ -15,6 +18,62 @@ function readRawBody(req) {
     req.on("end", () => resolve(Buffer.concat(chunks)));
     req.on("error", reject);
   });
+}
+
+function extractMultipartValue(body, fieldName) {
+  const content = body.toString("utf8");
+  const escapedFieldName = fieldName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const pattern = new RegExp(
+    `name=["']${escapedFieldName}["'][^\\r\\n]*\\r?\\n\\r?\\n([\\s\\S]*?)(?:\\r?\\n--|$)`
+  );
+  const match = content.match(pattern);
+
+  return match?.[1]?.trim() || "";
+}
+
+function extractBodyValue(body, contentType = "", fieldName = "") {
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    return new URLSearchParams(body.toString("utf8")).get(fieldName) || "";
+  }
+
+  return extractMultipartValue(body, fieldName);
+}
+
+function getClientIp(req) {
+  const forwardedFor = req.headers["x-forwarded-for"];
+  if (typeof forwardedFor === "string" && forwardedFor) return forwardedFor.split(",")[0].trim();
+  return req.socket?.remoteAddress || "";
+}
+
+async function verifyRecaptchaToken(token, req) {
+  if (!RECAPTCHA_V2_SECRET_KEY) {
+    return {
+      success: false,
+      message: "reCAPTCHA secret key is missing.",
+    };
+  }
+
+  const body = new URLSearchParams({
+    secret: RECAPTCHA_V2_SECRET_KEY,
+    response: token,
+  });
+  const remoteIp = getClientIp(req);
+
+  if (remoteIp) body.set("remoteip", remoteIp);
+
+  const verifyRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body,
+  });
+  const result = await verifyRes.json().catch(() => ({}));
+
+  return {
+    success: Boolean(result.success),
+    message: result.success ? "" : "Please confirm that you are not a robot.",
+  };
 }
 
 function getAuthHeaders() {
@@ -64,11 +123,12 @@ function parseShortcodeFields(content = "") {
     const type = tokens[0].value;
     const basetype = type.replace("*", "");
     const isSubmit = basetype === "submit";
-    const name = isSubmit ? "" : tokens[1]?.value;
+    const isRecaptcha = basetype === "recaptcha";
+    const name = isSubmit ? "" : isRecaptcha ? RECAPTCHA_SHORTCODE_FIELD : tokens[1]?.value;
 
     if (!isSubmit && !name) continue;
 
-    const bodyTokens = tokens.slice(isSubmit ? 1 : 2);
+    const bodyTokens = tokens.slice(isSubmit || isRecaptcha ? 1 : 2);
     const labels = bodyTokens.filter((token) => token.quoted).map((token) => token.value);
     const options = bodyTokens.filter((token) => !token.quoted).map((token) => token.value);
 
@@ -147,6 +207,11 @@ function extractShortcodeFieldNames(value = "") {
   while ((match = shortcodePattern.exec(value))) {
     const tag = match[1].replace("*", "");
     const name = match[2]?.replace(/^["']|["']$/g, "");
+
+    if (tag === "recaptcha") {
+      names.push(RECAPTCHA_SHORTCODE_FIELD);
+      continue;
+    }
 
     if (tag !== "submit" && name) names.push(name);
   }
@@ -257,23 +322,46 @@ export default async function handler(req, res) {
 
   try {
     const body = await readRawBody(req);
+    const contentType = req.headers["content-type"] || "";
+    const recaptchaExpected = extractBodyValue(body, contentType, RECAPTCHA_MARKER_FIELD) === "1";
+
+    if (recaptchaExpected) {
+      const recaptchaToken = extractBodyValue(body, contentType, "g-recaptcha-response");
+
+      if (!recaptchaToken) {
+        return res.status(400).json({
+          status: "validation_failed",
+          message: "Please confirm that you are not a robot.",
+        });
+      }
+
+      const verification = await verifyRecaptchaToken(recaptchaToken, req);
+
+      if (!verification.success) {
+        return res.status(400).json({
+          status: "validation_failed",
+          message: verification.message,
+        });
+      }
+    }
+
     const wpRes = await fetch(
       `${WP_API}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`,
       {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": req.headers["content-type"] || "multipart/form-data",
+          "Content-Type": contentType || "multipart/form-data",
         },
         body,
       }
     );
 
     const text = await wpRes.text();
-    const contentType = wpRes.headers.get("content-type") || "application/json";
+    const responseContentType = wpRes.headers.get("content-type") || "application/json";
 
     res.status(wpRes.status);
-    res.setHeader("Content-Type", contentType);
+    res.setHeader("Content-Type", responseContentType);
     return res.send(text);
   } catch (error) {
     return res.status(502).json({

@@ -1,7 +1,12 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { getRecaptchaToken } from "../../lib/recaptcha";
+import {
+  getRecaptchaToken,
+  getRecaptchaV2SiteKey,
+  isRecaptchaV2Enabled,
+  loadRecaptchaV2Script,
+} from "../../lib/recaptcha";
 
 const FORM_IDS = {
   en: 20289,
@@ -12,6 +17,8 @@ const CF7_LOCALES = {
   en: "en_US",
   sv: "sv_SE",
 };
+const RECAPTCHA_MARKER_FIELD = "__cf7_has_recaptcha";
+const RECAPTCHA_SHORTCODE_FIELD = "__recaptcha";
 
 function normalizeFormId(formId) {
   if (Array.isArray(formId)) return normalizeFormId(formId[0]);
@@ -126,6 +133,47 @@ function redirectToCf7PluginUrl(result, router) {
 
 function getHeadingTag(level) {
   return `h${Math.min(Math.max(Number(level) || 3, 1), 6)}`;
+}
+
+function RecaptchaField({ field, theme = "light", onError }) {
+  const containerRef = useRef(null);
+  const widgetIdRef = useRef(null);
+  const siteKey = getRecaptchaV2SiteKey();
+  const options = field?.options || [];
+  const size = options.includes("size:compact") ? "compact" : "normal";
+  const widgetTheme = options.includes("theme:dark") ? "dark" : theme;
+
+  useEffect(() => {
+    if (!siteKey || !containerRef.current) return undefined;
+
+    let cancelled = false;
+
+    loadRecaptchaV2Script()
+      .then((grecaptcha) => {
+        if (cancelled || !grecaptcha?.render || !containerRef.current || widgetIdRef.current !== null) return;
+
+        widgetIdRef.current = grecaptcha.render(containerRef.current, {
+          sitekey: siteKey,
+          theme: widgetTheme,
+          size,
+          "error-callback": onError,
+        });
+      })
+      .catch(onError);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [onError, siteKey, size, widgetTheme]);
+
+  if (!siteKey) return null;
+
+  return (
+    <div className="my-4 max-w-full overflow-hidden">
+      <input type="hidden" name={RECAPTCHA_MARKER_FIELD} value="1" />
+      <div ref={containerRef} />
+    </div>
+  );
 }
 
 async function submitCf7Form(formData, formId, lang) {
@@ -312,6 +360,13 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
   const textColor = isParentLight ? "text-[#061837]" : "text-white";
   const borderColor = isParentLight ? "border-[#061837]" : "border-white/50";
   const placeholderColor = isParentLight ? "placeholder-[#061837]/70" : "placeholder-white/70";
+  const recaptchaTheme = isParentLight ? "light" : "dark";
+
+  function handleRecaptchaError() {
+    if (!isRecaptchaV2Enabled()) return;
+
+    setStatus(t("reCAPTCHA kunde inte laddas. Försök igen senare.", "reCAPTCHA could not load. Please try again later."));
+  }
 
   const isNewsletter = mode === "newsletter_unsubscribe";
   const newsletterTextColor = isParentLight ? "text-[#061837]" : "text-white";
@@ -474,6 +529,17 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
   function renderDynamicField(field) {
     if (!field?.name && field?.basetype !== "submit") return null;
     if (field.basetype === "submit") return null;
+
+    if (field.basetype === "recaptcha" || field.name === RECAPTCHA_SHORTCODE_FIELD) {
+      return (
+        <RecaptchaField
+          key={field.name}
+          field={field}
+          theme={recaptchaTheme}
+          onError={handleRecaptchaError}
+        />
+      );
+    }
 
     const required = isRequiredField(field);
     const label = getFieldLabel(field);

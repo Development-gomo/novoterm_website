@@ -19,7 +19,7 @@ import DeferredGtm from "../../components/DeferredGtm";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 import PreviewBanner from "../../components/PreviewBanner";
 import DelayedFormPopup from "../../components/ui/DelayedFormPopup";
-import { loadRecaptchaScript } from "../../lib/recaptcha";
+import { isRecaptchaV2Enabled, loadRecaptchaScript } from "../../lib/recaptcha";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
@@ -104,6 +104,8 @@ export default function MyApp({
   }, [lang]);
 
   useEffect(() => {
+    if (isRecaptchaV2Enabled()) return;
+
     loadRecaptchaScript().catch(() => {
       // Form submission can still continue if reCAPTCHA is unavailable.
     });
