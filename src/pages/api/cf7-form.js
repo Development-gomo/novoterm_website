@@ -1,7 +1,6 @@
 const WP_API = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
 const WP_USER = process.env.WP_API_USER;
 const WP_PASS = process.env.WP_API_PASS;
-const RECAPTCHA_V2_SECRET_KEY = process.env.RECAPTCHA_V2_SECRET_KEY || "";
 const RECAPTCHA_MARKER_FIELD = "__cf7_has_recaptcha";
 const RECAPTCHA_SHORTCODE_FIELD = "__recaptcha";
 
@@ -39,43 +38,6 @@ function extractBodyValue(body, contentType = "", fieldName = "") {
   return extractMultipartValue(body, fieldName);
 }
 
-function getClientIp(req) {
-  const forwardedFor = req.headers["x-forwarded-for"];
-  if (typeof forwardedFor === "string" && forwardedFor) return forwardedFor.split(",")[0].trim();
-  return req.socket?.remoteAddress || "";
-}
-
-async function verifyRecaptchaToken(token, req) {
-  if (!RECAPTCHA_V2_SECRET_KEY) {
-    return {
-      success: false,
-      message: "reCAPTCHA secret key is missing.",
-    };
-  }
-
-  const body = new URLSearchParams({
-    secret: RECAPTCHA_V2_SECRET_KEY,
-    response: token,
-  });
-  const remoteIp = getClientIp(req);
-
-  if (remoteIp) body.set("remoteip", remoteIp);
-
-  const verifyRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body,
-  });
-  const result = await verifyRes.json().catch(() => ({}));
-
-  return {
-    success: Boolean(result.success),
-    message: result.success ? "" : "Please confirm that you are not a robot.",
-  };
-}
-
 function getAuthHeaders() {
   if (!WP_USER || !WP_PASS) return null;
 
@@ -85,10 +47,12 @@ function getAuthHeaders() {
 }
 
 function normalizeField(field) {
+  const basetype = field.basetype || field.type?.replace("*", "");
+
   return {
     type: field.type,
-    basetype: field.basetype,
-    name: field.name,
+    basetype,
+    name: basetype === "recaptcha" ? RECAPTCHA_SHORTCODE_FIELD : field.name,
     options: field.options || [],
     labels: field.labels || [],
     values: field.values || [],
@@ -148,10 +112,10 @@ function parseShortcodeFields(content = "") {
 
 function mergeFields(apiFields = [], content = "") {
   const normalizedFields = apiFields.map(normalizeField);
-  const fieldMap = new Map(normalizedFields.map((field) => [field.name || `submit-${field.type}`, field]));
+  const fieldMap = new Map(normalizedFields.map((field) => [field.name || `${field.basetype}-${field.type}`, field]));
 
   parseShortcodeFields(content).forEach((field) => {
-    const key = field.name || `submit-${field.type}`;
+    const key = field.name || `${field.basetype}-${field.type}`;
     if (!fieldMap.has(key)) {
       fieldMap.set(key, field);
     }
@@ -332,15 +296,6 @@ export default async function handler(req, res) {
         return res.status(400).json({
           status: "validation_failed",
           message: "Please confirm that you are not a robot.",
-        });
-      }
-
-      const verification = await verifyRecaptchaToken(recaptchaToken, req);
-
-      if (!verification.success) {
-        return res.status(400).json({
-          status: "validation_failed",
-          message: verification.message,
         });
       }
     }

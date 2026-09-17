@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import {
-  getRecaptchaToken,
   getRecaptchaV2SiteKey,
   isRecaptchaV2Enabled,
   loadRecaptchaV2Script,
@@ -137,11 +136,16 @@ function getHeadingTag(level) {
 
 function RecaptchaField({ field, theme = "light", onError }) {
   const containerRef = useRef(null);
+  const onErrorRef = useRef(onError);
   const widgetIdRef = useRef(null);
   const siteKey = getRecaptchaV2SiteKey();
   const options = field?.options || [];
   const size = options.includes("size:compact") ? "compact" : "normal";
   const widgetTheme = options.includes("theme:dark") ? "dark" : theme;
+
+  useEffect(() => {
+    onErrorRef.current = onError;
+  }, [onError]);
 
   useEffect(() => {
     if (!siteKey || !containerRef.current) return undefined;
@@ -156,20 +160,20 @@ function RecaptchaField({ field, theme = "light", onError }) {
           sitekey: siteKey,
           theme: widgetTheme,
           size,
-          "error-callback": onError,
+          "error-callback": () => onErrorRef.current(),
         });
       })
-      .catch(onError);
+      .catch(() => onErrorRef.current());
 
     return () => {
       cancelled = true;
     };
-  }, [onError, siteKey, size, widgetTheme]);
+  }, [siteKey, size, widgetTheme]);
 
   if (!siteKey) return null;
 
   return (
-    <div className="my-4 max-w-full overflow-hidden">
+    <div className="mb-4 max-w-full overflow-hidden">
       <input type="hidden" name={RECAPTCHA_MARKER_FIELD} value="1" />
       <div ref={containerRef} />
     </div>
@@ -178,11 +182,6 @@ function RecaptchaField({ field, theme = "light", onError }) {
 
 async function submitCf7Form(formData, formId, lang) {
   const resolvedFormId = attachCf7Meta(formData, formId, lang);
-  const recaptchaToken = await getRecaptchaToken(`cf7_form_${resolvedFormId}`);
-
-  if (recaptchaToken) {
-    formData.set("_wpcf7_recaptcha_response", recaptchaToken);
-  }
 
   const res = await fetch(`/api/cf7-form?formId=${encodeURIComponent(resolvedFormId)}`, {
     method: "POST",
@@ -349,7 +348,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
         setStatus(cf7Message(result, "Something went wrong."));
       }
     } catch (err) {
-      setStatus("Submission failed. Please try again later.");
+      setStatus(err?.message || "Submission failed. Please try again later.");
     }
 
     setLoading(false);
@@ -412,7 +411,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
       setStatus(cf7Message(result, "Something went wrong."));
     } catch (err) {
-      setStatus("Submission failed. Please try again later.");
+      setStatus(err?.message || "Submission failed. Please try again later.");
     }
 
     setLoading(false);
@@ -456,7 +455,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
       setStatus(cf7Message(result, "Something went wrong."));
     } catch (err) {
-      setStatus("Submission failed. Please try again later.");
+      setStatus(err?.message || "Submission failed. Please try again later.");
     }
 
     setLoading(false);
@@ -495,7 +494,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
       setStatus(cf7Message(result, "Something went wrong."));
     } catch (err) {
-      setStatus("Submission failed. Please try again later.");
+      setStatus(err?.message || "Submission failed. Please try again later.");
     }
 
     setLoading(false);
@@ -526,20 +525,24 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     return choice.includes("PRIVATPERSON") || choice.includes("PRIVATE INDIVIDUAL");
   }
 
-  function renderDynamicField(field) {
-    if (!field?.name && field?.basetype !== "submit") return null;
-    if (field.basetype === "submit") return null;
+  function isRecaptchaField(field) {
+    return field?.basetype === "recaptcha" || field?.name === RECAPTCHA_SHORTCODE_FIELD;
+  }
 
-    if (field.basetype === "recaptcha" || field.name === RECAPTCHA_SHORTCODE_FIELD) {
+  function renderDynamicField(field) {
+    if (isRecaptchaField(field)) {
       return (
         <RecaptchaField
-          key={field.name}
+          key={field.name || RECAPTCHA_SHORTCODE_FIELD}
           field={field}
           theme={recaptchaTheme}
           onError={handleRecaptchaError}
         />
       );
     }
+
+    if (!field?.name && field?.basetype !== "submit") return null;
+    if (field.basetype === "submit") return null;
 
     const required = isRequiredField(field);
     const label = getFieldLabel(field);
@@ -726,6 +729,10 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     return fields.find((field) => field.name === name);
   }
 
+  function getRecaptchaField(fields) {
+    return fields.find(isRecaptchaField);
+  }
+
   function renderDynamicLayout(fields, layout = []) {
     const renderedNames = new Set();
     const items = [];
@@ -760,7 +767,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       if (item.type === "row") {
         const rowFields = item.fields
           .map((name) => getDynamicFieldByName(fields, name))
-          .filter(Boolean);
+          .filter((field) => field && !isRecaptchaField(field));
 
         rowFields.forEach((field) => renderedNames.add(field.name));
 
@@ -779,7 +786,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
 
       if (item.type === "field") {
         const field = getDynamicFieldByName(fields, item.name);
-        if (!field) return;
+        if (!field || isRecaptchaField(field)) return;
 
         renderedNames.add(field.name);
         items.push(renderDynamicField(field));
@@ -787,7 +794,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     });
 
     fields
-      .filter((field) => field.name && field.basetype !== "submit" && !renderedNames.has(field.name))
+      .filter((field) => field.name && field.basetype !== "submit" && !isRecaptchaField(field) && !renderedNames.has(field.name))
       .forEach((field) => items.push(renderDynamicField(field)));
 
     return items;
@@ -804,6 +811,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       messageField,
       fileField,
     } = getStyledContactFields(fields);
+    const recaptchaField = getRecaptchaField(fields);
     const companyValue = userTypeField?.values?.[0] || "FÖRETAG";
     const privateValue = userTypeField?.values?.[1] || "PRIVATPERSON";
     const areaHasFirstLabel = areaField?.options?.includes("first_as_label");
@@ -953,6 +961,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
           {Object.keys(errors).length > 0 && (
             <p className="text-red-500 text-[13px] mb-3">{Object.values(errors).find(Boolean)}</p>
           )}
+          {recaptchaField && renderDynamicField(recaptchaField)}
           <button
             type="submit"
             disabled={loading || (userTypeField && type !== "company")}
@@ -979,6 +988,8 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     }
 
     if (cf7Form?.fields?.length) {
+      const recaptchaField = getRecaptchaField(cf7Form.fields);
+
       return (
         <form
           onSubmit={handleDynamicSubmit}
@@ -995,6 +1006,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
             {Object.keys(errors).length > 0 && (
               <p className="text-red-500 text-[13px] mb-3">{Object.values(errors).find(Boolean)}</p>
             )}
+            {recaptchaField && renderDynamicField(recaptchaField)}
             <button
               type="submit"
               disabled={loading}
