@@ -13,6 +13,7 @@ export default function ServicesHeroFormSection({
   section_id,
   background_image,
   select_form,
+  form_heading,
   sectionId,
 }) {
   const bgUrl = pickWpImageUrl(background_image, "heroNext");
@@ -84,6 +85,12 @@ export default function ServicesHeroFormSection({
           </div>
 
           <div className="hero-form-cf7 w-full rounded-[3px] border border-white/20 bg-[#061837]/20 p-4">
+            {form_heading && (
+              <h2
+                className="mb-4 font-heading text-[22px] font-semibold leading-tight text-white sm:text-[26px]"
+                dangerouslySetInnerHTML={{ __html: form_heading }}
+              />
+            )}
             <CF7ContactForm formId={select_form} sectionTheme="dark" />
             <style jsx global>{`
               .hero-form-cf7 form {

@@ -1,4 +1,6 @@
 import "@/styles/globals.css";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -58,6 +60,28 @@ function buildHeaderData(header, menu) {
     languages: Object.values(header.languages || {}),
     menu: Array.isArray(menu.items) ? menu.items : menu,
   };
+}
+
+function LogoOnlyHeader({ logo }) {
+  if (!logo) return null;
+
+  return (
+    <header className="absolute top-0 left-0 z-[9999] w-full">
+      <div className="web-width mx-auto flex items-center py-4 px-6 lg:px-0">
+        <Link href="/" className="shrink-0" aria-label="Novoterm home">
+          <Image
+            src={logo}
+            alt="Novoterm Logo"
+            width={186}
+            height={32}
+            sizes="(max-width: 1024px) 148px, 186px"
+            className="h-7 md:h-[30px] lg:h-8 w-auto"
+            priority
+          />
+        </Link>
+      </div>
+    </header>
+  );
 }
 
 export default function MyApp({
@@ -164,7 +188,7 @@ export default function MyApp({
       {/* GTM — consent-gated internally via GTM's Cookiebot integration */}
       <DeferredGtm />
 
-    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable}`}>
+    <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} relative`}>
       {!hideHeader && headerData && (
         <Header
           {...headerData}
@@ -173,6 +197,7 @@ export default function MyApp({
           translations={pageProps.translations || null}
         />
       )}
+      {hideHeader && headerData && <LogoOnlyHeader logo={headerData.logo} />}
       {pageProps.isPreview && <PreviewBanner />}
       <Component {...pageProps} lang={lang} />
       {!hideFooter && footerData && <Footer data={footerData} />}

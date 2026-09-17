@@ -134,7 +134,7 @@ function getHeadingTag(level) {
   return `h${Math.min(Math.max(Number(level) || 3, 1), 6)}`;
 }
 
-function RecaptchaField({ field, theme = "light", onError }) {
+function RecaptchaField({ field, theme = "light", onError, resetCounter = 0 }) {
   const containerRef = useRef(null);
   const onErrorRef = useRef(onError);
   const widgetIdRef = useRef(null);
@@ -170,6 +170,11 @@ function RecaptchaField({ field, theme = "light", onError }) {
     };
   }, [siteKey, size, widgetTheme]);
 
+  useEffect(() => {
+    if (widgetIdRef.current === null || !window.grecaptcha?.reset) return;
+    window.grecaptcha.reset(widgetIdRef.current);
+  }, [resetCounter]);
+
   if (!siteKey) return null;
 
   return (
@@ -188,9 +193,19 @@ async function submitCf7Form(formData, formId, lang) {
     body: formData,
   });
 
-  const result = await res.json().catch(() => ({}));
+  const text = await res.text();
+  const result = text
+    ? (() => {
+        try {
+          return JSON.parse(text);
+        } catch {
+          return {};
+        }
+      })()
+    : {};
+
   if (!res.ok && !result.status) {
-    throw new Error(result.message || "Submission failed.");
+    throw new Error(result.message || text || "Submission failed.");
   }
 
   return result;
@@ -229,7 +244,12 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
   const [errors, setErrors] = useState({});
   const [cf7Form, setCf7Form] = useState(null);
   const [cf7Loading, setCf7Loading] = useState(shouldLoadCf7);
+  const [recaptchaResetCounter, setRecaptchaResetCounter] = useState(0);
   const fallbackFormId = cf7Form?.fields?.length ? formId : undefined;
+
+  function resetRecaptchaChallenge() {
+    setRecaptchaResetCounter((current) => current + 1);
+  }
 
   useEffect(() => {
     if (!shouldLoadCf7) {
@@ -346,9 +366,11 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
       } else {
         setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
         setStatus(cf7Message(result, "Something went wrong."));
+        resetRecaptchaChallenge();
       }
     } catch (err) {
       setStatus(err?.message || "Submission failed. Please try again later.");
+      resetRecaptchaChallenge();
     }
 
     setLoading(false);
@@ -410,8 +432,10 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
 
       setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
       setStatus(cf7Message(result, "Something went wrong."));
+      resetRecaptchaChallenge();
     } catch (err) {
       setStatus(err?.message || "Submission failed. Please try again later.");
+      resetRecaptchaChallenge();
     }
 
     setLoading(false);
@@ -454,8 +478,10 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
 
       setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
       setStatus(cf7Message(result, "Something went wrong."));
+      resetRecaptchaChallenge();
     } catch (err) {
       setStatus(err?.message || "Submission failed. Please try again later.");
+      resetRecaptchaChallenge();
     }
 
     setLoading(false);
@@ -493,8 +519,10 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
 
       setErrors(cf7InvalidFieldsToErrors(result.invalid_fields));
       setStatus(cf7Message(result, "Something went wrong."));
+      resetRecaptchaChallenge();
     } catch (err) {
       setStatus(err?.message || "Submission failed. Please try again later.");
+      resetRecaptchaChallenge();
     }
 
     setLoading(false);
@@ -537,6 +565,7 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
           field={field}
           theme={recaptchaTheme}
           onError={handleRecaptchaError}
+          resetCounter={recaptchaResetCounter}
         />
       );
     }

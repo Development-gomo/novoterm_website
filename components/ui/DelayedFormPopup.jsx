@@ -117,6 +117,12 @@ export default function DelayedFormPopup({ config }) {
         </button>
         <div className="popup-cf7-panel max-h-[calc(100dvh-32px)] w-full overflow-hidden rounded-[3px] border border-white/15 bg-[#061837] px-5 py-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)] sm:px-8 sm:py-7">
           <div className="pr-10 sm:pr-0">
+            {config.heading && (
+              <h2
+                className="mb-4 font-heading text-[24px] font-semibold leading-tight text-white sm:text-[30px]"
+                dangerouslySetInnerHTML={{ __html: config.heading }}
+              />
+            )}
             <CF7ContactForm formId={config.form} sectionTheme="dark" />
           </div>
           <style jsx global>{`
