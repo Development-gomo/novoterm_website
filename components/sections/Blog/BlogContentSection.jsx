@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import BlogSlider from "../../Sliders/Blog_sliders/BlogSlider";
@@ -7,6 +8,8 @@ import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 import { plainTextFromHtml } from "../../../lib/html";
 import CF7ContactForm from "../../ui/CF7ContactForm";
+import MarketingConsentVideoEmbed from "../../ui/MarketingConsentVideoEmbed";
+import { getYouTubeNoCookieEmbedUrl } from "../../../lib/videoEmbed";
 import AuthorCard from "./AuthorCard";
 
 const excerptMarkerPattern =
@@ -39,7 +42,81 @@ function getShortcodeAttributes(value = "") {
   return attributes;
 }
 
-function ArticleContent({ html = "" }) {
+function getHtmlAttribute(tag = "", name) {
+  const match = tag.match(
+    new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i")
+  );
+  return match ? match[1] ?? match[2] ?? match[3] ?? "" : "";
+}
+
+function decodeHtmlEntities(value = "") {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
+function escapeHtmlAttribute(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+const iframePattern = /<iframe\b[^>]*>(?:[\s\S]*?<\/iframe>)?/gi;
+
+// YouTube iframes in WP content would load before Cookiebot runs, so swap
+// them in place for an empty slot that ConsentVideoPortals fills on the client.
+// The slot is a block <span> so it stays valid inside <p> and keeps the
+// surrounding markup (e.g. grid columns) intact. Other iframes are untouched.
+function replaceYouTubeIframesWithSlots(html = "") {
+  return html.replace(iframePattern, (iframe) => {
+    const openingTag = iframe.match(/<iframe\b[^>]*>/i)[0];
+    const src = getYouTubeNoCookieEmbedUrl(
+      decodeHtmlEntities(getHtmlAttribute(openingTag, "src"))
+    );
+    if (!src) return iframe;
+
+    const rawHeight = getHtmlAttribute(openingTag, "height");
+    const height = /^\d+$/.test(rawHeight) ? Number(rawHeight) : 450;
+    const title =
+      decodeHtmlEntities(getHtmlAttribute(openingTag, "title")) || "YouTube video";
+
+    return `<span data-consent-video-src="${escapeHtmlAttribute(src)}" data-consent-video-title="${escapeHtmlAttribute(title)}" data-consent-video-height="${height}" style="display:block;width:100%;min-height:${height}px;background:#061837"></span>`;
+  });
+}
+
+function ConsentVideoPortals({ containerRef, html }) {
+  const [slots, setSlots] = useState([]);
+
+  useEffect(() => {
+    const nodes = containerRef.current?.querySelectorAll("[data-consent-video-src]") || [];
+    setSlots(
+      Array.from(nodes).map((el) => ({
+        el,
+        src: el.dataset.consentVideoSrc,
+        title: el.dataset.consentVideoTitle,
+        height: Number(el.dataset.consentVideoHeight) || 450,
+      }))
+    );
+  }, [containerRef, html]);
+
+  return slots.map((slot, index) =>
+    createPortal(
+      <MarketingConsentVideoEmbed
+        src={slot.src}
+        title={slot.title}
+        height={slot.height}
+        iframeClassName="block w-full"
+      />,
+      slot.el,
+      `consent-video-${index}`
+    )
+  );
+}
+
+function buildArticleParts(html = "") {
   const parts = [];
   let lastIndex = 0;
   let match;
@@ -80,7 +157,24 @@ function ArticleContent({ html = "" }) {
     );
   }
 
-  return parts.length ? parts : null;
+  return parts;
+}
+
+function ArticleContent({ html: rawHtml = "" }) {
+  const containerRef = useRef(null);
+  const html = useMemo(() => replaceYouTubeIframesWithSlots(rawHtml), [rawHtml]);
+  // Memoized so parent re-renders reuse the same elements: React 19 otherwise
+  // rewrites innerHTML on every render, wiping out the portaled video embeds.
+  const parts = useMemo(() => buildArticleParts(html), [html]);
+
+  if (!parts.length) return null;
+
+  return (
+    <div ref={containerRef} className="contents">
+      {parts}
+      <ConsentVideoPortals containerRef={containerRef} html={html} />
+    </div>
+  );
 }
 
 const translations = {

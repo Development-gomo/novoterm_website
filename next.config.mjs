@@ -107,7 +107,16 @@ const nextConfig = {
   },
 
   async redirects() {
+    // With i18n, `locale: false` sources are matched against the path with the
+    // default locale prepended, so Swedish (unprefixed) URLs need the `/sv` prefix.
     return [
+      // Old English video URL that lived under the Swedish /watch path
+      {
+        source: '/sv/watch/translations-of-training-and-leadership-material',
+        destination: '/en/videos/training-leadership-translation',
+        permanent: true,
+        locale: false,
+      },
       {
         source: '/en/watch/:slug*',
         destination: '/en/videos/:slug*',
@@ -115,8 +124,15 @@ const nextConfig = {
         locale: false,
       },
       {
-        source: '/watch/:slug*',
+        source: '/sv/watch/:slug*',
         destination: '/videor/:slug*',
+        permanent: true,
+        locale: false,
+      },
+      // Swedish video listing moved from /videos to /videor
+      {
+        source: '/sv/videos',
+        destination: '/videor',
         permanent: true,
         locale: false,
       },

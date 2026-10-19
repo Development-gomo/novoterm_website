@@ -8,6 +8,7 @@ import {
   fetchHeadlessVideoBySlug,
   fetchHeadlessVideoSlugs,
   fetchHeadlessVideoTranslationsBySlug,
+  fetchRenamedHeadlessVideoSlug,
   getWatchPath,
   secondsToReadableDuration,
   durationToReadableDuration,
@@ -138,6 +139,14 @@ export async function getVideoStaticProps({ params, locale }) {
   const video = await fetchHeadlessVideoBySlug(params.slug, lang, { throwOnError: true });
 
   if (!video) {
+    const renamedSlug = await fetchRenamedHeadlessVideoSlug(params.slug, lang);
+    if (renamedSlug) {
+      return {
+        redirect: { destination: getWatchPath(renamedSlug, lang), permanent: true },
+        revalidate: REVALIDATE_SECONDS,
+      };
+    }
+
     return { notFound: true, revalidate: REVALIDATE_SECONDS };
   }
 

@@ -129,6 +129,8 @@ function mergeVideosWithExisting(existingVideos = [], incomingVideos = []) {
 
     return {
       ...video,
+      // Browser fetches skip YouTube enrichment, so keep the server-resolved date.
+      uploadDate: existing.uploadDate || video.uploadDate,
       image:
         video.image && video.image !== "/userfallback.webp"
           ? video.image

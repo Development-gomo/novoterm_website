@@ -16,6 +16,11 @@ const POST_TYPES = [
   ["case_study",  { sv: "/kundcase",  en: "/client-case" }],
 ];
 
+// WP page slugs served at a different public path (mirrors PAGE_SLUG_ALIASES
+// in [[...slug]].js) — the Swedish "videos" page lives at /videor.
+const PAGE_PATH_ALIASES = {
+  sv: { videos: "videor" },
+};
 
 const STATIC_SITEMAP_URLS = [
   {
@@ -111,7 +116,7 @@ export async function getServerSideProps({ res }) {
         // Pages: "home" slug → root, others → /slug
         let path;
         if (endpoint === "pages") {
-          path = slug === "home" ? "" : `/${slug}`;
+          path = slug === "home" ? "" : `/${PAGE_PATH_ALIASES[lang]?.[slug] || slug}`;
         } else {
           path = `${pathPrefix}/${slug}`;
         }
