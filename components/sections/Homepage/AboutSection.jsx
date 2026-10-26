@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import DotIndicator from "../../ui/DotIndicator";
-import MarketingConsentVideoEmbed from "../../ui/MarketingConsentVideoEmbed";
+import MarketingConsentVideoEmbed, { YouTubeWatchLink } from "../../ui/MarketingConsentVideoEmbed";
 import { wpToPath } from "../../../lib/api";
 import { getYouTubeNoCookieEmbedUrl } from "../../../lib/videoEmbed";
 
@@ -85,6 +85,12 @@ export default function AboutSection({
                 </span>
               </div>
             </div>
+            {youtubeEmbed && (
+              <YouTubeWatchLink
+                src={youtubeEmbed}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap"
+              />
+            )}
           </div>
         );
       }

@@ -21,6 +21,7 @@ import DeferredGtm from "../../components/DeferredGtm";
 import DelayedSpeedInsights from "../../components/DelayedSpeedInsights";
 import PreviewBanner from "../../components/PreviewBanner";
 import DelayedFormPopup from "../../components/ui/DelayedFormPopup";
+import RouteProgressBar from "../../components/ui/RouteProgressBar";
 
 import { Montserrat, Cabin, Merriweather } from "next/font/google";
 
@@ -187,6 +188,7 @@ export default function MyApp({
       {/* Cookiebot is handled by GTM via its integration (implementation=gtm) */}
       {/* GTM — consent-gated internally via GTM's Cookiebot integration */}
       <DeferredGtm />
+      <RouteProgressBar />
 
     <div className={`${montserrat.variable} ${merriweather.variable} ${cabin.variable} relative`}>
       {!hideHeader && headerData && (

@@ -1,9 +1,41 @@
 import { useCookieConsent } from "../../lib/hooks/useCookieConsent";
+import { getYouTubeVideoId } from "../../lib/videoEmbed";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
 const DEFAULT_ALLOW =
   "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+export const WATCH_ON_YOUTUBE_TEXT = {
+  en: "Watch on YouTube",
+  sv: "Se videon på YouTube",
+};
+
+export function getYouTubeWatchUrl(src) {
+  const videoId = getYouTubeVideoId(src);
+  return videoId ? `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}` : "";
+}
+
+// Plain "Watch on YouTube" link, rendered in the server HTML so crawlers
+// (which never give marketing consent) can still reach the video.
+export function YouTubeWatchLink({ src, className = "" }) {
+  const { locale } = useRouter();
+  const watchUrl = getYouTubeWatchUrl(src);
+  if (!watchUrl) return null;
+
+  return (
+    <a
+      href={watchUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(event) => event.stopPropagation()}
+      // "!" so article prose link colours can't override it on the dark box.
+      className={`font-montserrat text-[12px] text-white/80! underline underline-offset-2 transition hover:text-white! ${className}`}
+    >
+      {WATCH_ON_YOUTUBE_TEXT[locale] || WATCH_ON_YOUTUBE_TEXT.sv}
+    </a>
+  );
+}
 
 export default function MarketingConsentVideoEmbed({
   src,
@@ -88,6 +120,7 @@ export default function MarketingConsentVideoEmbed({
         >
           {copy.action}
         </button>
+        <YouTubeWatchLink src={src} className="mt-3 block" />
       </div>
     </div>
   );

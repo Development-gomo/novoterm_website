@@ -8,7 +8,7 @@ import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 import { plainTextFromHtml } from "../../../lib/html";
 import CF7ContactForm from "../../ui/CF7ContactForm";
-import MarketingConsentVideoEmbed from "../../ui/MarketingConsentVideoEmbed";
+import MarketingConsentVideoEmbed, { getYouTubeWatchUrl, WATCH_ON_YOUTUBE_TEXT } from "../../ui/MarketingConsentVideoEmbed";
 import { getYouTubeNoCookieEmbedUrl } from "../../../lib/videoEmbed";
 import AuthorCard from "./AuthorCard";
 
@@ -70,7 +70,9 @@ const iframePattern = /<iframe\b[^>]*>(?:[\s\S]*?<\/iframe>)?/gi;
 // them in place for an empty slot that ConsentVideoPortals fills on the client.
 // The slot is a block <span> so it stays valid inside <p> and keeps the
 // surrounding markup (e.g. grid columns) intact. Other iframes are untouched.
-function replaceYouTubeIframesWithSlots(html = "") {
+// Each slot carries a plain YouTube link in the server HTML for crawlers that
+// don't run JS; ConsentVideoPortals removes it once the real embed mounts.
+function replaceYouTubeIframesWithSlots(html = "", lang = DEFAULT_LANG) {
   return html.replace(iframePattern, (iframe) => {
     const openingTag = iframe.match(/<iframe\b[^>]*>/i)[0];
     const src = getYouTubeNoCookieEmbedUrl(
@@ -83,7 +85,13 @@ function replaceYouTubeIframesWithSlots(html = "") {
     const title =
       decodeHtmlEntities(getHtmlAttribute(openingTag, "title")) || "YouTube video";
 
-    return `<span data-consent-video-src="${escapeHtmlAttribute(src)}" data-consent-video-title="${escapeHtmlAttribute(title)}" data-consent-video-height="${height}" style="display:block;width:100%;min-height:${height}px;background:#061837"></span>`;
+    const watchUrl = getYouTubeWatchUrl(src);
+    const watchText = WATCH_ON_YOUTUBE_TEXT[lang] || WATCH_ON_YOUTUBE_TEXT.sv;
+    const fallbackLink = watchUrl
+      ? `<a data-consent-video-fallback href="${escapeHtmlAttribute(watchUrl)}" target="_blank" rel="noopener noreferrer" style="display:block;padding:24px;text-align:center;color:#fff;text-decoration:underline">${escapeHtmlAttribute(watchText)}</a>`
+      : "";
+
+    return `<span data-consent-video-src="${escapeHtmlAttribute(src)}" data-consent-video-title="${escapeHtmlAttribute(title)}" data-consent-video-height="${height}" style="display:block;width:100%;min-height:${height}px;background:#061837">${fallbackLink}</span>`;
   });
 }
 
@@ -92,6 +100,7 @@ function ConsentVideoPortals({ containerRef, html }) {
 
   useEffect(() => {
     const nodes = containerRef.current?.querySelectorAll("[data-consent-video-src]") || [];
+    nodes.forEach((el) => el.querySelector("[data-consent-video-fallback]")?.remove());
     setSlots(
       Array.from(nodes).map((el) => ({
         el,
@@ -162,7 +171,9 @@ function buildArticleParts(html = "") {
 
 function ArticleContent({ html: rawHtml = "" }) {
   const containerRef = useRef(null);
-  const html = useMemo(() => replaceYouTubeIframesWithSlots(rawHtml), [rawHtml]);
+  const { locale } = useRouter();
+  const lang = locale || DEFAULT_LANG;
+  const html = useMemo(() => replaceYouTubeIframesWithSlots(rawHtml, lang), [rawHtml, lang]);
   // Memoized so parent re-renders reuse the same elements: React 19 otherwise
   // rewrites innerHTML on every render, wiping out the portaled video embeds.
   const parts = useMemo(() => buildArticleParts(html), [html]);
