@@ -1,5 +1,5 @@
 ﻿import SectionRenderer from "../../../components/SectionRenderer";
-import { SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
+import { ArticleSchema, SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { buildSiteUrl, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 import { fetchArticleCategoryPromo, fetchRelatedArticlePosts } from "../../../lib/blogArticleExtras";
 import { formatArticleDate } from "../../../lib/dateFormat";
@@ -127,7 +127,8 @@ export default function BlogPost({ post, sections, currentSlug, yoastHead, lang 
 
   return (
     <>
-      <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
+      <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} skipSchema />
+      <ArticleSchema post={post} canonicalUrl={canonicalUrl} />
       <SpeakableSchema heading={post?.acf?.heading} summary={post?.acf?.article_summary} />
       {sections && <SectionRenderer sections={sections} currentSlug={currentSlug} />}
     </>
