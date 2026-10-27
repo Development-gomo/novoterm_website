@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
-import MarketingConsentVideoEmbed, { YouTubeWatchLink } from "../../../components/ui/MarketingConsentVideoEmbed";
+import MarketingConsentVideoEmbed from "../../../components/ui/MarketingConsentVideoEmbed";
 import { buildSiteUrl, resolveLang, SUPPORTED_LANGS } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import {
@@ -293,43 +293,37 @@ export default function WatchPage({ video, canonicalUrl, noindex, lang = "sv" })
                 <source src={video.content_url} />
               </video>
             ) : showEmbedCover ? (
-              <div className="relative h-full w-full">
-                <button
-                  type="button"
-                  onClick={() => setEmbedStarted(true)}
-                  className="group relative h-full w-full cursor-pointer overflow-hidden"
-                  aria-label={`Play ${title}`}
-                >
-                  <Image
-                    src={thumbnailUrl}
-                    alt=""
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 980px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    priority
-                  />
-                  <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300 group-hover:opacity-80" />
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="relative flex items-center gap-3 rounded-full border border-[#2655C4] bg-[#2655C4] px-6 py-3 shadow-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10 group-hover:backdrop-blur-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        className="h-5 w-5 translate-x-[1px] text-white"
-                        fill="currentColor"
-                      >
-                        <path d="M8 5v14l11-7z" />
-                      </svg>
-                      <span className="font-montserrat text-[13px] font-semibold uppercase tracking-wide text-white">
-                        Play Video
-                      </span>
+              <button
+                type="button"
+                onClick={() => setEmbedStarted(true)}
+                className="group relative h-full w-full cursor-pointer overflow-hidden"
+                aria-label={`Play ${title}`}
+              >
+                <Image
+                  src={thumbnailUrl}
+                  alt=""
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 980px"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  priority
+                />
+                <span className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300 group-hover:opacity-80" />
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <span className="relative flex items-center gap-3 rounded-full border border-[#2655C4] bg-[#2655C4] px-6 py-3 shadow-xl transition-all duration-300 group-hover:border-white/30 group-hover:bg-white/10 group-hover:backdrop-blur-sm">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 translate-x-[1px] text-white"
+                      fill="currentColor"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    <span className="font-montserrat text-[13px] font-semibold uppercase tracking-wide text-white">
+                      Play Video
                     </span>
                   </span>
-                </button>
-                <YouTubeWatchLink
-                  src={video.embed_url}
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap"
-                />
-              </div>
+                </span>
+              </button>
             ) : hasEmbed ? (
               <MarketingConsentVideoEmbed
                 src={embedSrc}
