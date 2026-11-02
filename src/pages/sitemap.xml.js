@@ -46,13 +46,37 @@ const STATIC_SITEMAP_URLS = [
   },
 ];
 
-async function fetchAllPosts(endpoint, lang) {
-  const url = `${WP_API}/wp-json/wp/v2/${endpoint}?per_page=100&lang=${lang}&_fields=slug,modified,yoast_head_json`;
+// SiteGround's anti-bot can drop or challenge requests (e.g. bot-like
+// User-Agents get the socket closed), so log every failure instead of
+// silently dropping the whole post type. Don't set a custom User-Agent.
+const WP_FETCH_HEADERS = { Accept: "application/json" };
+
+async function fetchPostsPage(endpoint, lang, page) {
+  const url = `${WP_API}/wp-json/wp/v2/${endpoint}?per_page=100&page=${page}&lang=${lang}&_fields=slug,modified,yoast_head_json.robots`;
+  const res = await fetch(url, { headers: WP_FETCH_HEADERS });
+  const text = await res.text();
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText} ${text.slice(0, 160)}`);
+  }
+  let data;
   try {
-    const res = await fetch(url);
-    if (!res.ok) return [];
-    return await res.json();
+    data = JSON.parse(text);
   } catch {
+    throw new Error(`non-JSON response (${res.headers.get("content-type")}): ${text.slice(0, 160)}`);
+  }
+  if (!Array.isArray(data)) throw new Error(`unexpected response: ${text.slice(0, 160)}`);
+  return { data, totalPages: Number(res.headers.get("x-wp-totalpages")) || 1 };
+}
+
+async function fetchAllPosts(endpoint, lang) {
+  try {
+    const first = await fetchPostsPage(endpoint, lang, 1);
+    const rest = await Promise.all(
+      Array.from({ length: first.totalPages - 1 }, (_, i) => fetchPostsPage(endpoint, lang, i + 2))
+    );
+    return [first.data, ...rest.map((r) => r.data)].flat();
+  } catch (error) {
+    console.error(`[sitemap] ${endpoint} (${lang}) fetch failed:`, error.message, error.cause?.code || error.cause?.message || "");
     return [];
   }
 }
@@ -99,13 +123,22 @@ export async function getServerSideProps({ res }) {
     }))
   );
 
+  // Fetch every post type for every language in parallel
+  const postsByKey = Object.fromEntries(
+    await Promise.all(
+      SUPPORTED_LANGS.flatMap((lang) =>
+        POST_TYPES.map(async ([endpoint]) => [`${lang}:${endpoint}`, await fetchAllPosts(endpoint, lang)])
+      )
+    )
+  );
+  let wpUrlCount = 0;
+
   for (const lang of SUPPORTED_LANGS) {
     const langPrefix = lang === DEFAULT_LANG ? "" : `/${lang}`;
 
     for (const [endpoint, prefixes] of POST_TYPES) {
       const pathPrefix = prefixes[lang] ?? prefixes.en;
-      const posts = await fetchAllPosts(endpoint, lang);
-      if (!Array.isArray(posts)) continue;
+      const posts = postsByKey[`${lang}:${endpoint}`];
 
       for (const post of posts) {
         const slug = post.slug;
@@ -129,6 +162,7 @@ export async function getServerSideProps({ res }) {
         const changefreq = isHome ? "weekly" : "monthly";
 
         urls.push({ loc, lastmod, changefreq, priority });
+        wpUrlCount++;
       }
     }
 
@@ -143,8 +177,12 @@ export async function getServerSideProps({ res }) {
     }
   }
 
-  for (const lang of SUPPORTED_LANGS) {
-    const videos = await fetchHeadlessVideos({ perPage: 100, lang });
+  const videosByLang = await Promise.all(
+    SUPPORTED_LANGS.map((lang) => fetchHeadlessVideos({ perPage: 100, lang }))
+  );
+
+  for (const [i, lang] of SUPPORTED_LANGS.entries()) {
+    const videos = videosByLang[i];
     const videoEntries = videos.filter(
       (video) =>
         video.indexing_enabled !== false &&
@@ -183,10 +221,19 @@ ${u.video ? videoSitemapBlock(u.video) : ""}
 </urlset>`;
 
   res.setHeader("Content-Type", "application/xml; charset=utf-8");
-  res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
+  if (wpUrlCount === 0) {
+    // WordPress was unreachable — don't let the CDN cache a near-empty
+    // sitemap; 503 tells crawlers to retry later.
+    console.error("[sitemap] no WordPress URLs fetched; serving uncached 503");
+    res.statusCode = 503;
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Retry-After", "600");
+  } else {
+    res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate");
+  }
   res.write(xml);
   res.end();
-  
+
 
   return { props: {} };
 }
