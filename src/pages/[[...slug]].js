@@ -222,6 +222,39 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
     }
   }
 
+  // Prefetch every category for the Articles filter dropdown, so it never
+  // depends on a browser request to WordPress (blocked by CORS off www).
+  // New categories show up automatically:
+  // - all pages of results are loaded (no 100-category cap);
+  // - `_fresh` changes every minute, so SiteGround's proxy cache can serve a
+  //   category list at most ~1 minute old (matches `revalidate: 60` below).
+  if (hasArticlesSection) {
+    try {
+      const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
+      const fresh = Math.floor(Date.now() / 60000);
+      const categories = [];
+      let page = 1;
+      let totalPages = 1;
+      do {
+        const res = await fetch(
+          `${wpUrl}/wp-json/wp/v2/categories?per_page=100&page=${page}&hide_empty=false&lang=${lang}&_fields=id,name,slug&_fresh=${fresh}`
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        totalPages = parseInt(res.headers.get("X-WP-TotalPages") || "1", 10);
+        const data = await res.json();
+        if (Array.isArray(data)) categories.push(...data);
+        page += 1;
+      } while (page <= totalPages && page <= 10);
+
+      initialArticles = {
+        ...(initialArticles || { posts: [], insightPosts: [], totalPages: 1 }),
+        categories,
+      };
+    } catch (e) {
+      console.error("SSR categories prefetch failed:", e);
+    }
+  }
+
   // Prefetch document types
   if (hasDocumentTypesSection) {
     try {

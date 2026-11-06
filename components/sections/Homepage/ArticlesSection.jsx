@@ -15,16 +15,18 @@ function isAcfTrue(value) {
   return value === true || value === 1 || value === "1" || value === "true";
 }
 
-function normalizeTerm(term) {
-  if (!term || typeof term !== "object") return null;
-  const id = term.id ?? term.term_id;
-  if (!id || !term.name) return null;
+// WordPress' default "Uncategorized" category is never a useful filter.
+const UNCATEGORIZED_SLUGS = ["uncategorized", "okategoriserad"];
 
-  return {
-    id,
-    name: plainTextFromHtml(term.name),
-  };
+// Clean a raw WP category list for the dropdown: plain-text names, no
+// "Uncategorized", sorted alphabetically for the current language.
+function toDropdownCategories(list, lang) {
+  return (Array.isArray(list) ? list : [])
+    .map((cat) => ({ id: cat?.id, name: plainTextFromHtml(cat?.name || ""), slug: cat?.slug }))
+    .filter((cat) => cat.id && cat.name && !UNCATEGORIZED_SLUGS.includes(cat.slug))
+    .sort((a, b) => a.name.localeCompare(b.name, lang));
 }
+
 
 function formatPost(post, lang) {
   const category =
@@ -94,19 +96,9 @@ export default function ArticlesSection({
 }) {
   const router = useRouter();
   const lang = router.locale || DEFAULT_LANG;
-  const categoryFilterTerms = Array.isArray(category_filter)
-    ? category_filter
-    : category_filter
-    ? [category_filter]
-    : [];
-  const seededCategories = categoryFilterTerms
-    .map(normalizeTerm)
-    .filter(Boolean);
-
-  // category_filter from ACF can be a single term or an array of terms
-  const allowedCategoryIds = categoryFilterTerms.map((t) =>
-    String(t?.term_id || t?.id || t)
-  );
+  // The dropdown lists ALL WordPress categories (new ones appear automatically).
+  // The ACF "category_filter" field is intentionally no longer used to limit it.
+  const seededCategories = toDropdownCategories(initialArticles?.categories, lang);
 
   const initialPosts = Array.isArray(initialArticles?.posts)
     ? initialArticles.posts
@@ -140,7 +132,8 @@ export default function ArticlesSection({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Fetch categories for dropdown — only show ones selected in backend
+  // Categories normally come from the server (initialArticles.categories).
+  // Only fetch in the browser as a fallback when the server list is missing.
   useEffect(() => {
     async function loadCategories() {
       if (seededCategories.length > 0) {
@@ -150,34 +143,20 @@ export default function ArticlesSection({
 
       try {
         const res = await fetch(
-          wpRestUrl(`wp/v2/categories?per_page=100&hide_empty=false&lang=${lang}`)
+          wpRestUrl(`wp/v2/categories?per_page=100&hide_empty=false&lang=${lang}&_fields=id,name,slug&_fresh=${Math.floor(Date.now() / 60000)}`)
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        let filtered = data;
-        // If ACF specifies allowed categories, only show those
-        if (allowedCategoryIds.length > 0) {
-          filtered = filtered.filter((c) =>
-            allowedCategoryIds.includes(String(c.id))
-          );
-        }
-        setCategories(
-          filtered
-            .map((cat) => ({
-              ...cat,
-              name: plainTextFromHtml(cat.name),
-            }))
-            .filter((cat) => cat.id && cat.name)
-        );
+        setCategories(toDropdownCategories(await res.json(), lang));
       } catch (e) {
-        setCategories(seededCategories);
         console.warn("Categories unavailable; showing articles without filter options.");
       }
     }
     loadCategories();
-  }, [lang, category_filter]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang, initialArticles?.categories]);
 
   const toggleCategory = (catId) => {
+    setLoading(true); // posts refetch right after; avoids a flash of the empty message
     setSelectedCategories((prev) =>
       prev.includes(catId)
         ? prev.filter((id) => id !== catId)
@@ -239,6 +218,15 @@ export default function ArticlesSection({
 
   const filterLabel = lang === "en" ? "Filter:" : "Filtrera:";
   const categoryLabel = lang === "en" ? "Category" : "Kategori";
+  const noArticlesLabel =
+    lang === "en"
+      ? "There are no articles in this category yet."
+      : "Det finns inga artiklar i den här kategorin ännu.";
+
+  // Show the empty-state message only after a category filter has finished
+  // loading and returned nothing (e.g. a newly added category with no posts).
+  const showNoArticles =
+    selectedCategories.length > 0 && !loading && formattedPosts.length === 0;
 
   return (
     <section className="relative w-full py-15 md:py-[100px] bg-white">
@@ -309,6 +297,16 @@ export default function ArticlesSection({
             </div>
           </div>
         </div>
+
+        {/* NO ARTICLES IN SELECTED CATEGORY */}
+        {showNoArticles && (
+          <p
+            role="status"
+            className="py-16 text-center text-[16px] md:text-[18px] font-montserrat text-[#081B33] border border-[#D1D9E6] rounded-[3px]"
+          >
+            {noArticlesLabel}
+          </p>
+        )}
 
         {/* FEATURED ARTICLE */}
         {featuredPost && (

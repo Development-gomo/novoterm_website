@@ -406,6 +406,8 @@ export default function SectionRenderer({ sections = [], lang = "sv", currentSlu
           ); 
 
           case "casestudy_challenge":
+          // TEMP HIDDEN: Industry-page version of this section. Uncomment to show it again.
+          // case "case_study_challenge":
           return (
             <CaseStudyChallengeSection
               key={`cs-challenge-${index}`}
