@@ -134,7 +134,7 @@ function getHeadingTag(level) {
   return `h${Math.min(Math.max(Number(level) || 3, 1), 6)}`;
 }
 
-function RecaptchaField({ field, theme = "light", onError, resetCounter = 0 }) {
+function RecaptchaField({ field, theme = "light", lang = "sv", onError, resetCounter = 0 }) {
   const containerRef = useRef(null);
   const onErrorRef = useRef(onError);
   const widgetIdRef = useRef(null);
@@ -152,7 +152,7 @@ function RecaptchaField({ field, theme = "light", onError, resetCounter = 0 }) {
 
     let cancelled = false;
 
-    loadRecaptchaV2Script()
+    loadRecaptchaV2Script(lang)
       .then((grecaptcha) => {
         if (cancelled || !grecaptcha?.render || !containerRef.current || widgetIdRef.current !== null) return;
 
@@ -168,7 +168,7 @@ function RecaptchaField({ field, theme = "light", onError, resetCounter = 0 }) {
     return () => {
       cancelled = true;
     };
-  }, [siteKey, size, widgetTheme]);
+  }, [siteKey, size, widgetTheme, lang]);
 
   useEffect(() => {
     if (widgetIdRef.current === null || !window.grecaptcha?.reset) return;
@@ -561,9 +561,11 @@ export default function ContactForm({ sectionTheme = "light", formId, mode = "co
     if (isRecaptchaField(field)) {
       return (
         <RecaptchaField
-          key={field.name || RECAPTCHA_SHORTCODE_FIELD}
+          // Remount on language change so the widget is drawn into a fresh container.
+          key={`${field.name || RECAPTCHA_SHORTCODE_FIELD}-${lang}`}
           field={field}
           theme={recaptchaTheme}
+          lang={lang}
           onError={handleRecaptchaError}
           resetCounter={recaptchaResetCounter}
         />
