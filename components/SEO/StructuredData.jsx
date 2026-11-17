@@ -220,6 +220,44 @@ export function YoastHead({ yoastHead, canonicalUrl, skipSchema = false }) {
   return <Head>{els}</Head>;
 }
 
+// ─── CustomSchema ─────────────────────────────────────────────────────────────
+// Outputs JSON-LD entered by the SEO team in the ACF "custom_schema" textarea.
+// The field can be missing from the REST response until a post is saved, so
+// anything that isn't a non-empty string, or doesn't parse to a JSON object or
+// array, renders nothing.
+
+function mapStringsToPublicOrigin(value) {
+  if (Array.isArray(value)) return value.map(mapStringsToPublicOrigin);
+  if (value && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, mapStringsToPublicOrigin(item)])
+    );
+  }
+  return typeof value === "string" ? mapToPublicOrigin(value) : value;
+}
+
+export function CustomSchema({ schema }) {
+  if (typeof schema !== "string" || !schema.trim()) return null;
+
+  let data;
+  try {
+    data = JSON.parse(schema);
+  } catch {
+    return null;
+  }
+  if (!data || typeof data !== "object") return null;
+
+  return (
+    <Head>
+      <script
+        key="custom-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd(mapStringsToPublicOrigin(data)) }}
+      />
+    </Head>
+  );
+}
+
 // ─── SpeakableSchema ──────────────────────────────────────────────────────────
 // Injects a Speakable JSON-LD block into <head> when an article_summary
 // ACF field is present on the page.
