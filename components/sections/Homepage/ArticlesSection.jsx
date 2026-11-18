@@ -6,14 +6,11 @@ import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { plainTextFromHtml } from "../../../lib/html";
+import { isAcfTrue, visiblePosts } from "../../../lib/posts";
 
 const POSTS_PER_PAGE = 6;
 const INITIAL_POSTS_COUNT = POSTS_PER_PAGE + 1;
 const POSTS_FETCH_LIMIT = 100;
-
-function isAcfTrue(value) {
-  return value === true || value === 1 || value === "1" || value === "true";
-}
 
 // WordPress' default "Uncategorized" category is never a useful filter.
 const UNCATEGORIZED_SLUGS = ["uncategorized", "okategoriserad"];
@@ -64,26 +61,20 @@ function formatPost(post, lang) {
   };
 }
 
-function isHiddenFromListing(post) {
-  return isAcfTrue(post?.acf?.hide_from_listing);
-}
-
 function isLatestPostOverride(post) {
   return isAcfTrue(post?.acf?.display_as_latest_post);
 }
 
 function getOrderedListingPosts(posts) {
-  const visiblePosts = Array.isArray(posts)
-    ? posts.filter((post) => !isHiddenFromListing(post))
-    : [];
-  const featuredOverride = visiblePosts.find(isLatestPostOverride);
-  const featured = featuredOverride || visiblePosts[0] || null;
+  const visible = visiblePosts(posts);
+  const featuredOverride = visible.find(isLatestPostOverride);
+  const featured = featuredOverride || visible[0] || null;
 
   if (!featured) return [];
 
   return [
     featured,
-    ...visiblePosts.filter((post) => post.id !== featured.id),
+    ...visible.filter((post) => post.id !== featured.id),
   ];
 }
 

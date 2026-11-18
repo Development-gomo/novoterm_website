@@ -8,6 +8,7 @@ import { plainTextFromHtml } from "../../lib/html";
 import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 import { fetchPreviewContentById } from "../../lib/wpPreview";
 import { fetchHeadlessVideos } from "../../lib/headlessVideo";
+import { visiblePosts } from "../../lib/posts";
 
 const PAGE_SLUG_ALIASES = {
   sv: {
@@ -23,6 +24,8 @@ const WP_PAGE_SLUG_ALIASES = {
 
 const ARTICLE_PREFETCH_LIMIT = 100;
 const INSIGHTS_PREFETCH_LIMIT = 7;
+// Fetch extra so the carousel stays full when some posts are hidden from listing.
+const INSIGHTS_FETCH_LIMIT = 20;
 
 function pageSlugToPath(slug = "", lang = DEFAULT_LANG) {
   const aliases = PAGE_SLUG_ALIASES[lang] || {};
@@ -174,7 +177,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
       const wpUrl = process.env.NEXT_PUBLIC_WP_URL?.replace(/\/$/, "");
       const perPage = hasArticlesSection
         ? ARTICLE_PREFETCH_LIMIT
-        : INSIGHTS_PREFETCH_LIMIT;
+        : INSIGHTS_FETCH_LIMIT;
       const res = await fetch(
         `${wpUrl}/wp-json/wp/v2/posts?acf_format=standard&_embed&lang=${lang}&per_page=${perPage}&page=1&orderby=date&order=desc`
       );
@@ -213,7 +216,7 @@ export async function getStaticProps({ params, locale, preview, previewData }) {
         });
         initialArticles = {
           posts,
-          insightPosts: posts.slice(0, INSIGHTS_PREFETCH_LIMIT),
+          insightPosts: visiblePosts(posts).slice(0, INSIGHTS_PREFETCH_LIMIT),
           totalPages,
         };
       }

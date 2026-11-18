@@ -7,6 +7,7 @@ import { DEFAULT_LANG, localePath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { pickWpImageUrl } from "../../../lib/wpImage";
 import { plainTextFromHtml } from "../../../lib/html";
+import { visiblePosts } from "../../../lib/posts";
 import CF7ContactForm from "../../ui/CF7ContactForm";
 import MarketingConsentVideoEmbed, { getYouTubeWatchUrl, WATCH_ON_YOUTUBE_TEXT } from "../../ui/MarketingConsentVideoEmbed";
 import { getYouTubeNoCookieEmbedUrl } from "../../../lib/videoEmbed";
@@ -353,12 +354,12 @@ export default function BlogContentSection({ section }) {
 
       try {
         const res = await fetch(
-          wpRestUrl(`wp/v2/posts?_embed&per_page=6&categories=${category_id}&lang=${lang}`)
+          wpRestUrl(`wp/v2/posts?acf_format=standard&_embed&per_page=12&categories=${category_id}&lang=${lang}`)
         );
         if (!res.ok) return;
         const data = await res.json();
 
-        const formatted = data
+        const formatted = visiblePosts(data)
           .filter((post) => post.slug !== slug)
           .map((post) => {
             const cleanContent = plainTextFromHtml(post.content?.rendered || "");

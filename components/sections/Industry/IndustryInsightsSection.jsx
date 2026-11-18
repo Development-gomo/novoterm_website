@@ -7,6 +7,7 @@ import DotIndicator from "../../ui/DotIndicator";
 import { DEFAULT_LANG, localePath, wpToPath, wpRestUrl } from "../../../lib/api";
 import { formatArticleDate } from "../../../lib/dateFormat";
 import { plainTextFromHtml } from "../../../lib/html";
+import { visiblePosts } from "../../../lib/posts";
 import Link from "next/link";
 
 export default function IndustryInsightsSection({ section, sectionId }) {
@@ -21,10 +22,12 @@ export default function IndustryInsightsSection({ section, sectionId }) {
   useEffect(() => {
     async function loadPosts() {
       try {
-        const res = await fetch(wpRestUrl(`wp/v2/posts?_embed&lang=${lang}`));
+        const res = await fetch(wpRestUrl(`wp/v2/posts?acf_format=standard&_embed&per_page=20&lang=${lang}`));
         let data = await res.json();
 
-        data = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        data = visiblePosts(data)
+          .sort((a, b) => new Date(b.date) - new Date(a.date))
+          .slice(0, 10);
 
         const formatted = data.map((post) => {
           const category =

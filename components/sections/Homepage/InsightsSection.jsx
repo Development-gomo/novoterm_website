@@ -6,6 +6,9 @@
     import DotIndicator from "../../ui/DotIndicator";
     import { DEFAULT_LANG, localePath, wpToPath, wpRestUrl } from "../../../lib/api";
     import { plainTextFromHtml } from "../../../lib/html";
+    import { visiblePosts } from "../../../lib/posts";
+
+    const MAX_SLIDES = 7;
 
     function formatPostToSlide(post, lang) {
     const category =
@@ -47,7 +50,7 @@
     const lang = router.locale || DEFAULT_LANG;
     const [slides, setSlides] = useState(
         Array.isArray(initialSlides)
-        ? initialSlides.map((post) => formatPostToSlide(post, lang))
+        ? visiblePosts(initialSlides).slice(0, MAX_SLIDES).map((post) => formatPostToSlide(post, lang))
         : []
     );
 
@@ -56,7 +59,7 @@
         async function loadPosts() {
         try {
             const res = await fetch(
-            wpRestUrl(`wp/v2/posts?_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,_links,_embedded&lang=${lang}&per_page=7&page=1&orderby=date&order=desc`)
+            wpRestUrl(`wp/v2/posts?acf_format=standard&_embed=wp:featuredmedia,wp:term&_fields=id,title,excerpt,content,date,slug,acf,_links,_embedded&lang=${lang}&per_page=20&page=1&orderby=date&order=desc`)
             );
 
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -64,7 +67,9 @@
             const data = await res.json();
             if (!Array.isArray(data)) return;
 
-            const formatted = data.map((post) => formatPostToSlide(post, lang));
+            const formatted = visiblePosts(data)
+            .slice(0, MAX_SLIDES)
+            .map((post) => formatPostToSlide(post, lang));
 
             if (!cancelled && formatted.length > 0) {
             setSlides(formatted);
