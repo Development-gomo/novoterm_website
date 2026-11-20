@@ -122,6 +122,27 @@ export default function Header({
           {/* Language switcher – visible everywhere */}
           <LanguageSwitcher languages={languages} translations={translations} />
 
+          {/* Agentic web – machine-readable site for AI agents (/agent is
+              proxied to the agent app in next.config.mjs, so use a plain <a>) */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- /agent is an external rewrite, not a Next page */}
+          <a
+            href="/agent"
+            aria-label={router.locale === "en" ? "Agentic web: site for AI agents" : "Agentisk webb: webbplats för AI-agenter"}
+            title={router.locale === "en" ? "Agentic web" : "Agentisk webb"}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-white hover:bg-white/10 transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 4V2" />
+              <circle cx="12" cy="1.8" r="0.4" fill="currentColor" />
+              <rect x="4" y="6" width="16" height="12" rx="3" />
+              <circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none" />
+              <circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none" />
+              <path d="M9.5 15.5h5" />
+              <path d="M2 11v3M22 11v3" />
+              <path d="M9 18v2M15 18v2" />
+            </svg>
+          </a>
+
           {/* CTA button – hidden on mobile, shown on desktop */}
           {cta?.url && (
             <>

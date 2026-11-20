@@ -36,6 +36,10 @@ export default function CaseStudyChallengeSection({
         image?.sizes?.medium_large ||
         "";
 
+  // Industry pages send this section as "case_study_challenge" (Case Study
+  // pages use "casestudy_challenge"). Industry gets a content-height image and wider text.
+  const isIndustry = section?.acf_fc_layout === "case_study_challenge";
+
   const STICKY_START = 120;
   const LABEL_HEIGHT = 32;
   const stickyTop = STICKY_START + index * LABEL_HEIGHT;
@@ -66,7 +70,7 @@ export default function CaseStudyChallengeSection({
 
             {/* HEADING */}
             {heading && (
-              <h2 className="max-w-[577px] font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-white mb-[16px]"
+              <h2 className={`${isIndustry ? "max-w-[680px]" : "max-w-[577px]"} font-heading text-[24px] sm:text-[28px] md:text-[40px] font-semibold leading-tight md:leading-[1.15] font-semibold text-white mb-[16px]`}
               >
                 {heading}
               </h2>
@@ -75,20 +79,25 @@ export default function CaseStudyChallengeSection({
             {/* DESCRIPTION */}
             {description && (
               <div
-                className="max-w-[533px] text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] text-white mb-[40px] space-y-4"
+                className={`${isIndustry ? "max-w-[680px]" : "max-w-[533px]"} text-[14px] sm:text-[15px] md:text-[16px] leading-[24px] text-white mb-[40px] space-y-4`}
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}
 
             {/* IMAGE + CHALLENGES */}
-            <div className="flex flex-col lg:flex-row gap-10 lg:gap-[80px] items-start">
+            <div className={`flex flex-col lg:flex-row gap-10 ${isIndustry ? "lg:gap-[60px]" : "lg:gap-[80px]"} items-start`}>
 
-              {/* IMAGE */}
+              {/* IMAGE
+                  Industry: fixed 490px wide, height follows the content beside it,
+                  image position 45% 50%. */}
               {imageUrl && (
                 <div
-                  className="w-full max-w-[466px]
-                    h-[460px] sm:h-[460px] md:h-[460px] lg:h-[553px]
-                    rounded-[3px] bg-cover bg-center"
+                  className={`w-full
+                    h-[460px] sm:h-[460px] md:h-[460px]
+                    ${isIndustry
+                      ? "max-w-[490px] lg:w-[490px] lg:shrink-0 lg:h-auto lg:min-h-[460px] lg:self-stretch bg-[position:45%_50%]"
+                      : "max-w-[466px] lg:h-[553px] bg-center"}
+                    rounded-[3px] bg-cover`}
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 />
               )}
