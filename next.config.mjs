@@ -95,6 +95,21 @@ const nextConfig = {
           source: "/mcp/:path*",
           destination: `${AGENT_ORIGIN}/mcp/:path*`,
         },
+        // Agent discovery files served by the agent deployment (v1.3.0, Nov 2026).
+        // Mapped one by one, not /.well-known/:path*, so other well-known files
+        // (security.txt, app links, domain verification) can still live here.
+        {
+          source: "/.well-known/ard.json",
+          destination: `${AGENT_ORIGIN}/.well-known/ard.json`,
+        },
+        {
+          source: "/.well-known/api-catalog",
+          destination: `${AGENT_ORIGIN}/.well-known/api-catalog`,
+        },
+        {
+          source: "/.well-known/mcp/server-card.json",
+          destination: `${AGENT_ORIGIN}/.well-known/mcp/server-card.json`,
+        },
       ],
       afterFiles: [
         {
@@ -152,6 +167,21 @@ const nextConfig = {
   // Add custom headers for caching Cookiebot
   async headers() {
     return [
+      // Agent discovery (RFC 8288 Link header): every page points to the RFC 9727
+      // API catalog, the OpenAPI description and the ARD manifest.
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Link",
+            value: [
+              '<https://www.novoterm.se/.well-known/api-catalog>; rel="api-catalog"',
+              '<https://www.novoterm.se/openapi.json>; rel="service-desc"; type="application/vnd.oai.openapi+json"',
+              '<https://www.novoterm.se/.well-known/ard.json>; rel="ard"; type="application/json"',
+            ].join(", "),
+          },
+        ],
+      },
       {
         source: '/uc.js', // Directly matching Cookiebot script URL
         headers: [

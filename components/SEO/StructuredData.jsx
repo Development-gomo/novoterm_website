@@ -312,13 +312,19 @@ export function SpeakableSchema({ title, heading, summary, url }) {
 const ORGANIZATION_ID = `${PUBLIC_ORIGIN}/#organization`;
 const WEBSITE_ID = `${PUBLIC_ORIGIN}/#website`;
 
+// One organisation entity for the whole site (articles, homepage, services),
+// so every page's JSON-LD refers to the same @id. ProfessionalService (a
+// LocalBusiness type) adds the business details AI search tools look for.
 const ORGANIZATION = {
-  "@type": "Organization",
+  "@type": ["Organization", "ProfessionalService"],
   "@id": ORGANIZATION_ID,
   name: "Novoterm Translation AB",
   alternateName: "Novoterm",
+  description:
+    "Översättningsbyrå i Stockholm som erbjuder översättning och språkgranskning på fler än 40 språk för företag och organisationer.",
   url: `${PUBLIC_ORIGIN}/`,
   logo: "https://backend.novoterm.se/wp-content/uploads/2025/11/Novoterm_Logo.png",
+  image: "https://backend.novoterm.se/wp-content/uploads/2025/11/Novoterm_Logo.png",
   foundingDate: "1996",
   email: "info@novoterm.se",
   telephone: "+46 8 21 17 19",
@@ -329,11 +335,75 @@ const ORGANIZATION = {
     addressLocality: "Stockholm",
     addressCountry: "SE",
   },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer service",
+    email: "info@novoterm.se",
+    telephone: "+46 8 21 17 19",
+    url: `${PUBLIC_ORIGIN}/kontakta-oss`,
+    availableLanguage: ["sv", "en"],
+  },
   sameAs: [
     "https://www.facebook.com/Novoterm-Translation-AB-181508771904518/",
     "https://www.linkedin.com/company/novotermtranslation/",
   ],
 };
+
+// ─── OrganizationSchema ───────────────────────────────────────────────────────
+// Homepage: the organisation as Organization + ProfessionalService.
+export function OrganizationSchema() {
+  return (
+    <Head>
+      <script
+        key="organization-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd({ "@context": "https://schema.org", ...ORGANIZATION }) }}
+      />
+    </Head>
+  );
+}
+
+// ─── ServiceSchema ────────────────────────────────────────────────────────────
+// Service pages: a Service node provided by the organisation. Skipped when the
+// SEO team has already entered a Service in the ACF "custom_schema" field, so a
+// page never carries two Service descriptions.
+export function ServiceSchema({ service, canonicalUrl }) {
+  if (!service || !canonicalUrl) return null;
+  const custom = service.acf?.custom_schema;
+  if (typeof custom === "string" && /"@type"\s*:\s*(\[[^\]]*)?"Service"/.test(custom)) return null;
+
+  const yoast = service.yoast_head_json || {};
+  const name = stripHtml(service.acf?.heading || service.title?.rendered || "");
+  const description = yoast.description || yoast.og_description || stripHtml(service.acf?.description_text);
+  if (!name) return null;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${canonicalUrl}#service`,
+        name,
+        serviceType: stripHtml(service.title?.rendered || name),
+        ...(description && { description }),
+        url: canonicalUrl,
+        provider: { "@id": ORGANIZATION_ID },
+        mainEntityOfPage: { "@id": canonicalUrl },
+      },
+      ORGANIZATION,
+    ],
+  };
+
+  return (
+    <Head>
+      <script
+        key="service-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: toJsonLd(schema) }}
+      />
+    </Head>
+  );
+}
 
 const toIsoUtc = (gmt) => (gmt ? `${gmt.replace(/Z$/, "")}+00:00` : undefined);
 

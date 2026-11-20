@@ -5,7 +5,7 @@ import StickyPageNav from "../../components/StickyPageNav";
 import LcpHeroPreload from "../../components/LcpHeroPreload";
 import { buildSiteUrl, fetchPages, fetchPageBySlug, fetchClientLogos, fetchQuoteBlock, fetchLanguages, DEFAULT_LANG, SUPPORTED_LANGS, resolveLang, withLocalePrefix } from "../../lib/api";
 import { plainTextFromHtml } from "../../lib/html";
-import { SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
+import { OrganizationSchema, SpeakableSchema, YoastHead } from "../../components/SEO/StructuredData";
 import { fetchPreviewContentById } from "../../lib/wpPreview";
 import { fetchHeadlessVideos } from "../../lib/headlessVideo";
 import { visiblePosts } from "../../lib/posts";
@@ -410,6 +410,7 @@ export default function Page({ page, lang, yoastHead, initialArticles, initialDo
     <main className="w-full">
       <LcpHeroPreload sections={sections} />
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
+      {page?.slug === "home" && <OrganizationSchema />}
       <SpeakableSchema heading={page?.acf?.heading} summary={page?.acf?.article_summary} />
 
       {/* RENDER SECTIONS */}

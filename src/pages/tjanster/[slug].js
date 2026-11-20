@@ -1,6 +1,6 @@
 import SectionRenderer from "../../../components/SectionRenderer";
 import StickyServiceNav from "../../../components/StickyServiceNav";
-import { CustomSchema, SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
+import { CustomSchema, ServiceSchema, SpeakableSchema, YoastHead } from "../../../components/SEO/StructuredData";
 import { buildSiteUrl, fetchCaseStudies, fetchIndustries, fetchWpPostBySlug, fetchWpSlugs, localePath, resolveLang, withLocalePrefix } from "../../../lib/api";
 import { getLayoutOptions } from "../../../lib/pageSettings";
 import { fetchPreviewContentById } from "../../../lib/wpPreview";
@@ -94,6 +94,7 @@ export default function SingleService({ service, yoastHead, lang, initialCaseStu
       <YoastHead yoastHead={yoastHead} canonicalUrl={canonicalUrl} />
       <SpeakableSchema heading={service.acf.heading} summary={service.acf.article_summary} />
       <CustomSchema schema={service.acf?.custom_schema} />
+      <ServiceSchema service={service} canonicalUrl={canonicalUrl} />
       {sections.length > 0 ? (
         <>
           <StickyServiceNav sections={sections} />
